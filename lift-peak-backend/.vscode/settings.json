@@ -1,0 +1,13 @@
+{
+  "cSpell.words": [
+    "evnconfig",
+    "JWTSECRET",
+    "MYSQLDATABASE",
+    "MYSQLHOST",
+    "MYSQLPASSWORD",
+    "MYSQLPORT",
+    "MYSQLUSER",
+    "nestjs",
+    "typeorm"
+  ]
+}
