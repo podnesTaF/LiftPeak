@@ -6,13 +6,14 @@ import {Color} from "ansi-fragments/build/fragments/Color";
 import {Colors} from "@/constants/Colors";
 import Button from "@/components/shared/Button";
 import {Ionicons} from "@expo/vector-icons";
+import {Link} from "expo-router";
 
 const LoginCtaPage = () => {
 
     const [assets] = useAssets([require("@/assets/images/logo/full-logo-white.png"), require("@/assets/images/icons/flat-color-icons_google.png")]);
 
     return (
-        <View style={[defaultStyles.container, {padding: 20}]}>
+        <View style={[defaultStyles.container, {paddingHorizontal: 20, paddingBottom: 40}]}>
             <View style={styles.container}>
                 {assets && (
                     <Image
@@ -49,14 +50,16 @@ const LoginCtaPage = () => {
                     <Button color={"white"} title={"Continue with Email"} />
                 </View>
                 <View style={defaultStyles.horizontalContainer}>
-                    <Text style={{color:"white", fontSize: 14}}>
+                    <Text style={{color:"white", fontSize: 16}}>
                         Already have an account?
                     </Text>
-                    <TouchableOpacity>
-                        <Text style={{color: Colors.lime, fontSize: 14}}>
-                            Log in
-                        </Text>
-                    </TouchableOpacity>
+                    <Link href={"/login"} asChild>
+                        <TouchableOpacity>
+                            <Text style={{color: Colors.lime, fontSize: 16}}>
+                                Log in
+                            </Text>
+                        </TouchableOpacity>
+                    </Link>
                 </View>
             </View>
         </View>

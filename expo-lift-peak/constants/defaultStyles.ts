@@ -12,5 +12,10 @@ export const defaultStyles = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         gap: 6
-    }
+    },
+    header: {
+        fontSize: 32,
+        fontWeight: "700",
+        color: "white",
+    },
 })

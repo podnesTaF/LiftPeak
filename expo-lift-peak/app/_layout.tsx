@@ -3,14 +3,17 @@ import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
 import {useFonts} from 'expo-font';
 import {Stack, useRootNavigationState, useRouter, useSegments} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import {useEffect} from 'react';
+import React, {useEffect} from 'react';
 import 'react-native-reanimated';
 
 import {useColorScheme} from '@/components/useColorScheme';
 import {queryClient} from "@/config/QueryClient";
 import {QueryClientProvider} from "@tanstack/react-query";
 import {useAuthStore} from "@/store/auth";
-import {Text} from "react-native";
+import {Text, TouchableOpacity} from "react-native";
+import {StatusBar} from "expo-status-bar";
+import {Colors} from "@/constants/Colors";
+import {Ionicons} from "@expo/vector-icons";
 
 export {
     // Catch any errors thrown by the Layout component.
@@ -55,7 +58,7 @@ const InitialLayout = () => {
         const inAuthGroup = segments[0] === "(authenticated)";
 
         if (token && !inAuthGroup) {
-            router.replace("/(authenticated)/(tabs)/index");
+            router.replace("/(authenticated)/(tabs)");
         } else if (!token) {
             router.replace("/");
         }
@@ -68,7 +71,15 @@ const InitialLayout = () => {
     return (
         <Stack>
             <Stack.Screen name={'index'} options={{headerShown: false}}/>
-            <Stack.Screen name="login"/>
+            <Stack.Screen name="login" options={{
+                headerTransparent: true,
+                title: "",
+                headerLeft: () => (
+                    <TouchableOpacity onPress={router.back}>
+                        <Ionicons name="chevron-back" size={34} color={Colors.white} />
+                    </TouchableOpacity>
+                )
+            }}/>
             <Stack.Screen name="signup"/>
             <Stack.Screen name="(authenticated)/(tabs)" options={{headerShown: false}}/>
         </Stack>
@@ -81,6 +92,7 @@ function RootLayoutNav() {
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+                <StatusBar style="light" />
                 <InitialLayout />
             </ThemeProvider>
         </QueryClientProvider>
