@@ -1,15 +1,18 @@
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
+import { Role, RoleEnum } from 'src/modules/role/entities/role.entity';
 import { Repository } from 'typeorm';
-import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './entities/user.entity';
+import { CreateUserDto } from '../dto/create-user.dto';
+import { User } from '../entities/user.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @InjectRepository(User)
     private usersRepository: Repository<User>,
+    @InjectRepository(Role)
+    private roleRepository: Repository<Role>,
   ) {}
 
   async create(dto: CreateUserDto): Promise<User> {
@@ -28,11 +31,18 @@ export class UsersService {
     user.password = await bcrypt.hash(dto.password, 10);
     user.username = dto.username;
 
+    user.role = await this.roleRepository.findOne({
+      where: { name: RoleEnum.USER },
+    });
+
     return await this.usersRepository.save(user);
   }
 
   async findOneByCondition(conditions: { [key: string]: any }): Promise<User> {
-    return await this.usersRepository.findOne({ where: conditions });
+    return await this.usersRepository.findOne({
+      where: conditions,
+      relations: ['role'],
+    });
   }
 
   async isDuplicateField(
