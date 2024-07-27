@@ -1,4 +1,5 @@
 import { Role } from 'src/modules/role/entities/role.entity';
+import { RoutineSave } from 'src/modules/workout/entities/routine-save.entity';
 import { WorkoutComment } from 'src/modules/workout/entities/workout-comment.entity';
 import { WorkoutLike } from 'src/modules/workout/entities/workout-like.entity';
 import { Workout } from 'src/modules/workout/entities/workout.entity';
@@ -45,4 +46,7 @@ export class User extends AbstractEntity {
 
   @OneToMany(() => WorkoutComment, (comment) => comment.commenter)
   commentsAsCommenter: WorkoutComment[];
+
+  @OneToMany(() => RoutineSave, (routineSave) => routineSave.user)
+  savedRoutines: Workout[];
 }
