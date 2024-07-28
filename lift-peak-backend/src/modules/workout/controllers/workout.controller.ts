@@ -1,5 +1,5 @@
 import { Controller } from '@nestjs/common';
-import { WorkoutService } from './workout.service';
+import { WorkoutService } from '../services/workout.service';
 
 @Controller('workout')
 export class WorkoutController {

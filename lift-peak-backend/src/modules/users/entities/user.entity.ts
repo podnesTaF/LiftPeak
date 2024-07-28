@@ -1,4 +1,6 @@
 import { Role } from 'src/modules/role/entities/role.entity';
+import { WorkoutComment } from 'src/modules/workout/entities/workout-comment.entity';
+import { WorkoutLike } from 'src/modules/workout/entities/workout-like.entity';
 import { Workout } from 'src/modules/workout/entities/workout.entity';
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
 import {
@@ -7,6 +9,7 @@ import {
   JoinColumn,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   OneToOne,
 } from 'typeorm';
 import { Profile } from './profile.entity';
@@ -36,4 +39,10 @@ export class User extends AbstractEntity {
 
   @ManyToMany(() => Workout, (workout) => workout.routineOfUsers)
   routines: Workout[];
+
+  @OneToMany(() => WorkoutLike, (workoutLike) => workoutLike.user)
+  workoutReactions: WorkoutLike[];
+
+  @OneToMany(() => WorkoutComment, (comment) => comment.commenter)
+  commentsAsCommenter: WorkoutComment[];
 }

@@ -3,6 +3,8 @@ import { config as evnconfig } from 'dotenv';
 import { Role } from 'src/modules/role/entities/role.entity';
 import { Profile } from 'src/modules/users/entities/profile.entity';
 import { User } from 'src/modules/users/entities/user.entity';
+import { WorkoutComment } from 'src/modules/workout/entities/workout-comment.entity';
+import { WorkoutLike } from 'src/modules/workout/entities/workout-like.entity';
 import { Workout } from 'src/modules/workout/entities/workout.entity';
 
 evnconfig();
@@ -14,6 +16,6 @@ export const config: TypeOrmModuleOptions = {
   username: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQLDATABASE,
-  entities: [User, Role, Profile, Workout],
+  entities: [User, Role, Profile, Workout, WorkoutLike, WorkoutComment],
   synchronize: true,
 };

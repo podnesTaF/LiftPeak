@@ -1,6 +1,8 @@
 import { User } from 'src/modules/users/entities/user.entity';
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
 import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import { WorkoutComment } from './workout-comment.entity';
+import { WorkoutLike } from './workout-like.entity';
 
 @Entity()
 export class Workout extends AbstractEntity {
@@ -24,4 +26,10 @@ export class Workout extends AbstractEntity {
 
   @ManyToMany(() => User, (user) => user.routines, { nullable: true })
   routineOfUsers: User[];
+
+  @OneToMany(() => WorkoutLike, (like) => like.workout)
+  likes: WorkoutLike[];
+
+  @OneToMany(() => WorkoutComment, (comment) => comment.workout)
+  comments: WorkoutComment[];
 }
