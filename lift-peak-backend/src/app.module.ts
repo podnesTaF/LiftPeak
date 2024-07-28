@@ -10,6 +10,7 @@ import { FileModule } from './modules/file/file.module';
 import { MediaModule } from './modules/media/media.module';
 import { RoleModule } from './modules/role/role.module';
 import { UsersModule } from './modules/users/users.module';
+import { WorkoutModule } from './modules/workout/workout.module';
 
 @Module({
   imports: [
@@ -25,6 +26,7 @@ import { UsersModule } from './modules/users/users.module';
     RoleModule,
     FileModule,
     MediaModule,
+    WorkoutModule,
   ],
   controllers: [],
   providers: [],
