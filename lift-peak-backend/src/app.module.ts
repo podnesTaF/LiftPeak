@@ -6,9 +6,11 @@ import { resolve } from 'path';
 import { config as typeOrmConfig } from './core/config/typeorm.config';
 import { HttpRequestLogger } from './core/loggers/http-request.logger';
 import { AuthModule } from './modules/auth/auth.module';
+import { ExerciseModule } from './modules/exercise/exercise.module';
 import { FileModule } from './modules/file/file.module';
 import { MediaModule } from './modules/media/media.module';
 import { RoleModule } from './modules/role/role.module';
+import { TargetModule } from './modules/target/target.module';
 import { UsersModule } from './modules/users/users.module';
 import { WorkoutModule } from './modules/workout/workout.module';
 
@@ -27,6 +29,8 @@ import { WorkoutModule } from './modules/workout/workout.module';
     FileModule,
     MediaModule,
     WorkoutModule,
+    ExerciseModule,
+    TargetModule,
   ],
   controllers: [],
   providers: [],

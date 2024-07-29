@@ -1,7 +1,11 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { config as evnconfig } from 'dotenv';
+import { ExerciseMedia } from 'src/modules/exercise/entity/exercise-media.entity';
+import { Exercise } from 'src/modules/exercise/entity/exercise.entity';
+import { Instruction } from 'src/modules/exercise/entity/instruction.entity';
 import { Media } from 'src/modules/media/entity/media.entity';
 import { Role } from 'src/modules/role/entities/role.entity';
+import { Target } from 'src/modules/target/entities/target.entity';
 import { Profile } from 'src/modules/users/entities/profile.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 import { Logger } from 'src/modules/workout/entities/logger.entity';
@@ -31,6 +35,10 @@ export const config: TypeOrmModuleOptions = {
     Logger,
     WorkoutMedia,
     RoutineSave,
+    Exercise,
+    ExerciseMedia,
+    Instruction,
+    Target,
   ],
   synchronize: true,
 };
