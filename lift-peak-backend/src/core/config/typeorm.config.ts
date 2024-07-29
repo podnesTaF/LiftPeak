@@ -8,7 +8,7 @@ import { Role } from 'src/modules/role/entities/role.entity';
 import { Target } from 'src/modules/target/entities/target.entity';
 import { Profile } from 'src/modules/users/entities/profile.entity';
 import { User } from 'src/modules/users/entities/user.entity';
-import { Logger } from 'src/modules/workout/entities/logger.entity';
+import { WorkoutLog } from 'src/modules/workout-log/entities/workout-log.entity';
 import { RoutineSave } from 'src/modules/workout/entities/routine-save.entity';
 import { WorkoutComment } from 'src/modules/workout/entities/workout-comment.entity';
 import { WorkoutLike } from 'src/modules/workout/entities/workout-like.entity';
@@ -32,7 +32,7 @@ export const config: TypeOrmModuleOptions = {
     WorkoutLike,
     WorkoutComment,
     Media,
-    Logger,
+    WorkoutLog,
     WorkoutMedia,
     RoutineSave,
     Exercise,

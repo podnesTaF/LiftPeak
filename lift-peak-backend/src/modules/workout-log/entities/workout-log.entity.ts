@@ -1,9 +1,9 @@
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
-import { Workout } from './workout.entity';
+import { Workout } from '../../workout/entities/workout.entity';
 
 @Entity()
-export class Logger extends AbstractEntity {
+export class WorkoutLog extends AbstractEntity {
   @Column()
   durationInS: number;
 
@@ -17,7 +17,9 @@ export class Logger extends AbstractEntity {
     nullable: false,
   })
   baseWorkoutId: number;
-  @ManyToOne(() => Workout, (workout) => workout.loggers, { nullable: false })
+  @ManyToOne(() => Workout, (workout) => workout.workoutLogs, {
+    nullable: false,
+  })
   baseWorkout: Workout;
 
   @Column({

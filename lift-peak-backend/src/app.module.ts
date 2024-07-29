@@ -12,6 +12,7 @@ import { MediaModule } from './modules/media/media.module';
 import { RoleModule } from './modules/role/role.module';
 import { TargetModule } from './modules/target/target.module';
 import { UsersModule } from './modules/users/users.module';
+import { WorkoutLogModule } from './modules/workout-log/workout-log.module';
 import { WorkoutModule } from './modules/workout/workout.module';
 
 @Module({
@@ -31,6 +32,7 @@ import { WorkoutModule } from './modules/workout/workout.module';
     WorkoutModule,
     ExerciseModule,
     TargetModule,
+    WorkoutLogModule,
   ],
   controllers: [],
   providers: [],
