@@ -1,8 +1,20 @@
 import React from 'react';
 import {Tabs} from 'expo-router';
-import {Colors} from "@shared/styles";
+import {Colors, defaultStyles} from "@shared/styles";
 import {Ionicons} from "@expo/vector-icons";
-import {View} from "react-native";
+import {Image, SafeAreaView, Text, TouchableOpacity, View} from "react-native";
+import Avatar from "@shared/components/Avatar";
+import {useAuthStore} from "@features/auth";
+import {Color} from "ansi-fragments/build/fragments/Color";
+import {useAssets} from "expo-asset";
+import Animated, {
+    interpolate,
+    useAnimatedScrollHandler,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming
+} from "react-native-reanimated";
+import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
 
 function TabBarIcon(props: {
     name: React.ComponentProps<typeof Ionicons>['name'];
@@ -12,6 +24,36 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
+
+    const [assets] = useAssets([require("@assets/images/logo/logo-long.png")])
+    const {user} = useAuthStore();
+
+
+    const { scrollY } = useAnimatedScroll();
+
+    const animatedHeaderStyle = useAnimatedStyle(() => {
+        const opacity = interpolate(scrollY.value, [0, 100], [0, 1]);
+        return {
+            opacity: opacity,
+        };
+    });
+
+    const animatedMainStyle = useAnimatedStyle(() => {
+        const paddingBottom = interpolate(scrollY.value, [0, 100], [60, 0]);
+        return {
+            paddingBottom: scrollY.value > 0 ? paddingBottom : 60,
+        };
+    });
+
+    const animatedTitleStyle = useAnimatedStyle(() => {
+        const opacity = interpolate(scrollY.value, [0, 50], [1, 0]);
+        const top = interpolate(scrollY.value, [0, 100], [80, 30]);
+
+        return {
+            opacity: scrollY.value > 0 ? opacity : 1,
+            top: scrollY.value > 0 ? top : 80,
+        };
+    })
 
     return (
         <Tabs
@@ -34,9 +76,39 @@ export default function TabLayout() {
                 },
                 headerTintColor: "#fff",
                 header: ({navigation, options}) => (
-                    <View style={{flexDirection: "row", paddingVertical: 8, paddingHorizontal: 12, justifyContent: "space-between"}}>
-                        
-                    </View>
+                    <SafeAreaView style={{
+                        backgroundColor: Colors.dark700
+                    }}>
+                        <View style={{paddingHorizontal: 12, }}>
+                            <Animated.View style={[{
+                                width: "100%",
+                                position: "absolute",
+                                alignItems: "center",
+                                justifyContent: "center",
+                            }, animatedHeaderStyle]}>
+                                <Text style={{color: "white", fontWeight: "700"}}>Feed</Text>
+                            </Animated.View>
+                            <Animated.View style={[{flexDirection: "row", paddingVertical: 8, justifyContent: "space-between", position: "relative"}, animatedMainStyle]}>
+                                <Avatar name={user?.username.slice(0,2)} size={50} />
+                                <View style={{flexDirection: "row", gap: 16, alignItems: "center"}}>
+                                    <TouchableOpacity>
+                                        <Ionicons name="search" size={32} color={Colors.dark300} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity>
+                                        <Ionicons name="notifications" size={32} color={Colors.dark300} />
+                                    </TouchableOpacity>
+                                </View>
+                                <Animated.View style={[{
+                                    paddingHorizontal: 12,
+                                    position: "absolute",
+                                    top: 50,
+                                }, animatedTitleStyle]}>
+                                    <Text style={defaultStyles.header}>Feed</Text>
+                                </Animated.View>
+                            </Animated.View>
+
+                        </View>
+                    </SafeAreaView>
                 )
             }}/>
             <Tabs.Screen name={"logout"} options={{

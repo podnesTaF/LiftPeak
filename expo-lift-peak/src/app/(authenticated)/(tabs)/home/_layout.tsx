@@ -6,23 +6,18 @@ const Layout = () => {
     return (
         <MaterialTopTabs
             screenOptions={{
-            tabBarActiveTintColor: "#fff",
-            tabBarIndicatorStyle: {
-                backgroundColor: "#fff",
-                height: 2
-            },
-            tabBarInactiveTintColor: Colors.dark300,
-            tabBarLabelStyle: {
-                fontWeight: "semibold",
-                textTransform: "capitalize",
-                fontSize: 14
-            },
-            tabBarItemStyle: {
-                backgroundColor: Colors.dark700
-            }
+                tabBarActiveTintColor: "#fff",
+                tabBarInactiveTintColor: Colors.dark300,
+                tabBarLabelStyle: {
+                    fontWeight: "700",
+                    textTransform: "capitalize",
+                    fontSize: 14
+                },
+                tabBarItemStyle: {
+                    backgroundColor: Colors.dark700
+                },
         }}>
             <MaterialTopTabs.Screen name={'followings'} options={{
-
                 title: "Followings"
             }} />
             <MaterialTopTabs.Screen name={'groups'} options={{
