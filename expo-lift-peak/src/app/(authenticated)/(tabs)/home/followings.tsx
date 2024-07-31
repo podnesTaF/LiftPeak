@@ -3,16 +3,22 @@ import {Image, SafeAreaView, ScrollView, StyleSheet, Text, TouchableOpacity, Vie
 import {useQuery} from "@tanstack/react-query";
 import api from "@shared/api/AxiosInstance";
 import React from "react";
-import {Colors, defaultStyles} from "@shared/styles";
-import {Stack, Tabs} from "expo-router";
-import Avatar from "@shared/components/Avatar";
-import {Ionicons} from "@expo/vector-icons";
+import { defaultStyles} from "@shared/styles";
 import {useAssets} from "expo-asset";
 import {useAuthStore} from "@features/auth";
 import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
 import Animated, {useAnimatedScrollHandler} from "react-native-reanimated";
+import FollowingCircles from "@features/follow/ui/FollowingCircles";
 
-export default function TabOneScreen() {
+export default function Followings() {
+
+  const { scrollY } = useAnimatedScroll();
+
+
+  const scrollHandler = useAnimatedScrollHandler(event => {
+    scrollY.value = event.contentOffset.y;
+  });
+
   const {user} = useAuthStore();
   const [assets] = useAssets([require("@assets/images/logo/logo-long.png")])
   const {data} = useQuery({
@@ -23,25 +29,15 @@ export default function TabOneScreen() {
     }
   })
 
-  const { scrollY } = useAnimatedScroll();
-
-  const scrollHandler = useAnimatedScrollHandler(event => {
-    scrollY.value = event.contentOffset.y;
-  });
-
 
   return (
       <>
         <Animated.ScrollView  onScroll={scrollHandler}
                               scrollEventThrottle={16} style={defaultStyles.container}>
-          <Text style={styles.title}>Tab One</Text>
-          <Text>{JSON.stringify(data)}</Text>
-          <View style={styles.separator} />
-          {[1, 2, 3, 4, 5,6,7,8,9].map((item) => (
-              <View key={item} style={{height: 200}}>
-                <Text style={{color: "white"}}>{item}</Text>
-              </View>
-          ))}
+          <FollowingCircles />
+          <View
+          style={{height: 1000, width: "100%",}}
+          ></View>
         </Animated.ScrollView>
       </>
 

@@ -25,7 +25,7 @@ const Login = () => {
         mutationFn: async (data: { email: string, password: string }) => {
             const user = await login(data.email, data.password)
             setUser(user);
-            router.push('/(authenticated)/(tabs)')
+            router.push('/(authenticated)/(tabs)/home')
         },
         onError: (error) => {
             console.log(error)

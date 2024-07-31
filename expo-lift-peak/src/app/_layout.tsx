@@ -13,6 +13,7 @@ import {Ionicons} from "@expo/vector-icons";
 import {useAuthStore} from "@features/auth";
 import {Colors, useColorScheme} from "@shared/styles";
 import {queryClient} from "@shared/api";
+import {AnimatedScrollProvider} from "@shared/components/AnimatedScrollContext";
 
 export {
     // Catch any errors thrown by the Layout component.
@@ -91,8 +92,11 @@ function RootLayoutNav() {
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                <StatusBar style="light" />
-                <InitialLayout />
+                <AnimatedScrollProvider>
+                    <StatusBar style="light" />
+                    <InitialLayout />
+                </AnimatedScrollProvider>
+
             </ThemeProvider>
         </QueryClientProvider>
     );
