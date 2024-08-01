@@ -14,6 +14,7 @@ import {
   OneToOne,
 } from 'typeorm';
 import { Profile } from './profile.entity';
+import { UserFollower } from './user-follower.enitity';
 
 @Entity()
 export class User extends AbstractEntity {
@@ -49,4 +50,10 @@ export class User extends AbstractEntity {
 
   @OneToMany(() => RoutineSave, (routineSave) => routineSave.user)
   savedRoutines: Workout[];
+
+  @OneToMany(() => UserFollower, (userFollower) => userFollower.follower)
+  following: UserFollower[];
+
+  @OneToMany(() => UserFollower, (userFollower) => userFollower.followed)
+  followers: UserFollower[];
 }

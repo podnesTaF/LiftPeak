@@ -7,6 +7,7 @@ import { Media } from 'src/modules/media/entity/media.entity';
 import { Role } from 'src/modules/role/entities/role.entity';
 import { Target } from 'src/modules/target/entities/target.entity';
 import { Profile } from 'src/modules/users/entities/profile.entity';
+import { UserFollower } from 'src/modules/users/entities/user-follower.enitity';
 import { User } from 'src/modules/users/entities/user.entity';
 import { WorkoutLog } from 'src/modules/workout-log/entities/workout-log.entity';
 import { RoutineSave } from 'src/modules/workout/entities/routine-save.entity';
@@ -39,6 +40,7 @@ export const config: TypeOrmModuleOptions = {
     ExerciseMedia,
     Instruction,
     Target,
+    UserFollower,
   ],
   synchronize: true,
 };

@@ -38,6 +38,13 @@ export class UsersService {
     return await this.usersRepository.save(user);
   }
 
+  async findOneWithFollowings(id: number): Promise<User> {
+    return await this.usersRepository.findOne({
+      where: { id },
+      relations: ['following', 'following.followed.profile'],
+    });
+  }
+
   async findOneByCondition(conditions: { [key: string]: any }): Promise<User> {
     return await this.usersRepository.findOne({
       where: conditions,
