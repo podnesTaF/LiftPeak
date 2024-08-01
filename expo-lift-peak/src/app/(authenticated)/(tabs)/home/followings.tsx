@@ -9,6 +9,7 @@ import {useAuthStore} from "@features/auth";
 import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
 import Animated, {useAnimatedScrollHandler} from "react-native-reanimated";
 import FollowingCircles from "@features/follow/ui/FollowingCircles";
+import {fetchUserProfile} from "@entities/user";
 
 export default function Followings() {
 
@@ -18,15 +19,9 @@ export default function Followings() {
   const scrollHandler = useAnimatedScrollHandler(event => {
     scrollY.value = event.contentOffset.y;
   });
-
-  const {user} = useAuthStore();
-  const [assets] = useAssets([require("@assets/images/logo/logo-long.png")])
   const {data} = useQuery({
     queryKey: ["profile"],
-    queryFn: async () => {
-        const {data} = await api.get("/users/profile");
-        return data;
-    }
+    queryFn: () => fetchUserProfile()
   })
 
 
@@ -34,7 +29,7 @@ export default function Followings() {
       <>
         <Animated.ScrollView  onScroll={scrollHandler}
                               scrollEventThrottle={16} style={defaultStyles.container}>
-          <FollowingCircles />
+          <FollowingCircles  />
           <View
           style={{height: 1000, width: "100%",}}
           ></View>

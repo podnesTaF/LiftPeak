@@ -2,6 +2,8 @@ import React from 'react';
 import {FlatList, ScrollView, Text, View} from "react-native";
 import PagerView from "react-native-pager-view";
 import FollowingCircle from "@features/follow/ui/FollowingCircle";
+import {useQuery} from "@tanstack/react-query";
+import {getMyFollowings} from "@entities/user";
 
 const followers = [
     {
@@ -30,29 +32,32 @@ const followers = [
 
 const FollowingCircles = () => {
     const [selected, setSelected] = React.useState<number | null>(null);
-    // Width of the circle item
+
     const itemWidth = 50;
-    // Width of the separator
     const separatorWidth = 16;
-    // Total width of each item including the separator
     const snapInterval = itemWidth + separatorWidth;
+
+    const {data: users} = useQuery({
+        queryKey: ["followings"],
+        queryFn: () => getMyFollowings()
+    })
+
     return (
         <ScrollView>
             <FlatList
-                data={followers}
+                data={users}
                 horizontal
                 pagingEnabled
                 snapToInterval={snapInterval}
                 decelerationRate={"fast"}
-                ItemSeparatorComponent={() => <View style={{width: 16}} />}
-                renderItem={({item}) => (
-                    <FollowingCircle imageUrl={item.imageUrl} isOnline={item.isOnline} activeSelected={selected !== null} isActive={item.id === selected}  onPress={() => setSelected(prev => prev === item.id ? null : item.id)} />
+                ItemSeparatorComponent={() => <View style={{width:separatorWidth}} />}
+                renderItem={({item, index}) => (
+                    <FollowingCircle imageUrl={item.profile?.avatarUrl} isOnline={index % 2 === 0} activeSelected={selected !== null} isActive={item.id === selected}  onPress={() => setSelected(prev => prev === item.id ? null : item.id)} />
                 )}
                 keyExtractor={(item) => item.id.toString()}
                 showsHorizontalScrollIndicator={false}
             />
         </ScrollView>
-
     );
 };
 
