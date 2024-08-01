@@ -19,10 +19,6 @@ export default function Followings() {
   const scrollHandler = useAnimatedScrollHandler(event => {
     scrollY.value = event.contentOffset.y;
   });
-  const {data} = useQuery({
-    queryKey: ["profile"],
-    queryFn: () => fetchUserProfile()
-  })
 
 
   return (
@@ -30,9 +26,6 @@ export default function Followings() {
         <Animated.ScrollView  onScroll={scrollHandler}
                               scrollEventThrottle={16} style={defaultStyles.container}>
           <FollowingCircles  />
-          <View
-          style={{height: 1000, width: "100%",}}
-          ></View>
         </Animated.ScrollView>
       </>
 
