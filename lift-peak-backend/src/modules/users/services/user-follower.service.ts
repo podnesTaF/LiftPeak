@@ -42,4 +42,13 @@ export class UserFollowerService {
       throw new BadRequestException('Not following user');
     }
   }
+
+  async getFollowings(userId: number): Promise<User[]> {
+    const userFollowers = await this.userFollowerRepository.find({
+      where: { followerId: userId },
+      relations: ['followed.profile'],
+    });
+
+    return userFollowers.map((userFollower) => userFollower.followed);
+  }
 }
