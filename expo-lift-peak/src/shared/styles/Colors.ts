@@ -19,6 +19,7 @@ export default {
 };
 
 export const Colors = {
+  transparent: "transparent",
   dark900: "#0F1014",
   dark700: "#1A1B21",
   dark500: "#2B2C34",

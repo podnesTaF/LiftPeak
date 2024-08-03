@@ -1,32 +1,42 @@
 import React, {useState} from 'react';
-import {FlatList, ScrollView, Text, TouchableOpacity, View} from "react-native";
-import {useHeaderHeight} from "@react-navigation/elements";
+import {FlatList, ScrollView, Text, View} from "react-native";
 import InputField from "@shared/components/form/InputField";
 import {Colors} from "@shared/styles";
-import {Stack, useRouter} from "expo-router";
-import {Ionicons} from "@expo/vector-icons";
+import {useQuery} from "@tanstack/react-query";
+import api from "@shared/api/AxiosInstance";
+import {getMyFollowings, IProfile, searchUsers, UserFollowListItem} from "@entities/user";
+import {useSearch} from "@features/search";
+
+
 
 const RunnersSearch = () => {
-    const [value, setValue] = useState("");
-    const headerHeight = useHeaderHeight();
-    const router = useRouter();
+    const {
+        searchValue,
+        setSearchValue,
+        results: userProfiles,
+        queryInfo,
+    } = useSearch<IProfile[]>(searchUsers, '', 300, 'userProfiles');
+
+    const {data: followings} = useQuery({
+        queryKey: ["myFollowings"],
+        queryFn: async () =>  getMyFollowings({idOnly: true})
+    })
+
     return (
-        <>
-            
             <View style={{
                 backgroundColor: Colors.dark900,
                 flex: 1,
-                paddingTop: headerHeight
+                paddingTop: 12
             }}>
-                {/*<View style={{padding: 12}}>*/}
-                {/*    <InputField value={value} onChange={(value: string) => setValue(value)} placeholder={"Search"} />*/}
-                {/*</View>*/}
-                <FlatList data={[1,2,3,4,5,6,7,8]} renderItem={({item}) => <View  style={{height: 100}}>
-                    <Text style={{color: "white"}}>{item}</Text>
-                </View>} keyExtractor={(item) => item.toString()} />
-
+                <View style={{paddingVertical: 24, paddingHorizontal: 12}}>
+                    <InputField value={searchValue} onChange={(value: string) => setSearchValue(value)} placeholder={"Search"} />
+                </View>
+                <FlatList style={{
+                    flex: 1
+                }} data={userProfiles} renderItem={({item}) => (
+                    <UserFollowListItem profile={item} isFollowing={!!followings?.find(f => f.id === item.user?.id)} />
+                )} keyExtractor={(item) => item.id.toString()} />
             </View>
-        </>
     );
 }
 

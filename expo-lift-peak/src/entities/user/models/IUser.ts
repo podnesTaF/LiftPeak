@@ -1,4 +1,4 @@
-import {IProfile} from "@entities/user";
+import {IProfile, IUserFollow} from "@entities/user";
 
 export interface IUser {
     id: number;
@@ -7,4 +7,6 @@ export interface IUser {
     username: string;
     profileId?: number;
     profile?: IProfile;
+    followings?: IUserFollow[];
+    followers?: IUserFollow[];
 }

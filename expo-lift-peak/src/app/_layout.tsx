@@ -22,7 +22,7 @@ export {
 
 export const unstable_settings = {
     // Ensure that reloading on `/modal` keeps a back button present.
-    initialRouteName: '(tabs)',
+    initialRouteName: '(top-tabs)',
 };
 
 
@@ -52,7 +52,7 @@ const InitialLayout = () => {
     }, [loaded]);
 
     useEffect(() => {
-        if(!loaded) {
+        if (!loaded) {
             return;
         }
         const inAuthGroup = segments[0] === "(authenticated)";
@@ -69,19 +69,29 @@ const InitialLayout = () => {
     }
 
     return (
-        <Stack>
+        <Stack screenOptions={{
+            headerStyle: {
+                backgroundColor: Colors.dark700,
+            },
+            headerTintColor: Colors.white,
+        }}>
             <Stack.Screen name={'index'} options={{headerShown: false}}/>
             <Stack.Screen name="login" options={{
                 headerTransparent: true,
-                title: "",
+                title: "Search",
                 headerLeft: () => (
                     <TouchableOpacity onPress={router.back}>
-                        <Ionicons name="chevron-back" size={34} color={Colors.white} />
+                        <Ionicons name="chevron-back" size={34} color={Colors.white}/>
                     </TouchableOpacity>
                 )
             }}/>
             <Stack.Screen name="signup"/>
             <Stack.Screen name="(authenticated)/(tabs)" options={{headerShown: false}}/>
+            <Stack.Screen name="(authenticated)/search" options={{
+                headerShown: true,
+                title: "Search",
+                headerBackTitleVisible: false
+            }}/>
         </Stack>
     );
 }
@@ -93,8 +103,8 @@ function RootLayoutNav() {
         <QueryClientProvider client={queryClient}>
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                 <AnimatedScrollProvider>
-                    <StatusBar style="light" />
-                    <InitialLayout />
+                    <StatusBar style="light"/>
+                    <InitialLayout/>
                 </AnimatedScrollProvider>
 
             </ThemeProvider>

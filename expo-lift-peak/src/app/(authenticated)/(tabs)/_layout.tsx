@@ -1,5 +1,5 @@
 import React from 'react';
-import {Tabs} from 'expo-router';
+import {Link, Tabs} from 'expo-router';
 import {Colors, defaultStyles} from "@shared/styles";
 import {Ionicons} from "@expo/vector-icons";
 import {Image, Platform, SafeAreaView, Text, TouchableOpacity, View} from "react-native";
@@ -98,9 +98,11 @@ export default function TabLayout() {
                                 <Animated.View style={[{flexDirection: "row", paddingVertical: 8, paddingHorizontal: 8, justifyContent: "space-between", position: "relative"}, animatedMainStyle]}>
                                     <Avatar name={user?.username.slice(0,2)} size={50} />
                                     <View style={{flexDirection: "row", gap: 16, alignItems: "center"}}>
-                                        <TouchableOpacity>
-                                            <Ionicons name="search" size={32} color={Colors.dark300} />
-                                        </TouchableOpacity>
+                                       <Link href={"/(authenticated)/search"} asChild>
+                                           <TouchableOpacity>
+                                               <Ionicons name="search" size={32} color={Colors.dark300} />
+                                           </TouchableOpacity>
+                                       </Link>
                                         <TouchableOpacity>
                                             <Ionicons name="notifications" size={32} color={Colors.dark300} />
                                         </TouchableOpacity>

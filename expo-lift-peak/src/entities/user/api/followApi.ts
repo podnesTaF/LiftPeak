@@ -11,7 +11,7 @@ export const unfollowUser = async (id:number) => {
     return response.data;
 };
 
-export const getMyFollowings = async () => {
-    const response = await api.get<IUser[]>(`/users/me/followings`);
+export const getMyFollowings = async (query?:{idOnly?: boolean}) => {
+    const response = await api.get<IUser[] | Partial<IUser>[]>(`/users/me/followings`, {params: query});
     return response.data;
 };
