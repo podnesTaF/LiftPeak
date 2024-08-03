@@ -43,11 +43,23 @@ export class UserFollowerService {
     }
   }
 
-  async getFollowings(userId: number): Promise<User[]> {
+  async getFollowings(
+    userId: number,
+    query?: { idOnly?: boolean },
+  ): Promise<User[]> {
     const userFollowers = await this.userFollowerRepository.find({
       where: { followerId: userId },
       relations: ['followed.profile'],
+      select: query?.idOnly ? ['followedId'] : undefined,
     });
+
+    if (query?.idOnly) {
+      return userFollowers.map((userFollower) => {
+        const user = new User();
+        user.id = userFollower.followedId;
+        return user;
+      });
+    }
 
     return userFollowers.map((userFollower) => userFollower.followed);
   }

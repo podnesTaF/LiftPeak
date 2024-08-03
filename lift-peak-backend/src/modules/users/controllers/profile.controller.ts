@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Get,
   Patch,
   Post,
+  Query,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -64,5 +66,14 @@ export class ProfileController {
       avatar: files.avatar ? files.avatar[0] : null,
       wallpaper: files.wallpaper ? files.wallpaper[0] : null,
     });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/search')
+  async search(
+    @GetUser() user: AuthenticatedUser,
+    @Query() query: { value: string },
+  ) {
+    return this.profileService.search(query);
   }
 }

@@ -33,6 +33,9 @@ export class Profile extends AbstractEntity {
 
   @Column({ nullable: false })
   userId: number;
-  @OneToOne(() => User, (user) => user.profile, { nullable: false })
+  @OneToOne(() => User, (user) => user.profile, {
+    nullable: false,
+    onDelete: 'SET NULL',
+  })
   user: User;
 }

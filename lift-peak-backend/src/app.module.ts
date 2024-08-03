@@ -8,6 +8,7 @@ import { HttpRequestLogger } from './core/loggers/http-request.logger';
 import { AuthModule } from './modules/auth/auth.module';
 import { ExerciseModule } from './modules/exercise/exercise.module';
 import { FileModule } from './modules/file/file.module';
+import { GroupModule } from './modules/group/group.module';
 import { MediaModule } from './modules/media/media.module';
 import { RoleModule } from './modules/role/role.module';
 import { TargetModule } from './modules/target/target.module';
@@ -33,6 +34,7 @@ import { WorkoutModule } from './modules/workout/workout.module';
     ExerciseModule,
     TargetModule,
     WorkoutLogModule,
+    GroupModule,
   ],
   controllers: [],
   providers: [],

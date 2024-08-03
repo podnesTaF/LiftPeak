@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { FileService } from 'src/modules/file/file.service';
 import { FilePrefix } from 'src/shared/enums/filePrefix';
@@ -24,6 +28,15 @@ export class ProfileService {
     dto: ProfileWithImages,
   ): Promise<Profile> {
     const { avatar, wallpaper, ...profileData } = dto;
+
+    const profileExists = await this.profileRepository.exists({
+      where: { userId: user.id },
+    });
+
+    if (profileExists) {
+      throw new ForbiddenException('Profile already exists');
+    }
+
     const profile = await this.profileRepository.save({
       ...profileData,
       userId: user.id,
@@ -102,5 +115,20 @@ export class ProfileService {
     profile.gender = dto.gender ?? profile.gender;
 
     return this.profileRepository.save(profile);
+  }
+
+  async search({ value }: { value: string }): Promise<Profile[]> {
+    if (!value) {
+      return [];
+    }
+
+    return await this.profileRepository
+      .createQueryBuilder('profile')
+      .leftJoinAndSelect('profile.user', 'user')
+      .distinct(true)
+      .where('profile.firstName LIKE :value', { value: `%${value}%` })
+      .orWhere('profile.lastName LIKE :value', { value: `%${value}%` })
+      .orWhere('user.username LIKE :value', { value: `%${value}%` })
+      .getMany();
   }
 }

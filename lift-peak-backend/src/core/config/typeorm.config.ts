@@ -3,6 +3,8 @@ import { config as evnconfig } from 'dotenv';
 import { ExerciseMedia } from 'src/modules/exercise/entity/exercise-media.entity';
 import { Exercise } from 'src/modules/exercise/entity/exercise.entity';
 import { Instruction } from 'src/modules/exercise/entity/instruction.entity';
+import { GroupMember } from 'src/modules/group/entities/group-member.entity';
+import { Group } from 'src/modules/group/entities/group.entity';
 import { Media } from 'src/modules/media/entity/media.entity';
 import { Role } from 'src/modules/role/entities/role.entity';
 import { Target } from 'src/modules/target/entities/target.entity';
@@ -41,6 +43,8 @@ export const config: TypeOrmModuleOptions = {
     Instruction,
     Target,
     UserFollower,
+    Group,
+    GroupMember,
   ],
   synchronize: true,
 };

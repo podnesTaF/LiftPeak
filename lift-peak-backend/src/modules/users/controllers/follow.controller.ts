@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
@@ -28,7 +29,10 @@ export class FollowController {
 
   @Get('/me/followings')
   @UseGuards(JwtAuthGuard)
-  getFollowings(@GetUser() user: AuthenticatedUser) {
-    return this.userFollowerService.getFollowings(user.id);
+  getFollowings(
+    @GetUser() user: AuthenticatedUser,
+    @Query() query?: { idOnly?: boolean },
+  ) {
+    return this.userFollowerService.getFollowings(user.id, query);
   }
 }
