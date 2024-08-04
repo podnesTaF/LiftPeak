@@ -1,6 +1,7 @@
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 import { Workout } from '../../workout/entities/workout.entity';
+import { ExerciseLog } from './exercise-log.entity';
 
 @Entity()
 export class WorkoutLog extends AbstractEntity {
@@ -17,10 +18,10 @@ export class WorkoutLog extends AbstractEntity {
     nullable: false,
   })
   baseWorkoutId: number;
-  @ManyToOne(() => Workout, (workout) => workout.workoutLogs, {
+  @OneToOne(() => Workout, (workout) => workout.workoutLog, {
     nullable: false,
   })
-  baseWorkout: Workout;
+  workout: Workout;
 
   @Column({
     default: 0,
@@ -31,4 +32,7 @@ export class WorkoutLog extends AbstractEntity {
     default: 0,
   })
   totalDistanceInM: number;
+
+  @OneToMany(() => ExerciseLog, (exerciseLog) => exerciseLog.workoutLogId)
+  exerciseLogs: ExerciseLog[];
 }

@@ -43,6 +43,9 @@ export class User extends AbstractEntity {
   @ManyToMany(() => Workout, (workout) => workout.routineOfUsers)
   routines: Workout[];
 
+  @OneToMany(() => Workout, (workout) => workout.user)
+  workouts: Workout[];
+
   @OneToMany(() => WorkoutLike, (workoutLike) => workoutLike.user)
   workoutReactions: WorkoutLike[];
 

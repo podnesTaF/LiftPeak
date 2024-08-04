@@ -1,6 +1,13 @@
 import { User } from 'src/modules/users/entities/user.entity';
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
-import { Column, Entity, ManyToMany, ManyToOne, OneToMany } from 'typeorm';
+import {
+  Column,
+  Entity,
+  ManyToMany,
+  ManyToOne,
+  OneToMany,
+  OneToOne,
+} from 'typeorm';
 import { WorkoutLog } from '../../workout-log/entities/workout-log.entity';
 import { RoutineSave } from './routine-save.entity';
 import { WorkoutComment } from './workout-comment.entity';
@@ -20,6 +27,12 @@ export class Workout extends AbstractEntity {
 
   @Column({ nullable: true })
   routineId: number;
+
+  @Column()
+  userId: number;
+
+  @ManyToOne(() => User, (user) => user.workouts, { eager: true })
+  user: User;
 
   @OneToMany(() => WorkoutMedia, (media) => media.workout, { nullable: true })
   mediaContents: WorkoutMedia[];
@@ -41,6 +54,7 @@ export class Workout extends AbstractEntity {
 
   @OneToMany(() => RoutineSave, (save) => save.workout)
   saves: RoutineSave[];
-  @OneToMany(() => WorkoutLog, (log) => log.baseWorkout)
-  workoutLogs: WorkoutLog[];
+
+  @OneToOne(() => WorkoutLog, (log) => log.workout)
+  workoutLog: WorkoutLog;
 }

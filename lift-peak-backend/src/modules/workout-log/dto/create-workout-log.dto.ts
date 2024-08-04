@@ -1,21 +1,20 @@
 import { IsDateString, IsNumber, IsOptional } from 'class-validator';
 
-export class CreateLoggerDto {
+export class CreateWorkoutLogDto {
+  @IsNumber()
+  workoutId: number;
+
   @IsNumber()
   durationInS: number;
 
+  @IsOptional()
   @IsDateString()
-  startTime: Date;
+  startTime: string;
 
   @IsNumber()
-  @IsOptional()
-  baseWorkoutId: number;
-
-  @IsNumber()
-  @IsOptional()
   totalVolume: number;
 
-  @IsNumber()
   @IsOptional()
+  @IsNumber()
   totalDistanceInM: number;
 }

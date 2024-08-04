@@ -1,3 +1,4 @@
+import { ExerciseLog } from 'src/modules/workout-log/entities/exercise-log.entity';
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { ExerciseMedia } from './exercise-media.entity';
@@ -62,4 +63,7 @@ export class Exercise extends AbstractEntity {
 
   @OneToMany(() => ExerciseTarget, (et) => et.exercise)
   exerciseTargets: ExerciseTarget[];
+
+  @OneToMany(() => ExerciseLog, (el) => el.exercise)
+  exerciseLogs: ExerciseLog[];
 }
