@@ -1,6 +1,7 @@
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
 import { Column, Entity, OneToMany } from 'typeorm';
 import { ExerciseMedia } from './exercise-media.entity';
+import { ExerciseTarget } from './exercise-target.entity';
 import { Instruction } from './instruction.entity';
 
 export enum ExerciseType {
@@ -58,4 +59,7 @@ export class Exercise extends AbstractEntity {
 
   @OneToMany(() => Instruction, (i) => i.exercise)
   instructions: Instruction[];
+
+  @OneToMany(() => ExerciseTarget, (et) => et.exercise)
+  exerciseTargets: ExerciseTarget[];
 }

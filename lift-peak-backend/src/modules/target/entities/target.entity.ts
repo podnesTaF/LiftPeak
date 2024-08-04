@@ -1,3 +1,4 @@
+import { ExerciseTarget } from 'src/modules/exercise/entity/exercise-target.entity';
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 
@@ -17,4 +18,7 @@ export class Target extends AbstractEntity {
 
   @ManyToOne(() => Target, (target) => target.muscles)
   parent: Target;
+
+  @OneToMany(() => ExerciseTarget, (et) => et.target)
+  exerciseTargets: ExerciseTarget[];
 }

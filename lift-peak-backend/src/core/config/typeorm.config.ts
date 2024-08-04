@@ -1,6 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { config as evnconfig } from 'dotenv';
 import { ExerciseMedia } from 'src/modules/exercise/entity/exercise-media.entity';
+import { ExerciseTarget } from 'src/modules/exercise/entity/exercise-target.entity';
 import { Exercise } from 'src/modules/exercise/entity/exercise.entity';
 import { Instruction } from 'src/modules/exercise/entity/instruction.entity';
 import { GroupMember } from 'src/modules/group/entities/group-member.entity';
@@ -44,6 +45,7 @@ export const config: TypeOrmModuleOptions = {
     Target,
     UserFollower,
     Group,
+    ExerciseTarget,
     GroupMember,
   ],
   synchronize: true,
