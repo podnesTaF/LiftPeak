@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { AuthenticatedUser } from '../users/decorators/user.decorator';
-import { Workout } from '../workout/entities/workout.entity';
-import { CreateWorkoutLogDto } from './dto/create-workout-log.dto';
-import { WorkoutLog } from './entities/workout-log.entity';
+import { AuthenticatedUser } from '../../users/decorators/user.decorator';
+import { Workout } from '../../workout/entities/workout.entity';
+import { CreateWorkoutLogDto } from '../dto/create-workout-log.dto';
+import { WorkoutLog } from '../entities/workout-log.entity';
 
 @Injectable()
 export class WorkoutLogService {
