@@ -1,8 +1,9 @@
 import { IsEnum, IsNumber, IsOptional } from 'class-validator';
 import { SetType } from '../entities/set.entity';
 
-export class CreateSetDro {
+export class CreateSetDto {
   @IsNumber()
+  @IsOptional()
   order: number;
   @IsEnum(SetType)
   type: SetType;

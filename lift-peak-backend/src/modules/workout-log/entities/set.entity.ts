@@ -1,5 +1,6 @@
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
+import { ExerciseLog } from './exercise-log.entity';
 
 export enum SetType {
   warmup = 'warmup',
@@ -16,6 +17,8 @@ export class Set extends AbstractEntity {
 
   @Column()
   exerciseLogId: number;
+  @ManyToOne(() => ExerciseLog, (exerciseLog) => exerciseLog.sets)
+  exerciseLog: ExerciseLog;
 
   @Column({
     nullable: true,

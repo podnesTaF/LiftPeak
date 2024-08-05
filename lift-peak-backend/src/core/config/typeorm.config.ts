@@ -13,6 +13,7 @@ import { Profile } from 'src/modules/users/entities/profile.entity';
 import { UserFollower } from 'src/modules/users/entities/user-follower.enitity';
 import { User } from 'src/modules/users/entities/user.entity';
 import { ExerciseLog } from 'src/modules/workout-log/entities/exercise-log.entity';
+import { Set } from 'src/modules/workout-log/entities/set.entity';
 import { WorkoutLog } from 'src/modules/workout-log/entities/workout-log.entity';
 import { RoutineSave } from 'src/modules/workout/entities/routine-save.entity';
 import { WorkoutComment } from 'src/modules/workout/entities/workout-comment.entity';
@@ -50,6 +51,7 @@ export const config: TypeOrmModuleOptions = {
     GroupMember,
     WorkoutLog,
     ExerciseLog,
+    Set,
   ],
   synchronize: true,
 };
