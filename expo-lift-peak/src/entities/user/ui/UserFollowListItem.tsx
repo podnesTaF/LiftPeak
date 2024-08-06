@@ -1,12 +1,13 @@
 import React from 'react';
 import {TouchableOpacity, View, StyleSheet, Text} from "react-native";
-import {followUser, IProfile, IUser, unfollowUser} from "@entities/user";
+import {followUser, unfollowUser} from "@entities/user/api";
 import {useAuthStore} from "@features/auth";
 import Avatar from "@shared/components/Avatar";
 import {Colors} from "@shared/styles";
 import Button from "@shared/components/Button";
 import {Ionicons} from "@expo/vector-icons";
 import {useMutation} from "@tanstack/react-query";
+import {IProfile} from "@entities/user/models";
 
 
 interface UserFollowListItemProps {

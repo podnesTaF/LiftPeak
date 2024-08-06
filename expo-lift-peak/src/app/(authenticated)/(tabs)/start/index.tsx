@@ -1,11 +1,14 @@
 import {StyleSheet, Text, View} from 'react-native';
+import Button from "@shared/components/Button";
+import {Link} from "expo-router";
 
 
 export default function TabTwoScreen() {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab Two</Text>
-      <View style={styles.separator}/>
+      <Link href={"/(authenticated)/(tabs)/start/workout"} asChild>
+        <Button title={"Quick Start"} color={"dark700"} />
+      </Link>
     </View>
   );
 }

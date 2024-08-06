@@ -119,11 +119,11 @@ export default function TabLayout() {
                         </SafeAreaView>
                     )
                 }}/>
-                <Tabs.Screen name={"logout"} options={{
+                <Tabs.Screen name={"start"} options={{
                     title: "Start",
                     tabBarIcon: (props) => <Ionicons size={36} name="add" color={props.color} />
                 }} />
-                <Tabs.Screen name={"two"} options={{
+                <Tabs.Screen name={"logout"} options={{
                     title: "workouts",
                     tabBarIcon: (props) => <TabBarIcon name="barbell" color={props.color} />,
                 }} />
