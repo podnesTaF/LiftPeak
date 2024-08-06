@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { WorkoutLog } from '../workout-log/entities/workout-log.entity';
 import { WorkoutController } from './controllers/workout.controller';
 import { RoutineSave } from './entities/routine-save.entity';
 import { WorkoutComment } from './entities/workout-comment.entity';
@@ -16,6 +17,7 @@ import { WorkoutService } from './services/workout.service';
       WorkoutLike,
       WorkoutMedia,
       RoutineSave,
+      WorkoutLog,
     ]),
   ],
   controllers: [WorkoutController],

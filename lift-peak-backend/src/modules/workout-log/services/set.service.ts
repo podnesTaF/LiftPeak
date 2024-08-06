@@ -5,7 +5,7 @@ import {
   ExerciseMetric,
   ExerciseType,
 } from 'src/modules/exercise/entity/exercise.entity';
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { CreateSetDto } from '../dto/create-set.dto';
 import { ExerciseLog } from '../entities/exercise-log.entity';
 import { Set } from '../entities/set.entity';
@@ -19,8 +19,8 @@ export class SetService {
     private readonly exerciseLogRepository: Repository<ExerciseLog>,
   ) {}
 
-  async createSet(dto: CreateSetDto) {
-    const exerciseLog = await this.exerciseLogRepository.findOne({
+  async createSet(dto: CreateSetDto, manager: EntityManager): Promise<Set> {
+    const exerciseLog = await manager.findOne(ExerciseLog, {
       where: { id: dto.exerciseLogId },
       relations: ['sets', 'exercise'],
     });
@@ -30,17 +30,20 @@ export class SetService {
     }
 
     const set = new Set();
-
     set.order = dto.order || exerciseLog.sets.length + 1;
     set.previousSet =
-      (await this.getPreviousSet(exerciseLog.exercise.id, set.order)) || null;
-    set.restInS = set.restInS || 0;
+      (await this.getPreviousSet(
+        exerciseLog.exercise.id,
+        set.order,
+        manager,
+      )) || null;
+    set.restInS = dto.restInS || 0;
     set.type = dto.type;
     set.exerciseLogId = dto.exerciseLogId;
 
     this.defineNecessaryMetrics(set, dto, exerciseLog.exercise);
 
-    return await this.setRepository.save(set);
+    return await manager.save(set);
   }
 
   defineNecessaryMetrics(set: Set, dto: CreateSetDto, exercise: Exercise) {
@@ -75,11 +78,11 @@ export class SetService {
     }
   }
 
-  getPreviousSet(exerciseId: number, order: number) {
-    return this.setRepository.findOne({
+  getPreviousSet(exerciseId: number, order: number, manager: EntityManager) {
+    return manager.findOne(Set, {
       where: {
         exerciseLog: { exercise: { id: exerciseId } },
-        order: order - 1,
+        order: order,
       },
     });
   }

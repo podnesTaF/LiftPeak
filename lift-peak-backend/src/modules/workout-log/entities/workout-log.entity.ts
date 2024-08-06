@@ -1,16 +1,19 @@
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
-import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, OneToMany, OneToOne } from 'typeorm';
 import { Workout } from '../../workout/entities/workout.entity';
 import { ExerciseLog } from './exercise-log.entity';
 
 @Entity()
 export class WorkoutLog extends AbstractEntity {
-  @Column()
+  @Column({
+    nullable: true,
+  })
   durationInS: number;
 
   @Column({
     type: 'timestamp',
     default: () => 'CURRENT_TIMESTAMP',
+    nullable: true,
   })
   startTime: Date;
 
@@ -20,6 +23,9 @@ export class WorkoutLog extends AbstractEntity {
   baseWorkoutId: number;
   @OneToOne(() => Workout, (workout) => workout.workoutLog, {
     nullable: false,
+  })
+  @JoinColumn({
+    name: 'baseWorkoutId',
   })
   workout: Workout;
 
@@ -33,6 +39,6 @@ export class WorkoutLog extends AbstractEntity {
   })
   totalDistanceInM: number;
 
-  @OneToMany(() => ExerciseLog, (exerciseLog) => exerciseLog.workoutLogId)
+  @OneToMany(() => ExerciseLog, (exerciseLog) => exerciseLog.workoutLog)
   exerciseLogs: ExerciseLog[];
 }

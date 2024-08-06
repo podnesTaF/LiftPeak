@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { Workout } from '../workout/entities/workout.entity';
+import { ExerciseLogController } from './controllers/exercise-log.controller';
 import { WorkoutLogController } from './controllers/workout-log.controller';
 import { ExerciseLog } from './entities/exercise-log.entity';
 import { Set } from './entities/set.entity';
@@ -11,7 +12,7 @@ import { WorkoutLogService } from './services/workout-log.service';
 
 @Module({
   imports: [TypeOrmModule.forFeature([WorkoutLog, Workout, ExerciseLog, Set])],
-  controllers: [WorkoutLogController],
+  controllers: [WorkoutLogController, ExerciseLogController],
   providers: [WorkoutLogService, ExerciseLogService, SetService],
 })
 export class WorkoutLogModule {}

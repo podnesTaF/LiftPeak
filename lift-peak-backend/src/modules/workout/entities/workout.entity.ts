@@ -3,6 +3,7 @@ import { AbstractEntity } from 'src/shared/entities/abstract.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToMany,
   ManyToOne,
   OneToMany,
@@ -55,6 +56,10 @@ export class Workout extends AbstractEntity {
   @OneToMany(() => RoutineSave, (save) => save.workout)
   saves: RoutineSave[];
 
-  @OneToOne(() => WorkoutLog, (log) => log.workout)
+  @Column({ nullable: true })
+  workoutLogId: number;
+
+  @OneToOne(() => WorkoutLog, (log) => log.workout, { nullable: true })
+  @JoinColumn()
   workoutLog: WorkoutLog;
 }
