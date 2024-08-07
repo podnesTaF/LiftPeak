@@ -6,11 +6,14 @@ export interface ExerciseStoreState {
     isLoading: boolean;
     error: string | null;
 
-    addExerciseLog: (exerciseLog: IExerciseLog) => void;
+    addExerciseLog: (exerciseLog: Omit<IExerciseLog, "id">) => void;
     updateExerciseLog: (exerciseLog: IExerciseLog) => void;
     removeExerciseLog: (exerciseLogId: number) => void;
-    addSet: (exerciseId: number,workoutSet: ISet) => void;
-    updateSet: (exerciseId: number, workoutSet: ISet) => void;
-    removeSet: (exerciseId: number, setId: number) => void;
+    addSet: (exerciseId: number | string,workoutSet: Omit<ISet, "id">) => void;
+    updateSet: (exerciseId: number | string, workoutSet: ISet) => void;
+    removeSet: (exerciseId: number | string, setId: number) => void;
     clearExercises: () => void;
+    getExerciseSetsStats: (exerciseLogId: number | string) => {totalSets: number, setsDone: number};
+    getExerciseById: (exerciseId: number | string) => IExerciseLog | undefined;
+    getOrder: () => number;
 }

@@ -1,4 +1,4 @@
-import {StyleSheet, Text, View} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 import Button from "@shared/components/Button";
 import {Link} from "expo-router";
 

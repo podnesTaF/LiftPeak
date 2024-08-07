@@ -14,6 +14,8 @@ export interface IExercise {
     exerciseTargets: IExerciseTarget[];
     exerciseLogs: IExerciseLog[];
 
+    targetGroup?: string[];
+
     createdAt: string;
     updatedAt: string;
 }

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {forwardRef} from 'react';
 import {TouchableOpacity, StyleSheet, Text} from "react-native";
 import {Colors} from "@shared/styles";
 import {getContrastColor} from "@shared/utils";
@@ -12,7 +12,7 @@ interface ButtonProps {
     children?: React.ReactNode;
 }
 
-const Button = ({color, children, title, onPress, fullWidth, disabled}: ButtonProps) => {
+const Button = forwardRef<TouchableOpacity, ButtonProps>(({color, children, title, onPress, fullWidth, disabled}, ref) => {
     const backgroundColor = disabled ? Colors.dark300 : Colors[color];
     const textColor = getContrastColor(backgroundColor);
 
@@ -30,7 +30,7 @@ const Button = ({color, children, title, onPress, fullWidth, disabled}: ButtonPr
             </Text>
         </TouchableOpacity>
     );
-};
+});
 
 const styles = StyleSheet.create({
     buttonContainer: {

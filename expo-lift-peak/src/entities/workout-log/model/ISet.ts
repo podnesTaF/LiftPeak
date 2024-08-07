@@ -4,7 +4,7 @@ export interface ISet {
     id: number;
     order: number;
     type: string;
-    exerciseLogId: number;
+    exerciseLogId: number | string;
     exerciseLog?: IExerciseLog;
 
     distanceInM?: number;
@@ -15,6 +15,8 @@ export interface ISet {
     previousSet?: ISet;
 
     restInS?: number;
+
+    completed?: boolean;
 
     createdAt: string;
     updatedAt: string;

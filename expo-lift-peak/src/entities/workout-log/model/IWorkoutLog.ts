@@ -1,10 +1,10 @@
 import {IExerciseLog} from "./IExerciseLog";
 
 export interface IWorkoutLog {
-    id: number;
-    durationInS: number;
+    id: number | string;
+    durationInS?: number;
     startTime: string;
-    baseWorkoutId: number;
+    baseWorkoutId: number | string;
     totalVolume: number;
     totalDistanceInM: number;
     exerciseLogs?: IExerciseLog[];

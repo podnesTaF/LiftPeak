@@ -20,45 +20,11 @@ interface InputFieldProps {
     value: string;
     onChange: (text: string) => void;
     onBlur?: () => void;
+    keyboardType?: TextInputProps["keyboardType"];
 }
 
-const InputField = ({ label, placeholder, type, value, onBlur, onChange }: InputFieldProps) => {
-    const [isFocused, setIsFocused] = useState(false);
-    const cancelAnimation = useSharedValue(0);
-    const inputRef = useRef<TextInput>(null);
+const InputField = ({ label, placeholder, type, value, onBlur, onChange, keyboardType}: InputFieldProps) => {
 
-
-    const cancelWidth = useSharedValue(0);
-
-    const animatedCancelStyle = useAnimatedStyle(() => {
-        return {
-            width: withTiming(cancelWidth.value, { duration: 100 }),
-            opacity: withTiming(cancelWidth.value > 0 ? 1 : 0, { duration: 200 }),
-        };
-    });
-
-    const handleFocus = () => {
-        setIsFocused(true);
-        cancelWidth.value = 80;
-    };
-
-
-    const handleBlur = () => {
-        setIsFocused(false);
-        cancelWidth.value = 0;
-        if (onBlur) onBlur();
-    };
-
-    const handleClear = () => {
-        onChange('');
-    };
-
-    const handleCancel = () => {
-        if (inputRef.current) {
-            inputRef.current.blur(); // Call blur() on the inputRef to remove focus
-        }
-        handleBlur();
-    };
 
     return (
         <View style={styles.inputContainer}>
@@ -68,19 +34,13 @@ const InputField = ({ label, placeholder, type, value, onBlur, onChange }: Input
                        textContentType={type}
                        autoCapitalize="none"
                        onChangeText={onChange}
-                       onFocus={handleFocus}
-                       onBlur={handleBlur}
+                       keyboardType={keyboardType}
+                       onBlur={onBlur}
                        value={value}
-                       ref={inputRef}
                        style={styles.input}
                        secureTextEntry={type === "password"}
                        placeholder={placeholder}
                    />
-                <Animated.View style={[styles.cancelButtonContainer, animatedCancelStyle]}>
-                    <TouchableOpacity onPress={handleCancel}>
-                        <Text style={styles.cancelButtonText}>Cancel</Text>
-                    </TouchableOpacity>
-                </Animated.View>
             </View>
         </View>
     );
@@ -89,7 +49,7 @@ const styles = StyleSheet.create({
     inputContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        flex: 1,
+        width: 120,
         paddingVertical: 12
     },
     inputWrapper: {

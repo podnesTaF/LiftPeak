@@ -5,10 +5,10 @@ const Layout = () => {
     return (
         <Stack>
             <Stack.Screen name={"index"} options={{
-                title: "Start Workout"
+                title: "Start Index"
             }} />
             <Stack.Screen name={"workout"} options={{
-                title: "Workout Page"
+                title: "Index Page"
             }} />
         </Stack>
     );

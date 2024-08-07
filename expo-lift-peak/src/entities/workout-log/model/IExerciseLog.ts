@@ -3,8 +3,8 @@ import {ISet} from "@entities/workout-log/model/ISet";
 import {IExercise} from "@entities/exercise";
 
 export interface IExerciseLog {
-    id: number;
-    workoutLogId: number;
+    id: number | string;
+    workoutLogId?: number | string;
     workoutLog?: IWorkoutLog;
     exerciseId: number;
     exercise?: IExercise;

@@ -2,7 +2,7 @@ import {IUser} from "@entities/user";
 import {IWorkoutLog} from "@entities/workout-log";
 
 export interface IWorkout {
-    id: number;
+    id: number | string;
     title: string;
     description?: string;
     isRoutine?: boolean;
