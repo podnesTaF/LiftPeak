@@ -156,4 +156,54 @@ export class ExerciseService {
       await queryRunner.release();
     }
   }
+
+  async getFullExercise(exerciseId: number) {
+    return await this.exerciseRepository.findOne({
+      where: { id: exerciseId },
+      relations: [
+        'instructions',
+        'exerciseTargets',
+        'exerciseTargets.target',
+        'exerciseLogs',
+      ],
+    });
+  }
+
+  async searchExercises(
+    value?: string,
+  ): Promise<(Partial<Exercise> & { targetGroup: string[] })[]> {
+    const query = this.exerciseRepository
+      .createQueryBuilder('exercise')
+      .leftJoin('exercise.exerciseTargets', 'exerciseTargets')
+      .leftJoin('exerciseTargets.target', 'target')
+      .leftJoin('target.muscles', 'muscles')
+      .select([
+        'exercise.id',
+        'exercise.name',
+        'target.name',
+        'muscles.name',
+        'exercise.type',
+        'exercise.equipment',
+        'exercise.previewUrl',
+        'exerciseTargets.priority',
+      ]);
+
+    if (value) {
+      query
+        .where('exercise.name LIKE :value', { value: `%${value}%` })
+        .orWhere('target.name LIKE :value', { value: `%${value}%` })
+        .orWhere('muscles.name LIKE :value', { value: `%${value}%` });
+    }
+
+    const exercises = await query.getMany();
+
+    return exercises.map((exercise) => {
+      const targetGroup = exercise.exerciseTargets.map((et) => et.target.name);
+      delete exercise.exerciseTargets;
+      return {
+        ...exercise,
+        targetGroup,
+      };
+    });
+  }
 }

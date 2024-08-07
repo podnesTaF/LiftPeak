@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   Post,
+  Query,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -15,6 +17,11 @@ import { ExerciseService } from '../services/exercise.service';
 @Controller('exercises')
 export class ExerciseController {
   constructor(private readonly exerciseService: ExerciseService) {}
+
+  @Get('search')
+  async searchExercises(@Query() query?: { value?: string }) {
+    return this.exerciseService.searchExercises(query.value);
+  }
 
   @Post()
   @UseGuards(JwtAuthGuard)
@@ -42,5 +49,10 @@ export class ExerciseController {
     },
   ) {
     return this.exerciseService.addMedia(id, files);
+  }
+
+  @Get(':id')
+  async getExercise(@Param('id') id: number) {
+    return this.exerciseService.getFullExercise(id);
   }
 }
