@@ -43,7 +43,7 @@ const ExerciseLog = () => {
                 {exerciseLog.exercise?.name}
             </Text>
             {exerciseLog!.sets!.map(set => (
-                <ExerciseSetRow set={set} />
+                <ExerciseSetRow key={set.id} set={set} />
             ))}
             <Button onPress={handleAddSet} title={"Add Set"} color={"white"}>
                 <Ionicons name={"add"} size={24} color={Colors.dark700} />
