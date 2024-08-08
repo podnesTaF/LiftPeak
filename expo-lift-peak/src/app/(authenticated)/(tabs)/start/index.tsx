@@ -1,9 +1,22 @@
 import {StyleSheet, View} from 'react-native';
 import Button from "@shared/components/Button";
-import {Link} from "expo-router";
+import {Link, useRouter} from "expo-router";
+import {useEffect, useLayoutEffect} from "react";
+import {useWorkoutStore} from "@features/workout-logger";
 
 
 export default function TabTwoScreen() {
+  const router = useRouter();
+  const {workout} = useWorkoutStore();
+
+  useEffect(() => {
+    if (workout) {
+      router.replace({
+        pathname: "/(authenticated)/(tabs)/start/workout",
+      });
+    }
+  }, [workout, router]);
+
   return (
     <View style={styles.container}>
       <Link href={"/(authenticated)/(tabs)/start/workout"} asChild>

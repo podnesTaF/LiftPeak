@@ -23,7 +23,7 @@ export default function Followings() {
 
   return (
       <>
-        <Animated.ScrollView  onScroll={scrollHandler}
+        <Animated.ScrollView onScroll={scrollHandler}
                               scrollEventThrottle={16} style={defaultStyles.container}>
           <FollowingCircles  />
           <View style={{height: 1000}}>

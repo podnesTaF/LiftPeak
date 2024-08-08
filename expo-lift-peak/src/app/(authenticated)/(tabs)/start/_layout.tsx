@@ -8,6 +8,7 @@ const Layout = () => {
                 title: "Start Index"
             }} />
             <Stack.Screen name={"workout"} options={{
+                headerShown: false,
                 title: "Index Page"
             }} />
         </Stack>

@@ -5,6 +5,8 @@ import {createJSONStorage, persist} from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import 'react-native-get-random-values'
 import { v4 as uuidv4 } from 'uuid';
+
+
 export const useExerciseStore = create<ExerciseStoreState>()(
     persist(
         (set, get) => ({
@@ -15,7 +17,7 @@ export const useExerciseStore = create<ExerciseStoreState>()(
             updateExerciseLog: (exerciseLog: IExerciseLog) => set({exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseLog.id ? exerciseLog : log)}),
             removeExerciseLog: (exerciseLogId: number) => set({exerciseLogs: get().exerciseLogs.filter(log => log.id !== exerciseLogId)}),
             addSet: (exerciseId: number | string, workoutSet: Omit<ISet, "id">) => set({
-                exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseId ? {...log, sets: [...log!.sets, {...workoutSet, id: uuidv4()}]} : log)
+                exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseId ? {...log, sets: [...log!.sets as any, {...workoutSet, id: uuidv4()}]} : log)
             }),
             updateSet: (exerciseId: number | string, workoutSet: ISet) => set({
                 exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseId ? {

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Image, KeyboardAvoidingView, StyleSheet, Text, View} from "react-native";
+import {Image, KeyboardAvoidingView, ScrollView, StyleSheet, Text, View} from "react-native";
 import {useLocalSearchParams} from "expo-router";
 import {useExerciseStore} from "@features/workout-logger";
 import {Ionicons} from "@expo/vector-icons";
@@ -33,7 +33,7 @@ const ExerciseLog = () => {
     }
 
     return (
-        <KeyboardAvoidingView style={defaultStyles.container}>
+        <ScrollView keyboardDismissMode={"on-drag"} style={defaultStyles.container}>
             {exerciseLog.exercise?.previewUrl ? (
                 <Image source={{uri: exerciseLog?.exercise.previewUrl}} style={{width: 150, height: 150}} />
             ) : (
@@ -48,7 +48,7 @@ const ExerciseLog = () => {
             <Button onPress={handleAddSet} title={"Add Set"} color={"white"}>
                 <Ionicons name={"add"} size={24} color={Colors.dark700} />
             </Button>
-        </KeyboardAvoidingView>
+        </ScrollView>
     );
 };
 
