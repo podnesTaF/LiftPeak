@@ -125,12 +125,11 @@ const Index = () => {
                            )}
                        </TouchableOpacity>
                    </View>
-
                 </Animated.View>
                 <Animated.ScrollView ref={scrollRef} contentContainerStyle={{justifyContent: "center", alignItems: "center", marginTop: 60, paddingBottom: 80, gap:20, width: "100%", paddingVertical: 20}}>
-                    <View style={{width: "100%"}}>
-                        {exerciseLogs.map(exerciseLog => (
-                            <ExerciseItem onPress={openExerciseLog} key={exerciseLog.id} exerciseLog={exerciseLog}/>
+                    <View>
+                        {exerciseLogs.map((exerciseLog, i) => (
+                            <ExerciseItem onPress={openExerciseLog} key={exerciseLog.id} exerciseLog={exerciseLog} index={i}/>
                         ))}
                     </View>
                     <Link href={"/(authenticated)/(tabs)/start/workout/exercises"} asChild>
