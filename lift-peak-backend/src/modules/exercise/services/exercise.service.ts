@@ -186,6 +186,7 @@ export class ExerciseService {
         'exercise.equipment',
         'exercise.previewUrl',
         'exerciseTargets.priority',
+        'exercise.metric',
       ]);
 
     if (value) {

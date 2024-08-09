@@ -40,7 +40,24 @@ export const useExerciseStore = create<ExerciseStoreState>()(
                 };
             },
             getExerciseById: exerciseId => get().exerciseLogs.find(log => log.id === exerciseId),
-            getOrder: () => get().exerciseLogs.length
+            getOrder: () => get().exerciseLogs.length,
+            reorder: (from, to) => {
+                set((state) => {
+                    const updatedLogs = [...state.exerciseLogs];
+
+                    const [movedItem] = updatedLogs.splice(from, 1);
+
+                    updatedLogs.splice(to, 0, movedItem);
+
+                    const reorderedLogs = updatedLogs.map((log, index) => ({
+                        ...log,
+                        order: index + 1,
+                    }));
+
+                    return { exerciseLogs: reorderedLogs };
+                });
+            }
+
         }),
         {
             name: "exercise-storage",

@@ -8,6 +8,7 @@ import Button from "@shared/components/Button";
 import {white} from "colorette";
 import InputField from "@shared/components/form/InputField";
 import ExerciseSetRow from "@features/exercise-logger/ui/ExerciseSetRow";
+import TableHead from "@features/exercise-logger/ui/ExerciseTableHead";
 
 const ExerciseLog = () => {
     const { id } = useLocalSearchParams() as {id: string};
@@ -42,9 +43,12 @@ const ExerciseLog = () => {
             <Text style={defaultStyles.header}>
                 {exerciseLog.exercise?.name}
             </Text>
-            {exerciseLog!.sets!.map(set => (
-                <ExerciseSetRow set={set} />
-            ))}
+            <View style={styles.tableContainer}>
+                <TableHead metric={exerciseLog.exercise?.metric} />
+                {exerciseLog!.sets!.map(set => (
+                    <ExerciseSetRow key={set.id} set={set} metric={exerciseLog.exercise?.metric} />
+                ))}
+            </View>
             <Button onPress={handleAddSet} title={"Add Set"} color={"white"}>
                 <Ionicons name={"add"} size={24} color={Colors.dark700} />
             </Button>
@@ -53,6 +57,9 @@ const ExerciseLog = () => {
 };
 
 const styles = StyleSheet.create({
+    tableContainer: {
+        marginTop: 16,
+    },
     text: {
         color: "white",
         fontSize: 16,

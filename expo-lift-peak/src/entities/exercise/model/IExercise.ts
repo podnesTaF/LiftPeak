@@ -47,6 +47,6 @@ export enum ExerciseEquipment {
 
 export enum ExerciseMetric {
     time = 'time',
-    weight = 'weight',
+    distance = 'distance',
     reps = 'reps',
 }

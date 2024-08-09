@@ -10,17 +10,18 @@ import {formatTime} from "@shared/utils";
 import {Ionicons} from "@expo/vector-icons";
 import useTimerInterval from "@features/timer/hooks/useIntervalTimer";
 import Animated, {
-    interpolate,
-    useAnimatedRef,
-    useAnimatedStyle,
-    useScrollViewOffset
+    useSharedValue
 } from 'react-native-reanimated';
+import * as Haptics from 'expo-haptics';
 import {TouchableOpacity} from 'react-native-gesture-handler';
+import DraggableFlatList from "react-native-draggable-flatlist/src/components/DraggableFlatList";
+import {DragEndParams} from "react-native-draggable-flatlist";
+import {IExerciseLog} from "@entities/workout-log";
 
 const Index = () => {
     const {workout, workoutLog, initializeWorkout, clearWorkout} = useWorkoutStore();
     const {user} = useAuthStore()
-    const {exerciseLogs, clearExercises} = useExerciseStore();
+    const {exerciseLogs, clearExercises, reorder} = useExerciseStore();
     const {
         isRunning,
         clearTimer,
@@ -31,10 +32,9 @@ const Index = () => {
         clearBackgroundTaskFlag
     } = useTimerStore();
     const router = useRouter();
-    const scrollRef = useAnimatedRef<Animated.ScrollView>();
-    const scrollHandler = useScrollViewOffset(scrollRef);
+    const scrollY = useSharedValue(0);
 
-    const { snackbarOpacity, clockTitleStyle, headerTitleStyle} = useWorkoutHeaderAnimation(scrollHandler)
+    const { snackbarOpacity, clockTitleStyle, headerTitleStyle} = useWorkoutHeaderAnimation(scrollY)
 
     useTimerInterval();
 
@@ -63,6 +63,10 @@ const Index = () => {
         clearExercises()
         router.replace("/(authenticated)/(tabs)/start");
     };
+
+    const onDragEnd = (params: DragEndParams<IExerciseLog>) => {
+        reorder(params.from, params.to);
+    }
 
 
     return (
@@ -126,16 +130,29 @@ const Index = () => {
                        </TouchableOpacity>
                    </View>
                 </Animated.View>
-                <Animated.ScrollView ref={scrollRef} contentContainerStyle={{justifyContent: "center", alignItems: "center", marginTop: 60, paddingBottom: 80, gap:20, width: "100%", paddingVertical: 20}}>
-                    <View>
-                        {exerciseLogs.map((exerciseLog, i) => (
-                            <ExerciseItem onPress={openExerciseLog} key={exerciseLog.id} exerciseLog={exerciseLog} index={i}/>
-                        ))}
+                <DraggableFlatList
+                    style={{height: "100%"}}
+                    onScrollOffsetChange={(offset) => {
+                        scrollY.value = offset;
+                    }}
+                    data={exerciseLogs.sort((a, b) => a.order - b.order)}
+                    renderItem={({item, drag, isActive, getIndex}) => (
+                        <ExerciseItem onPress={openExerciseLog} key={item.id} item={item} drag={drag} isActive={isActive} getIndex={getIndex} />
+                    )}
+                    keyExtractor={(item) => item.id.toString()}
+                    scrollEventThrottle={16}
+                    ListHeaderComponent={() => <View style={{height: 70}} />}
+                    ListFooterComponent={ () =>  <View style={{marginTop: 20}}>
+                        <Link href={"/(authenticated)/(tabs)/start/workout/exercises"} asChild>
+                            <Button fullWidth title={"Add Exercise"} color={"lime"}/>
+                        </Link>
                     </View>
-                    <Link href={"/(authenticated)/(tabs)/start/workout/exercises"} asChild>
-                        <Button fullWidth title={"Add Exercise"} color={"lime"}/>
-                    </Link>
-                </Animated.ScrollView>
+                    }
+                    onDragEnd={onDragEnd}
+                    onDragBegin={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                    onPlaceholderIndexChange={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
+                    activationDistance={10}
+                />
             </View>
         </>
     );
