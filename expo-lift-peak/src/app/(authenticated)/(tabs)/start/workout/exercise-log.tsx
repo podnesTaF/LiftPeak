@@ -1,8 +1,11 @@
-import { useExerciseStore } from "@features/workout-logger";
+import {useExerciseStore} from "@features/workout-logger";
 import Button from "@shared/components/Button";
-import { Colors, defaultStyles } from "@shared/styles";
-import { useLocalSearchParams } from "expo-router";
-import { Image, ScrollView, StyleSheet, Text, View } from "react-native";
+import {Colors, defaultStyles} from "@shared/styles";
+import {useLocalSearchParams} from "expo-router";
+import {Image, ScrollView, Text} from "react-native";
+import {Ionicons} from "@expo/vector-icons";
+import {ExpandableSetType} from "@features/exercise-logger";
+import {SetType} from "@entities/workout-log";
 
 const ExerciseLog = () => {
   const { id } = useLocalSearchParams() as { id: string };
@@ -27,8 +30,9 @@ const ExerciseLog = () => {
     });
   };
 
+
   return (
-    <ScrollView keyboardDismissMode={"on-drag"} style={defaultStyles.container}>
+    <ScrollView keyboardDismissMode={"on-drag"} style={[defaultStyles.container, {paddingHorizontal: 0}]}>
       {exerciseLog.exercise?.previewUrl ? (
         <Image
           source={{ uri: exerciseLog?.exercise.previewUrl }}
@@ -38,16 +42,8 @@ const ExerciseLog = () => {
         <Ionicons name={"barbell"} size={150} />
       )}
       <Text style={defaultStyles.header}>{exerciseLog.exercise?.name}</Text>
-      <View style={styles.tableContainer}>
-        <TableHead metric={exerciseLog.exercise?.metric} />
-        {exerciseLog!.sets!.map((set) => (
-          <ExerciseSetRow
-            key={set.id}
-            set={set}
-            metric={exerciseLog.exercise?.metric}
-          />
-        ))}
-      </View>
+      <ExpandableSetType exerciseLog={exerciseLog} setType={SetType.warmup} />
+      <ExpandableSetType exerciseLog={exerciseLog} setType={SetType.workout} />
       <Button onPress={handleAddSet} title={"Add Set"} color={"white"}>
         <Ionicons name={"add"} size={24} color={Colors.dark700} />
       </Button>
@@ -55,15 +51,6 @@ const ExerciseLog = () => {
   );
 };
 
-const styles = StyleSheet.create({
-  tableContainer: {
-    marginTop: 16,
-  },
-  text: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "600",
-  },
-});
+
 
 export default ExerciseLog;

@@ -21,3 +21,8 @@ export interface ISet {
     createdAt: string;
     updatedAt: string;
 }
+
+export enum SetType {
+    warmup = 'warmup',
+    workout = 'workout',
+}

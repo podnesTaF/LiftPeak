@@ -21,37 +21,31 @@ interface InputFieldProps {
     onChange: (text: string) => void;
     onBlur?: () => void;
     keyboardType?: TextInputProps["keyboardType"];
+    color?: string;
 }
 
-const InputField = ({ label, placeholder, type, value, onBlur, onChange, keyboardType}: InputFieldProps) => {
+const InputField = ({ label, placeholder, type, value, onBlur, onChange, keyboardType, color}: InputFieldProps) => {
 
 
     return (
         <View style={styles.inputContainer}>
-            <View style={{flexDirection: "row", position: "relative"}}>
-                   <TextInput
-                       placeholderTextColor={Colors.dark300}
-                       textContentType={type}
-                       autoCapitalize="none"
-                       onChangeText={onChange}
-                       keyboardType={keyboardType}
-                       onBlur={onBlur}
-                       value={value}
-                       style={styles.input}
-                       secureTextEntry={type === "password"}
-                       placeholder={placeholder}
-                   />
-            </View>
+                <TextInput
+                    placeholderTextColor={Colors.dark300}
+                    textContentType={type}
+                    autoCapitalize="none"
+                    onChangeText={onChange}
+                    keyboardType={keyboardType}
+                    onBlur={onBlur}
+                    value={value}
+                    style={[styles.input, {backgroundColor: color || Colors.dark500}]}
+                    secureTextEntry={type === "password"}
+                    placeholder={placeholder}
+                />
         </View>
     );
 };
 const styles = StyleSheet.create({
     inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        paddingVertical: 12
-    },
-    inputWrapper: {
         flexDirection: 'row',
         alignItems: 'center',
     },
@@ -60,21 +54,10 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         backgroundColor: Colors.dark500,
         color: Colors.white,
-        paddingVertical: 24,
-        fontSize: 18,
-        paddingHorizontal: 16,
-    },
-    cancelButtonContainer: {
-        justifyContent: 'center',
-        alignItems: "center",
-        overflow: 'hidden',
-        position: 'relative',
-        width: 80
-    },
-    cancelButtonText: {
-        color: Colors.dark300,
+        paddingVertical: 12,
+        paddingHorizontal: 12,
         fontSize: 16,
-        paddingHorizontal: 8,
+        textAlign: 'center',  // Centers the text and placeholder
     },
     label: {
         color: Colors.dark300,

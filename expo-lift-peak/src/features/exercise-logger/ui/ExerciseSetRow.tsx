@@ -6,13 +6,15 @@ import {useExerciseStore} from "@features/workout-logger";
 import {Ionicons} from "@expo/vector-icons";
 import {Colors} from "@shared/styles";
 import {ExerciseMetric} from "@entities/exercise";
+import {Color} from "ansi-fragments/build/fragments/Color";
 
 interface ExerciseSetRowProps {
     set: ISet;
     metric?: ExerciseMetric;
+    index: number
 }
 
-const ExerciseSetRow = ({set, metric = ExerciseMetric.reps}: ExerciseSetRowProps) => {
+export const ExerciseSetRow = ({set, metric = ExerciseMetric.reps, index}: ExerciseSetRowProps) => {
     const {updateSet} = useExerciseStore()
     const [values, setValues] = useState({
         reps: set.reps?.toString() || "0",
@@ -31,31 +33,54 @@ const ExerciseSetRow = ({set, metric = ExerciseMetric.reps}: ExerciseSetRowProps
     };
 
     return (
-        <View key={set.id} style={styles.row}>
-            <Text style={styles.text}>{set.order}</Text>
+        <View key={set.id} style={[styles.row, {backgroundColor: index % 2 === 0 ? Colors.dark500 : Colors.dark900}]}>
+            <View style={{alignItems: "center", width: "8%"}}>
+                <TouchableOpacity onPress={changeComplete}>
+                    {set.completed ? (
+                        <Ionicons name={"checkmark-circle"} size={30} color={set.completed ? Colors.lime : Colors.dark300} />
+                    ) : (
+                        <Text style={{color: 'white'}}>{set.order}</Text>
+                    )}
+                </TouchableOpacity>
+            </View>
             <View style={styles.metricContainer}>
                 {metric === 'reps' && (
                     <>
                         <View style={styles.inputContainer}>
+                           <Text style={[styles.text, {fontSize: 12, color: Colors.dark300}]}>
+                               100kg x 10
+                           </Text>
+                        </View>
+                        <View style={styles.inputContainer}>
                             <InputField
+                                color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                 keyboardType={"numeric"}
                                 value={values.reps}
                                 onChange={(text) => onChangeInput("reps", text)}
+                                placeholder={"reps"}
                             />
                         </View>
                         <View style={styles.inputContainer}>
                             <InputField
+                                color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                 keyboardType={"numeric"}
                                 value={values.weight}
                                 onChange={(text) => onChangeInput("weight", text)}
+                                placeholder={"kg"}
                             />
                         </View>
                     </>
                 )}
-                {metric === "distance" && (
+                {metric === ExerciseMetric.distance && (
                     <>
+                        <View  style={styles.inputContainer}>
+                            <Text style={[styles.text, {fontSize: 14, fontWeight: "600", color: Colors.dark300}]}>
+                                10km in 59:00
+                            </Text>
+                        </View>
                         <View style={styles.inputContainer}>
                             <InputField
+                                color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                 keyboardType={"numeric"}
                                 value={values.distance}
                                 onChange={(text) => onChangeInput("distanceInM", text)}
@@ -63,6 +88,7 @@ const ExerciseSetRow = ({set, metric = ExerciseMetric.reps}: ExerciseSetRowProps
                         </View>
                         <View style={styles.inputContainer}>
                             <InputField
+                                color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                 keyboardType={"numeric"}
                                 value={values.time}
                                 onChange={(text) => onChangeInput("time", text)}
@@ -73,6 +99,7 @@ const ExerciseSetRow = ({set, metric = ExerciseMetric.reps}: ExerciseSetRowProps
                 {metric === 'time' && (
                     <View style={styles.inputContainer}>
                         <InputField
+                            color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                             keyboardType={"numeric"}
                             value={values.time}
                             onChange={(text) => onChangeInput("timeInS", text)}
@@ -80,9 +107,6 @@ const ExerciseSetRow = ({set, metric = ExerciseMetric.reps}: ExerciseSetRowProps
                     </View>
                 )}
             </View>
-            <TouchableOpacity onPress={changeComplete}>
-                <Ionicons name={"checkmark"} size={24} color={set.completed ? Colors.lime : Colors.dark300} />
-            </TouchableOpacity>
         </View>
     );
 };
@@ -93,7 +117,8 @@ const styles = StyleSheet.create({
         gap: 16,
         alignItems: "center",
         justifyContent: "space-between",
-        marginBottom: 8
+        paddingHorizontal: 16,
+        paddingVertical: 8
     },
     text: {
         color: "white",
@@ -104,10 +129,11 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         gap: 12,
-        width: "80%"
+        width: "94%"
     },
     inputContainer: {
-        width: "20%"
+        width: "29%",
+        alignItems: "center"
     }
 });
 export default ExerciseSetRow;
