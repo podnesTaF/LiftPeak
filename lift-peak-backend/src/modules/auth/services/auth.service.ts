@@ -25,9 +25,13 @@ export class AuthService {
 
   async login(user: Partial<User>) {
     const payload = { username: user.username, email: user.email, id: user.id };
+    const expiresAt =
+      Date.now() + +process.env.JWT_EXPIRATION_TIME * 60 * 60 * 1000;
+
     return {
       ...payload,
       token: this.jwtService.sign(payload),
+      expiresAt,
     };
   }
 

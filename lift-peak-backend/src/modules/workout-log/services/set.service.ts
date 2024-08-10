@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Exercise,
+  ExerciseEquipment,
   ExerciseMetric,
   ExerciseType,
 } from 'src/modules/exercise/entity/exercise.entity';
@@ -49,13 +50,15 @@ export class SetService {
   defineNecessaryMetrics(set: Set, dto: CreateSetDto, exercise: Exercise) {
     switch (exercise.type) {
       case ExerciseType.STRENGTH:
-        if (exercise.metric === ExerciseMetric.weight) {
+        if (
+          exercise.metric === ExerciseMetric.reps &&
+          exercise.equipment === ExerciseEquipment.BODYWEIGHT
+        ) {
           set.reps = dto.reps;
-          set.weight = dto.weight;
         } else if (exercise.metric === ExerciseMetric.reps) {
           set.reps = dto.reps;
-        }
-        break;
+          set.weight = dto.weight;
+        } else break;
       case ExerciseType.CARDIO:
         if (exercise.metric === ExerciseMetric.time) {
           set.distanceInM = dto.distanceInM;

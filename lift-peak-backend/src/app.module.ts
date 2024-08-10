@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { resolve } from 'path';
+import { DataSource } from 'typeorm';
 import { config as typeOrmConfig } from './core/config/typeorm.config';
 import { HttpRequestLogger } from './core/loggers/http-request.logger';
 import { AuthModule } from './modules/auth/auth.module';
@@ -37,9 +38,9 @@ import { WorkoutModule } from './modules/workout/workout.module';
     GroupModule,
   ],
   controllers: [],
-  providers: [],
 })
 export class AppModule implements NestModule {
+  constructor(private dataSource: DataSource) {}
   configure(consumer: MiddlewareConsumer): void {
     if (process.env.NODE_ENV !== 'PRODUCTION') {
       consumer.apply(HttpRequestLogger).forRoutes('*');

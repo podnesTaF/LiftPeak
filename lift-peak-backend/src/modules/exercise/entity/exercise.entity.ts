@@ -31,7 +31,7 @@ export enum ExerciseEquipment {
 
 export enum ExerciseMetric {
   time = 'time',
-  weight = 'distance',
+  distance = 'distance',
   reps = 'reps',
 }
 
@@ -55,7 +55,7 @@ export class Exercise extends AbstractEntity {
   @Column()
   equipment: ExerciseEquipment;
 
-  @Column({ default: ExerciseMetric.weight })
+  @Column({ default: ExerciseMetric.reps })
   metric: ExerciseMetric;
 
   @OneToMany(() => Instruction, (i) => i.exercise)
