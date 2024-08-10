@@ -27,4 +27,7 @@ export const Colors = {
   dark100: "#E7E8EB",
   lime: "#DAF185",
   white: "#ffffff",
+  danger: "#D43C52",
+  successLight: "#AED617",
+  success: "#33B175",
 }

@@ -31,6 +31,7 @@ const ExerciseLog = () => {
   };
 
 
+
   return (
     <ScrollView keyboardDismissMode={"on-drag"} style={[defaultStyles.container, {paddingHorizontal: 0}]}>
       {exerciseLog.exercise?.previewUrl ? (

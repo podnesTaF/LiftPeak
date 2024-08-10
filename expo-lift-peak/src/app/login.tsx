@@ -13,7 +13,7 @@ import FormField from "@shared/components/form/FormField";
 import Button from "@shared/components/Button";
 
 async function login(email: string, password: string) {
-    const {data} = await api.post<IUser>('/auth/login', { email, password });
+    const {data} = await api.post<IUser & {expiresAt: number}>('/auth/login', { email, password });
     return data;
 }
 

@@ -25,7 +25,7 @@ import { LocalStrategy } from './strategies/local.strategy';
         return {
           global: true,
           secret: process.env.JWTSECRET,
-          signOptions: { expiresIn: '120h' },
+          signOptions: { expiresIn: `${process.env.JWT_EXPIRATION_TIME}h` },
         };
       },
     }),

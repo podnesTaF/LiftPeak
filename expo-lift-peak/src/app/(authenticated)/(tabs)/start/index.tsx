@@ -1,28 +1,123 @@
-import {StyleSheet, View} from 'react-native';
+import {Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Button from "@shared/components/Button";
-import {Link, useRouter} from "expo-router";
-import {useEffect, useLayoutEffect} from "react";
-import {useWorkoutStore} from "@features/workout-logger";
+import {Link, Stack, useRouter} from "expo-router";
+import React, {useEffect, useLayoutEffect} from "react";
+import {useExerciseStore, useWorkoutStore} from "@features/workout-logger";
+import {Colors, defaultStyles} from "@shared/styles";
+import {useHeaderHeight} from "@react-navigation/elements";
+import {Ionicons} from "@expo/vector-icons";
+import {useQuery} from "@tanstack/react-query";
+import {getRoutineList, RoutineCard} from "@features/workout";
+import {useAuthStore} from "@features/auth";
+import {registerBackgroundTask, useTimerStore} from "@features/timer";
 
 
-export default function TabTwoScreen() {
+
+export default function StartWorkout() {
   const router = useRouter();
-  const {workout} = useWorkoutStore();
+  const headerHeight = useHeaderHeight();
+  const {user} = useAuthStore()
+  const {workout, initializeWorkout, clearWorkout} = useWorkoutStore();
+  const {
+    startTimer,
+      clearTimer
+  } = useTimerStore();
 
-  useEffect(() => {
-    if (workout) {
-      router.replace({
-        pathname: "/(authenticated)/(tabs)/start/workout",
-      });
+  const {
+    clearExercises
+  } = useExerciseStore()
+
+  const {data} = useQuery({
+    queryKey: ['workoutRoutines'],
+    queryFn: getRoutineList,
+    retry: 3,
+    retryDelay: failureCount => Math.min(1000 * 2 ** failureCount, 30000),
+  })
+
+  const startQuickWorkout = () => {
+    if(workout) {
+      Alert.alert("You have a workout in progress", "Starting a new workout will discard the current one.", [
+        {
+          text: "Keep Current",
+          style: "cancel",
+          onPress: () => {
+            router.push("/(authenticated)/(tabs)/start/workout");
+          }
+        },
+        {
+          text: "Create New",
+          style: "destructive",
+          onPress: () => {
+            discardWorkout()
+            startNewWorkout()
+          }
+        }
+      ])
+    } else {
+       startNewWorkout()
     }
-  }, [workout, router]);
+  }
+
+  const startNewWorkout = () => {
+    if(!user) return;
+    initializeWorkout({userId: user.id})
+    registerBackgroundTask();
+    startTimer();
+    router.push("/(authenticated)/(tabs)/start/workout");
+  }
+
+  const discardWorkout = () => {
+    clearTimer();
+    clearWorkout();
+    clearExercises();
+  }
+
 
   return (
-    <View style={styles.container}>
-      <Link href={"/(authenticated)/(tabs)/start/workout"} asChild>
-        <Button title={"Quick Start"} color={"dark700"} />
-      </Link>
-    </View>
+      <>
+        <Stack.Screen options={{
+          title: "Start a workout",
+          headerTransparent: true,
+          headerLargeTitle: true,
+          headerTintColor: "#fff",
+          headerLargeTitleStyle: {
+            color: "#fff",
+            fontSize: 24,
+            fontWeight: "700"
+          },
+          headerStyle: {
+            backgroundColor: Colors.dark900,
+          },
+          headerLargeTitleShadowVisible: false,
+        }} />
+        <ScrollView contentContainerStyle={{paddingTop: headerHeight + 20}} style={[defaultStyles.container, ]}>
+          <View style={styles.subtitleContainer}>
+            <Text style={defaultStyles.secondaryText}>Explore routines and workouts that fit you best!</Text>
+          </View>
+          <View style={styles.buttonContainer}>
+            <Button title={"Quick Start"} onPress={startQuickWorkout} color={"white"}>
+              <Ionicons name={"flash-outline"} size={24} color={Colors.dark700} />
+            </Button>
+            <Button title={"Explore Workouts"} color={"dark500"}>
+              <Ionicons name={"search-outline"} size={24} color={Colors.white} />
+            </Button>
+          </View>
+          <View style={{flexDirection: "row", gap:12, justifyContent: "space-between", alignItems: "center", paddingVertical: 12, width: "100%"}}>
+            <View style={{flexDirection: "row", gap: 10, alignItems: 'center'}}>
+              <Ionicons name={"bookmark-outline"} size={24} color={Colors.white} />
+              <Text style={{color: "white", fontWeight: "600", fontSize: 16}}>2 saved workouts</Text>
+            </View>
+            <Button title={"Add New"} color={"success"}>
+              <Ionicons name={"add"} size={24} color={Colors.white} />
+            </Button>
+          </View>
+          <View style={{gap: 16, marginVertical: 16}}>
+            {data?.map((routine) => (
+                <RoutineCard workout={routine} key={routine.id} />
+            ))}
+          </View>
+        </ScrollView>
+      </>
   );
 }
 
@@ -32,9 +127,22 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  buttonContainer: {
+    paddingVertical: 16,
+    gap: 10,
+    width: "100%"
+  },
+  subtitleContainer: {
+    paddingVertical: 16,
+    borderBottomWidth: StyleSheet.hairlineWidth,
+    borderBottomColor: Colors.dark300,
+  },
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+  },
+  secondaryText: {
+
   },
   separator: {
     marginVertical: 30,
