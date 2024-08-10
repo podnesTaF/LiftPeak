@@ -38,15 +38,6 @@ const Index = () => {
 
     useTimerInterval();
 
-    useEffect(() => {
-        if (!workout || !workoutLog) {
-            initializeWorkout({userId: user!.id})
-            registerBackgroundTask();
-            startTimer();
-        }
-    }, [workout, workoutLog, initializeWorkout, user, clearBackgroundTaskFlag]);
-
-
     const openExerciseLog = (exerciseLogId: number | string) => {
         router.push({
             pathname: "/(authenticated)/(tabs)/start/workout/exercise-log",
@@ -76,7 +67,7 @@ const Index = () => {
                     backgroundColor: Colors.dark700
                 },
                 headerLeft: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => router.back()}>
                         <Ionicons name={"chevron-down"} size={32} color={Colors.dark300}/>
                     </TouchableOpacity>
                 ),

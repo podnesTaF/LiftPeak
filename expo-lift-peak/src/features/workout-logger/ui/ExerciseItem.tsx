@@ -57,7 +57,7 @@ export const ExerciseItem = ({item, onPress, drag, isActive, getIndex}: Exercise
 
     return (
         <ScaleDecorator>
-            <SwipeableRow onDelete={confirmAlert}>
+            <SwipeableRow actionTypes={['delete']} onDelete={confirmAlert}>
                 <Animated.View entering={FadeInUp.delay((getIndex() || 1) * 20)}
                                exiting={FadeOutUp}>
                     <Pressable

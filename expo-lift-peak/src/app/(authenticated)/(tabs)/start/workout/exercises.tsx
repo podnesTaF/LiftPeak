@@ -36,13 +36,13 @@ const Exercises = () => {
     const confirmExercises = async () => {
         exercises?.forEach(exercise => {
             addExerciseLog({
-                    exercise: exercise,
-                    exerciseId: exercise.id,
-                    sets: [],
-                    order: getOrder(),
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                })
+                exercise: exercise,
+                exerciseId: exercise.id,
+                sets: [],
+                order: getOrder(),
+                createdAt: new Date().toISOString(),
+                updatedAt: new Date().toISOString()
+            })
         })
         router.back()
     }

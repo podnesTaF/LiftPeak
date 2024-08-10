@@ -18,4 +18,14 @@ export const defaultStyles = StyleSheet.create({
         fontWeight: "700",
         color: "white",
     },
+    secondaryText: {
+        fontSize: 15,
+        color: Colors.dark300,
+        fontWeight: "500"
+    },
+    smallTitle: {
+        fontSize: 18,
+        fontWeight: "600",
+        color: "white"
+    }
 })

@@ -121,6 +121,7 @@ export default function TabLayout() {
                 }}/>
                 <Tabs.Screen name={"start"} options={{
                     title: "Start",
+                    headerShown: false,
                     tabBarIcon: (props) => <Ionicons size={36} name="add" color={props.color} />
                 }} />
                 <Tabs.Screen name={"logout"} options={{

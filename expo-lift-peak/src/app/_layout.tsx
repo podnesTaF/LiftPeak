@@ -36,7 +36,7 @@ const InitialLayout = () => {
         ...FontAwesome.font,
     });
 
-    const {token} = useAuthStore();
+    const {token,isTokenValid, clearAuth} = useAuthStore();
 
     const router = useRouter();
     const segments = useSegments();
@@ -51,6 +51,16 @@ const InitialLayout = () => {
             SplashScreen.hideAsync();
         }
     }, [loaded]);
+
+    useEffect(() => {
+        if (!loaded) {
+            return;
+        }
+        if (!isTokenValid()) {
+            clearAuth();
+            router.replace("/login");
+        }
+    }, [loaded, token]);
 
     useEffect(() => {
         if (!loaded) {
