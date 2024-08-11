@@ -15,7 +15,7 @@ export const useExerciseStore = create<ExerciseStoreState>()(
             error: null,
             addExerciseLog: (exerciseLog: Omit<IExerciseLog, "id">) => set({exerciseLogs: [...get().exerciseLogs, {...exerciseLog, id: uuidv4()}]}),
             updateExerciseLog: (exerciseLog: IExerciseLog) => set({exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseLog.id ? exerciseLog : log)}),
-            removeExerciseLog: (exerciseLogId: number) => set({exerciseLogs: get().exerciseLogs.filter(log => log.id !== exerciseLogId)}),
+            removeExerciseLog: (exerciseLogId: number | string) => set({exerciseLogs: get().exerciseLogs.filter(log => log.id !== exerciseLogId)}),
             addSet: (exerciseId: number | string, workoutSet: Omit<ISet, "id">) => set({
                 exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseId ? {...log, sets: [...log!.sets as any, {...workoutSet, id: uuidv4()}]} : log)
             }),

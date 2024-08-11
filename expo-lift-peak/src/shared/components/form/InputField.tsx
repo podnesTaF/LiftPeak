@@ -26,7 +26,6 @@ interface InputFieldProps {
 
 const InputField = ({ label, placeholder, type, value, onBlur, onChange, keyboardType, color}: InputFieldProps) => {
 
-
     return (
         <View style={styles.inputContainer}>
                 <TextInput

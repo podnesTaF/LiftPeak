@@ -15,6 +15,7 @@ import {Colors, useColorScheme} from "@shared/styles";
 import {queryClient} from "@shared/api";
 import {AnimatedScrollProvider} from "@shared/components/AnimatedScrollContext";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
+import ToastNotification from "@shared/components/ToastNotification";
 
 export {
     // Catch any errors thrown by the Layout component.
@@ -117,6 +118,7 @@ function RootLayoutNav() {
                 <GestureHandlerRootView style={{ flex: 1 }}>
                         <StatusBar style="light"/>
                         <InitialLayout/>
+                        <ToastNotification />
                 </GestureHandlerRootView>
                 </AnimatedScrollProvider>
             </ThemeProvider>
