@@ -1,5 +1,6 @@
 import {IUser} from "@entities/user";
 import {IWorkoutLog} from "@entities/workout-log";
+import {IWorkoutMedia} from "@entities/workout/model/IWorkoutMedia";
 
 export interface IWorkout {
     id: number | string;
@@ -13,6 +14,7 @@ export interface IWorkout {
     user?: IUser;
     createdAt: string;
     updatedAt: string;
+    mediaContents: IWorkoutMedia[]
 }
 
 export interface ActiveWorkout extends Omit<IWorkout, "id" | "createdAt" | "workoutLogId" | "updatedAt"> {

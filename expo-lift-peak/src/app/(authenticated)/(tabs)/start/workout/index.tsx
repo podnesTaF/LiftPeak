@@ -1,7 +1,13 @@
-import React, {useEffect} from 'react';
-import {Pressable, StyleSheet, Text, View} from "react-native";
+import React, {useEffect, useState} from 'react';
+import {Alert, Pressable, StyleSheet, Text, View} from "react-native";
 import {Colors} from "@shared/styles";
-import {ExerciseItem, useExerciseStore, useWorkoutHeaderAnimation, useWorkoutStore} from "@features/workout-logger";
+import {
+    ExerciseItem,
+    useDiscardWorkout,
+    useExerciseStore,
+    useWorkoutHeaderAnimation,
+    useWorkoutStore
+} from "@features/workout-logger";
 import {useAuthStore} from "@features/auth";
 import Button from "@shared/components/Button";
 import {Link, Stack, useRouter} from "expo-router";
@@ -17,20 +23,20 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import DraggableFlatList from "react-native-draggable-flatlist/src/components/DraggableFlatList";
 import {DragEndParams} from "react-native-draggable-flatlist";
 import {IExerciseLog} from "@entities/workout-log";
+import InputField from "@shared/components/form/InputField";
 
 const Index = () => {
-    const {workout, workoutLog, initializeWorkout, clearWorkout} = useWorkoutStore();
+
     const {user} = useAuthStore()
     const {exerciseLogs, clearExercises, reorder} = useExerciseStore();
     const {
         isRunning,
-        clearTimer,
         pauseTimer,
         elapsedTime,
-        startTimer,
         playTimer,
-        clearBackgroundTaskFlag
     } = useTimerStore();
+    const discardWorkoutFromStore = useDiscardWorkout()
+
     const router = useRouter();
     const scrollY = useSharedValue(0);
 
@@ -48,12 +54,19 @@ const Index = () => {
     }
 
     const discardWorkout = () => {
-        clearTimer();
-        unregisterTimer();
-        clearWorkout();
-        clearExercises()
+        discardWorkoutFromStore();
         router.replace("/(authenticated)/(tabs)/start");
     };
+
+    const discardAlert = () => {
+        Alert.alert("Discard Workout", "Are you sure you want to discard this workout?", [
+            {
+                text: "Cancel",
+                style: "cancel"
+            },
+            {text: "Discard", onPress: () => discardWorkout(), style: "destructive"}
+        ])
+    }
 
     const onDragEnd = (params: DragEndParams<IExerciseLog>) => {
         reorder(params.from, params.to);
@@ -91,7 +104,7 @@ const Index = () => {
                     </View>
                 ),
                 headerRight: () => (
-                    <TouchableOpacity>
+                    <TouchableOpacity onPress={() => router.push("/(authenticated)/(tabs)/start/workout/workout-save")}>
                         <Text style={{fontSize: 16, fontWeight: "500", color: Colors.lime}}>
                             Save
                         </Text>
@@ -133,11 +146,14 @@ const Index = () => {
                     keyExtractor={(item) => item.id.toString()}
                     scrollEventThrottle={16}
                     ListHeaderComponent={() => <View style={{height: 70}} />}
-                    ListFooterComponent={ () =>  <View style={{marginTop: 20}}>
-                        <Link href={"/(authenticated)/(tabs)/start/workout/exercises"} asChild>
-                            <Button fullWidth title={"Add Exercise"} color={"lime"}/>
-                        </Link>
-                    </View>
+                    ListFooterComponent={() =>  (
+                        <View style={{marginTop: 20, gap: 20}}>
+                            <Link href={"/(authenticated)/(tabs)/start/workout/exercises"} asChild>
+                                <Button fullWidth title={"Add Exercise"} color={"lime"}/>
+                            </Link>
+                            <Button onPress={discardAlert} fullWidth title={"Discard Workout"} color={"danger"}/>
+                        </View>
+                    )
                     }
                     onDragEnd={onDragEnd}
                     onDragBegin={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}

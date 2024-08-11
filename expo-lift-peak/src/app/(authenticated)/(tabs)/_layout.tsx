@@ -125,8 +125,8 @@ export default function TabLayout() {
                     tabBarIcon: (props) => <Ionicons size={36} name="add" color={props.color} />
                 }} />
                 <Tabs.Screen name={"logout"} options={{
-                    title: "workouts",
-                    tabBarIcon: (props) => <TabBarIcon name="barbell" color={props.color} />,
+                    title: "logout",
+                    tabBarIcon: (props) => <TabBarIcon name="log-out-outline" color={props.color} />,
                 }} />
             </Tabs>
     );

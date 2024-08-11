@@ -10,7 +10,6 @@ import { useMutation } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useRouter } from "expo-router";
-import { useHeaderHeight } from "@react-navigation/elements";
 import { loginSchema, LoginUserRequest, useAuthStore } from "@features/auth";
 import { IUser } from "@entities/user";
 import api from "@shared/api/AxiosInstance";
@@ -73,13 +72,12 @@ const Login = () => {
               />
             </View>
             <Link href={"/forgotPassword"} asChild>
-                <TouchableOpacity>
-                  <Text style={{ color: Colors.lime, fontSize: 16 }}>
-                    Forgot password?
-                  </Text>
-                </TouchableOpacity>
-              </Link>
-
+              <TouchableOpacity>
+                <Text style={{ color: Colors.lime, fontSize: 16 }}>
+                  Forgot password?
+                </Text>
+              </TouchableOpacity>
+            </Link>
           </View>
           <View style={{ gap: 24 }}>
             <Button

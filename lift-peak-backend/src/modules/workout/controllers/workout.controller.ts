@@ -1,4 +1,14 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  UploadedFiles,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import {
   AuthenticatedUser,
@@ -18,6 +28,25 @@ export class WorkoutController {
     @Body() dto: CreateWorkoutDto,
   ) {
     return this.workoutService.createWorkout(user, dto);
+  }
+
+  @Post('/:id/media')
+  @UseGuards(JwtAuthGuard)
+  @UseInterceptors(FileFieldsInterceptor([{ name: 'media', maxCount: 8 }]))
+  async uploadMedia(
+    @Param('id') workoutId: number,
+    @UploadedFiles()
+    files: {
+      media?: Express.Multer.File[];
+    },
+  ) {
+    return this.workoutService.uploadWorkoutMedia(workoutId, files.media);
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async getWorkouts() {
+    return this.workoutService.getWorkouts();
   }
 
   @Get(':id')

@@ -17,9 +17,11 @@ export class ExerciseLog extends AbstractEntity {
   @ManyToOne(() => Exercise, (exercise) => exercise.exerciseLogs)
   exercise: Exercise;
 
-  @Column()
+  @Column({
+    nullable: true,
+  })
   order: number;
 
-  @OneToMany(() => Set, (set) => set.exerciseLog)
+  @OneToMany(() => Set, (set) => set.exerciseLog, { onDelete: 'CASCADE' })
   sets: Set[];
 }

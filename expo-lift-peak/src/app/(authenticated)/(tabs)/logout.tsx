@@ -13,13 +13,9 @@ const Logout = () => {
     }
 
     return (
-        <View style={{
-            flex: 1,
-            justifyContent: 'center',
-            alignItems: 'center',
-            paddingTop: headerHeight,
-        }}>
-            <Button title={"logout"} color={"white"} onPress={handleLogout} />
+
+        <View style={{paddingTop: headerHeight, flex: 1, justifyContent: "center", alignItems: "center"}}>
+            <Button title={"logout"} color={"dark700"} onPress={handleLogout} />
         </View>
     );
 };

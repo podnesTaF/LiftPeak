@@ -1,12 +1,14 @@
-import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import React, {useEffect, useState} from 'react';
+import {Pressable, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
-import {Colors} from "@shared/styles";
+import {Colors, defaultStyles} from "@shared/styles";
 import Animated, {interpolate, useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
 import Accordion from "@shared/components/Accordion";
 import TableHead from "@features/exercise-logger/ui/ExerciseTableHead";
 import ExerciseSetRow from "@features/exercise-logger/ui/ExerciseSetRow";
-import {IExerciseLog, SetType} from "@entities/workout-log";
+import {IExerciseLog, ISet, SetType} from "@entities/workout-log";
+import {Color} from "ansi-fragments/build/fragments/Color";
+import {useExerciseStore} from "@features/workout-logger";
 
 interface ExpandableSetTypeProps {
     exerciseLog: IExerciseLog;
@@ -15,10 +17,16 @@ interface ExpandableSetTypeProps {
 
 export const ExpandableSetType = ({exerciseLog, setType}: ExpandableSetTypeProps) => {
     const open = useSharedValue(true);
+    const {addSet} = useExerciseStore()
+    const [typeSets, setTypeSets] = useState<ISet[]>([])
 
     const onPress = () => {
         open.value = !open.value;
     };
+
+    useEffect(() => {
+        setTypeSets(exerciseLog.sets?.filter(set => set.type === setType) || [])
+    }, [exerciseLog.sets])
 
     const chevronStyle = useAnimatedStyle(() => {
         const rotation = interpolate(Number(open.value), [0, 1], [0, 90]);
@@ -33,6 +41,19 @@ export const ExpandableSetType = ({exerciseLog, setType}: ExpandableSetTypeProps
             ],
         };
     })
+
+    const handleAddSet = () => {
+        addSet(exerciseLog.id, {
+            exerciseLogId: exerciseLog.id,
+            order: typeSets.length ? typeSets.length + 1: 1,
+            reps: 0,
+            weight: 0,
+            type: setType,
+            createdAt: new Date().toISOString(),
+            updatedAt: new Date().toISOString(),
+        });
+    };
+
 
     return (
         <View style={styles.tableContainer}>
@@ -59,7 +80,7 @@ export const ExpandableSetType = ({exerciseLog, setType}: ExpandableSetTypeProps
             </TouchableOpacity>
             <Accordion viewKey={"accordion"} isExpanded={open}>
                 <TableHead metric={exerciseLog.exercise?.metric} />
-                {exerciseLog!.sets!.map((set, index) => (
+                {typeSets.map((set, index) => (
                     <ExerciseSetRow
                         key={set.id}
                         set={set}
@@ -67,6 +88,14 @@ export const ExpandableSetType = ({exerciseLog, setType}: ExpandableSetTypeProps
                         metric={exerciseLog.exercise?.metric}
                     />
                 ))}
+                <Pressable onPress={handleAddSet} style={({pressed}) => [{opacity: pressed ? 0.8 : 1, flexDirection: "row", gap: 8, alignItems:"center", width: "100%", padding: 12,}]}>
+                    <View style={{borderRadius: 100, padding: 4, borderWidth: 2, borderColor: Colors.lime}}>
+                        <Ionicons name={"add"} size={24} color={Colors.white} />
+                    </View>
+                    <Text style={[defaultStyles.secondaryText, {textTransform: "uppercase"}]}>
+                                Add {setType === SetType.warmup ? "Warm-up Set" : "Working Set"}
+                    </Text>
+                </Pressable>
             </Accordion>
         </View>
     );

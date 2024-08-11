@@ -26,5 +26,6 @@ export const useWorkoutHeaderAnimation = (scrollHandler: any) => {
         };
     });
 
+
     return { snackbarOpacity, clockTitleStyle, headerTitleStyle};
 };

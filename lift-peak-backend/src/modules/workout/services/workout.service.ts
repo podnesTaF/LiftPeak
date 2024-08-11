@@ -1,10 +1,12 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
+import { FileService } from 'src/modules/file/file.service';
 import { AuthenticatedUser } from 'src/modules/users/decorators/user.decorator';
 import { WorkoutLog } from 'src/modules/workout-log/entities/workout-log.entity';
 import { DataSource, Repository } from 'typeorm';
 import { CreateWorkoutDto } from '../dto/create-workout.dto';
 import { IWorkoutPreview } from '../dto/workout-preview.dto';
+import { WorkoutMedia } from '../entities/workout-media.entity';
 import { Workout } from '../entities/workout.entity';
 
 @Injectable()
@@ -14,6 +16,9 @@ export class WorkoutService {
     private readonly workoutRepository: Repository<Workout>,
     @InjectRepository(WorkoutLog)
     private readonly workoutLogRepository: Repository<WorkoutLog>,
+    @InjectRepository(WorkoutMedia)
+    private readonly mediaContentRepository: Repository<WorkoutMedia>,
+    private readonly fileService: FileService,
     @InjectDataSource()
     private dataSource: DataSource,
   ) {}
@@ -66,6 +71,12 @@ export class WorkoutService {
     }
   }
 
+  async getWorkouts(): Promise<Workout[]> {
+    return await this.workoutRepository.find({
+      relations: ['workoutLog', 'comments', 'likes', 'user', 'mediaContents'],
+    });
+  }
+
   async getWorkout(workoutId: number): Promise<Workout> {
     return await this.workoutRepository.findOne({
       where: { id: workoutId },
@@ -114,5 +125,45 @@ export class WorkoutService {
     );
 
     return workoutPreviews;
+  }
+
+  async uploadWorkoutMedia(workoutId: number, media: Express.Multer.File[]) {
+    const workout = await this.workoutRepository.findOne({
+      where: { id: workoutId },
+    });
+
+    if (!workout) {
+      throw new Error('Workout not found');
+    }
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+
+    try {
+      for (const file of media) {
+        const mediaContent = this.mediaContentRepository.create({
+          workoutId: workout.id,
+          mediaUrl: await this.fileService.uploadFileToStorage(
+            file.originalname,
+            `workouts/${workout.id}`,
+            file.mimetype,
+            file.buffer,
+          ),
+        });
+
+        await queryRunner.manager.save(WorkoutMedia, mediaContent);
+      }
+
+      await queryRunner.commitTransaction();
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException(
+        'Failed to upload media',
+        error.message,
+      );
+    } finally {
+      await queryRunner.release();
+    }
   }
 }

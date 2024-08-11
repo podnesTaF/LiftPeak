@@ -39,6 +39,8 @@ export class WorkoutLog extends AbstractEntity {
   })
   totalDistanceInM: number;
 
-  @OneToMany(() => ExerciseLog, (exerciseLog) => exerciseLog.workoutLog)
+  @OneToMany(() => ExerciseLog, (exerciseLog) => exerciseLog.workoutLog, {
+    onDelete: 'CASCADE',
+  })
   exerciseLogs: ExerciseLog[];
 }

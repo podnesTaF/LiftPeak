@@ -43,15 +43,14 @@ export class ExerciseLogService {
 
       const exerciseLogs = [];
 
+      let order = 1;
       for (const exerciseDto of dto) {
         const exerciseLog = this.exerciseLogRepository.create({
           workoutLogId: workoutLog.id,
           exerciseId: exerciseDto.exerciseId,
-          order: exerciseDto.order,
+          order: exerciseDto.order || order++,
         });
-
         const savedExerciseLog = await queryRunner.manager.save(exerciseLog);
-
         for (const setDto of exerciseDto.sets) {
           setDto.exerciseLogId = savedExerciseLog.id;
           await this.setService.createSet(setDto, queryRunner.manager);

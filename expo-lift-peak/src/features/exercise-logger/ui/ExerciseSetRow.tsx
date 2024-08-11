@@ -23,7 +23,7 @@ export const ExerciseSetRow = ({set, metric = ExerciseMetric.reps, index}: Exerc
         reps: set.reps?.toString() || "0",
         weight: set.weight?.toString() || "0",
         time: set.timeInS?.toString() || "0",
-        distance: set.distanceInM?.toString() || "0"
+        distanceInM: set.distanceInM?.toString() || "0"
     });
 
     const changeComplete = () => {
@@ -88,14 +88,16 @@ export const ExerciseSetRow = ({set, metric = ExerciseMetric.reps, index}: Exerc
                                 </View>
                                 <View style={styles.inputContainer}>
                                     <InputField
+                                        placeholder={"Dist"}
                                         color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                         keyboardType={"numeric"}
-                                        value={values.distance}
+                                        value={values.distanceInM}
                                         onChange={(text) => onChangeInput("distanceInM", text)}
                                     />
                                 </View>
                                 <View style={styles.inputContainer}>
                                     <InputField
+                                        placeholder={"Time"}
                                         color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                         keyboardType={"numeric"}
                                         value={values.time}
