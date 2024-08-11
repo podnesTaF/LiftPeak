@@ -45,7 +45,7 @@ const LoginCtaPage = () => {
                     }} />
                 </View>
                 <View>
-                    <Button color={"white"} title={"Continue with Email"} />
+                    <Button color={"white"} title={"Sign up with email"} />
                 </View>
                 <View style={defaultStyles.horizontalContainer}>
                     <Text style={{color:"white", fontSize: 16}}>

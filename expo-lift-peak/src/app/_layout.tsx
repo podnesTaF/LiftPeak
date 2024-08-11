@@ -86,22 +86,21 @@ const InitialLayout = () => {
             },
             headerTintColor: Colors.white,
         }}>
-            <Stack.Screen name={'index'} options={{headerShown: false}}/>
+            <Stack.Screen name={'index'} options={{headerShown: false, title: ''}}/>
             <Stack.Screen name="login" options={{
-                headerTransparent: true,
-                title: "Search",
-                headerLeft: () => (
-                    <TouchableOpacity onPress={router.back}>
-                        <Ionicons name="chevron-back" size={34} color={Colors.white}/>
-                    </TouchableOpacity>
-                )
+                title: "",
+            }}/>
+            <Stack.Screen name="forgotPassword" options={{
+                title: "",
+                
             }}/>
             <Stack.Screen name="signup"/>
             <Stack.Screen name="(authenticated)/(tabs)" options={{headerShown: false}}/>
             <Stack.Screen name="(authenticated)/search" options={{
                 headerShown: true,
                 title: "Search",
-                headerBackTitleVisible: false
+                headerBackTitleVisible: false,
+                
             }}/>
         </Stack>
     );

@@ -2,7 +2,8 @@ import { useAuthStore } from "@features/auth/store/authStore";
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: process.env.API_BASE_URL,
+  // baseURL: process.env.API_BASE_URL,
+    baseURL: 'http://192.168.1.89:4000/api',
 });
 
 api.interceptors.request.use(
