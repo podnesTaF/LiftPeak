@@ -42,7 +42,10 @@ export class SetService {
     set.type = dto.type;
     set.exerciseLogId = dto.exerciseLogId;
 
-    this.defineNecessaryMetrics(set, dto, exerciseLog.exercise);
+    set.reps = dto.reps;
+    set.weight = dto.weight;
+    set.timeInS = dto.timeInS;
+    set.distanceInM = dto.distanceInM;
 
     return await manager.save(set);
   }
