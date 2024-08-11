@@ -1,8 +1,14 @@
-const formatVolume = (volume) => {
-    return `${volume.toFixed(3)} kg`;
+export const formatVolume = (volume?: number) => {
+    if(!volume) {
+        return "";
+    }
+    return `${volume} kg`;
 };
 
-const formatDistance = (distanceInM) => {
+export const formatDistance = (distanceInM?: number) => {
+    if(!distanceInM) {
+        return "";
+    }
     const distanceInKm = (distanceInM / 1000).toFixed(1);
     return `${distanceInKm}km`;
 };

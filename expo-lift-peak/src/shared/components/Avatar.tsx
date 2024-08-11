@@ -39,8 +39,8 @@ const styles = StyleSheet.create({
         padding: 4
     },
     title: {
-        fontSize: 16,
-        fontWeight: "semibold",
+        fontSize: 18,
+        fontWeight: "600",
         textTransform: "uppercase",
     },
 });

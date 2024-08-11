@@ -44,7 +44,7 @@ const Login = () => {
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : "height"}
-            style={[defaultStyles.container, {paddingTop: headerHeight}]}
+            style={[defaultStyles.container, {padding: 16, paddingTop: headerHeight}]}
         >
             <View style={{flex: 1, gap: 16, paddingBottom: 40}}>
                 <Text style={defaultStyles.header}>Login</Text>

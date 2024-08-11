@@ -90,7 +90,7 @@ export default function StartWorkout() {
           },
           headerLargeTitleShadowVisible: false,
         }} />
-        <ScrollView contentContainerStyle={{paddingTop: headerHeight + 20}} style={[defaultStyles.container, ]}>
+        <ScrollView contentContainerStyle={{paddingTop: headerHeight + 20}} style={[defaultStyles.container, {padding: 16}]}>
           <View style={styles.subtitleContainer}>
             <Text style={defaultStyles.secondaryText}>Explore routines and workouts that fit you best!</Text>
           </View>
