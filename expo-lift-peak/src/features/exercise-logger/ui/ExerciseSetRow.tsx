@@ -12,13 +12,14 @@ import Animated, {FadeInUp, FadeOutUp} from "react-native-reanimated";
 import SwipeableRow from "@shared/components/SwipeableRow";
 
 interface ExerciseSetRowProps {
+    exerciseLogId: number | string;
     set: ISet;
     metric?: ExerciseMetric;
     index: number
 }
 
-export const ExerciseSetRow = ({set, metric = ExerciseMetric.reps, index}: ExerciseSetRowProps) => {
-    const {updateSet} = useExerciseStore()
+export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps, index}: ExerciseSetRowProps) => {
+    const {updateSet, removeSet} = useExerciseStore()
     const [values, setValues] = useState({
         reps: set.reps?.toString() || "0",
         weight: set.weight?.toString() || "0",
@@ -36,7 +37,7 @@ export const ExerciseSetRow = ({set, metric = ExerciseMetric.reps, index}: Exerc
     };
 
     return (
-        <SwipeableRow backgroundColor={index % 2 === 0 ? Colors.dark500 : Colors.dark900} actionTypes={["edit", "delete"]} onEdit={() => console.log("edited")} onDelete={() => console.log("deleted")}>
+        <SwipeableRow onLeftAction={changeComplete} leftActionText={"Done"} backgroundColor={index % 2 === 0 ? Colors.dark500 : Colors.dark900} actionTypes={["delete"]}  onDelete={() => removeSet(exerciseLogId, set.id)}>
             <Animated.View>
                 <View key={set.id}
                       style={[styles.row, {backgroundColor: index % 2 === 0 ? Colors.dark500 : Colors.dark900}]}>
@@ -46,7 +47,7 @@ export const ExerciseSetRow = ({set, metric = ExerciseMetric.reps, index}: Exerc
                                 <Ionicons name={"checkmark-circle"} size={30}
                                           color={set.completed ? Colors.lime : Colors.dark300}/>
                             ) : (
-                                <Text style={{color: 'white'}}>{set.order}</Text>
+                                <Text style={{color: 'white'}}>{index + 1}</Text>
                             )}
                         </TouchableOpacity>
                     </View>

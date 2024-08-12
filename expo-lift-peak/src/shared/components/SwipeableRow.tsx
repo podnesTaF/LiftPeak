@@ -3,17 +3,36 @@ import { Animated, StyleSheet, View, Text } from 'react-native';
 
 import { RectButton } from 'react-native-gesture-handler';
 import Swipeable from 'react-native-gesture-handler/Swipeable';
-import { FontAwesome } from '@expo/vector-icons';
-import {Colors} from "@shared/styles"; // Assuming you're using Expo, you can use FontAwesome icons
+import {FontAwesome, Ionicons} from '@expo/vector-icons';
+import {Colors} from "@shared/styles";
+import {start} from "node:repl";
+import {Easing} from "react-native-reanimated";
+import {getContrastColor} from "@shared/utils";
+import {color} from "ansi-fragments"; // Assuming you're using Expo, you can use FontAwesome icons
 
 interface SwipeableRowProps {
     onDelete?: () => void;
     onEdit?: () => void;
+    onLeftAction?: () => void;
+    leftActionIcon?: React.ComponentProps<typeof Ionicons>['name'];
+    leftActionText?: string;
     actionTypes: ('edit' | 'delete' | string)[];
     backgroundColor?: string;
 }
 
-export default class SwipeableRow extends Component<PropsWithChildren<SwipeableRowProps>> {
+interface SwipeableRowState {
+    iconOpacity: Animated.Value; // State for icon opacity
+}
+
+export default class SwipeableRow extends Component<PropsWithChildren<SwipeableRowProps>, SwipeableRowState> {
+    private swipeableRow?: Swipeable;
+    constructor(props: SwipeableRowProps) {
+        super(props);
+        this.state = {
+            iconOpacity: new Animated.Value(1),
+        };
+    }
+
     private renderRightActions = (
         progress: Animated.AnimatedInterpolation<number>,
         _dragAnimatedValue: Animated.AnimatedInterpolation<number>
@@ -54,8 +73,8 @@ export default class SwipeableRow extends Component<PropsWithChildren<SwipeableR
         });
 
         const pressHandler = () => {
-            this.close();
             onPressAction();
+            this.smoothClose();
         };
 
         return (
@@ -78,7 +97,47 @@ export default class SwipeableRow extends Component<PropsWithChildren<SwipeableR
         );
     };
 
-    private swipeableRow?: Swipeable;
+    private renderLeftActions = (
+        progress: Animated.AnimatedInterpolation<number>,
+        _dragAnimatedValue: Animated.AnimatedInterpolation<number>
+    ) => {
+        const { onLeftAction, backgroundColor,leftActionIcon,leftActionText } = this.props;
+        const { iconOpacity } = this.state;
+        if (!onLeftAction) return null;
+
+        const trans = progress.interpolate({
+            inputRange: [0, 1],
+            outputRange: [-50, 0],
+            extrapolate: 'clamp',
+        });
+
+        const opacity = progress.interpolate({
+            inputRange: [0, 1],
+            outputRange: [0, 1],
+            extrapolate: 'clamp',
+        });
+
+
+        return (
+            <Animated.View
+                style={{
+                    width: 100,
+                    opacity: opacity,
+                    transform: [{ translateX: trans }],
+                }}
+            >
+                <RectButton
+                    style={[styles.leftAction, { backgroundColor: backgroundColor }]}
+                    onPress={onLeftAction}
+                >
+                    {leftActionIcon && <Ionicons name={leftActionIcon} size={24} color={getContrastColor(backgroundColor)} />}
+                    {leftActionText && <Text style={{color: getContrastColor(backgroundColor), fontSize: 14, fontWeight: "600"}}>
+                        {leftActionText}
+                    </Text>}
+                </RectButton>
+            </Animated.View>
+        );
+    };
 
     private updateRef = (ref: Swipeable) => {
         this.swipeableRow = ref;
@@ -88,16 +147,39 @@ export default class SwipeableRow extends Component<PropsWithChildren<SwipeableR
         this.swipeableRow?.close();
     };
 
+    private smoothClose = () => {
+        if (this.swipeableRow) {
+            Animated.timing(this.swipeableRow?.state.rowTranslation, {
+                toValue: 0,
+                duration: 500,
+                easing: Easing.inOut(Easing.ease),
+                useNativeDriver: true,
+            }).start();
+        }
+    };
+
+    private handleLeftAction = () => {
+        const { onLeftAction } = this.props;
+        if (onLeftAction) {
+            onLeftAction();
+        }
+        this.smoothClose()
+    };
+
     render() {
         const { children } = this.props;
         return (
             <Swipeable
                 ref={this.updateRef}
                 enableTrackpadTwoFingerGesture
-                friction={1}
+                friction={1.5}
                 overshootRight={false}
-                rightThreshold={40}
+                overshootLeft={false}
+                rightThreshold={10}
+                leftThreshold={30}
                 renderRightActions={this.renderRightActions}
+                renderLeftActions={this.renderLeftActions} // Render the left actions
+                onSwipeableLeftWillOpen={this.handleLeftAction} // Trigger the action as soon as the left swipe is detected
             >
                 {children}
             </Swipeable>
@@ -119,5 +201,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         borderRadius: 5,
         marginHorizontal: 5,
+    },
+    leftAction: {
+        alignItems: 'center',
+        flex: 1,
+        justifyContent: 'center',
     },
 });

@@ -25,10 +25,12 @@ export const useExerciseStore = create<ExerciseStoreState>()(
                     sets: log.sets?.map(set => set.id === workoutSet.id ? workoutSet : set)
                 } : log)
             }),
-            removeSet: (exerciseId: number | string, setId: number) => set({
-                exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseId ? {
+            removeSet: (exerciseLogId: number | string, setId: number) => set({
+                exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseLogId ? {
                     ...log,
-                    sets: log.sets?.filter(set => set.id !== setId)
+                    sets: log.sets?.filter(set => set.id !== setId).map(
+                        (set, index) => ({...set, order: index + 1})
+                    )
                 } : log)
             }),
             clearExercises: () => set({exerciseLogs: []}),

@@ -83,6 +83,7 @@ export const ExpandableSetType = ({exerciseLog, setType}: ExpandableSetTypeProps
                 {typeSets.map((set, index) => (
                     <ExerciseSetRow
                         key={set.id}
+                        exerciseLogId={exerciseLog.id}
                         set={set}
                         index={index}
                         metric={exerciseLog.exercise?.metric}

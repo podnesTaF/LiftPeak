@@ -13,7 +13,8 @@ const getLuminance = (hexColor: string) => {
 };
 
 // Function to get contrast color (black or white) based on background color
-export const getContrastColor = (hexColor: string) => {
+export const getContrastColor = (hexColor?: string) => {
+    if(!hexColor) return '#fff';
     const code = hexColor.replace('#', '');
     const luminance = getLuminance(code);
     return luminance > 0.5 ? '#000000' : '#FFFFFF';
