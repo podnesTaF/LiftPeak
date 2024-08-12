@@ -1,4 +1,4 @@
-import {StyleSheet} from 'react-native';
+import {StyleSheet, View} from 'react-native';
 
 import React from "react";
 import { defaultStyles} from "@shared/styles";
@@ -6,10 +6,13 @@ import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
 import Animated, {useAnimatedScrollHandler} from "react-native-reanimated";
 import FollowingCircles from "@features/follow/ui/FollowingCircles";
 import {PostFeed} from "@features/feed";
+import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
 
 export default function Followings() {
 
   const { scrollY } = useAnimatedScroll();
+
+  const tabBarHeight = useBottomTabBarHeight() + 20;
 
 
   const scrollHandler = useAnimatedScrollHandler(event => {
@@ -20,7 +23,7 @@ export default function Followings() {
   return (
       <>
         <Animated.ScrollView onScroll={scrollHandler}
-                              scrollEventThrottle={16} style={defaultStyles.container}>
+                              scrollEventThrottle={16} style={[defaultStyles.container]} contentContainerStyle={{paddingBottom: tabBarHeight}}>
           <FollowingCircles  />
           <PostFeed />
         </Animated.ScrollView>

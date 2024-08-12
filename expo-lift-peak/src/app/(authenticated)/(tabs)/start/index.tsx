@@ -10,6 +10,7 @@ import {useQuery} from "@tanstack/react-query";
 import {getRoutineList, RoutineCard} from "@features/workout";
 import {useAuthStore} from "@features/auth";
 import {registerBackgroundTask, useTimerStore} from "@features/timer";
+import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
 
 
 
@@ -22,7 +23,7 @@ export default function StartWorkout() {
     startTimer,
       clearTimer
   } = useTimerStore();
-
+  const tabBarHeight = useBottomTabBarHeight() + 20;
   const {
     clearExercises
   } = useExerciseStore()
@@ -90,7 +91,7 @@ export default function StartWorkout() {
           },
           headerLargeTitleShadowVisible: false,
         }} />
-        <ScrollView contentContainerStyle={{paddingTop: headerHeight + 20}} style={[defaultStyles.container, {padding: 16}]}>
+        <ScrollView contentContainerStyle={{paddingTop: headerHeight + 20, paddingBottom: tabBarHeight}} style={[defaultStyles.container, {padding: 16}]}>
           <View style={styles.subtitleContainer}>
             <Text style={defaultStyles.secondaryText}>Explore routines and workouts that fit you best!</Text>
           </View>
@@ -122,11 +123,6 @@ export default function StartWorkout() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
   buttonContainer: {
     paddingVertical: 16,
     gap: 10,
