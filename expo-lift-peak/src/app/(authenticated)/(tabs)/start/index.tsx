@@ -41,7 +41,7 @@ export default function StartWorkout() {
           text: "Keep Current",
           style: "cancel",
           onPress: () => {
-            router.push("/(authenticated)/(tabs)/start/workout");
+            router.push("/(authenticated)/workout");
           }
         },
         {
@@ -63,7 +63,7 @@ export default function StartWorkout() {
     initializeWorkout({userId: user.id})
     registerBackgroundTask();
     startTimer();
-    router.push("/(authenticated)/(tabs)/start/workout");
+    router.push("/(authenticated)/workout");
   }
 
   const discardWorkout = () => {

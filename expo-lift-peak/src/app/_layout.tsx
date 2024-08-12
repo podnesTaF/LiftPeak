@@ -104,6 +104,9 @@ const InitialLayout = () => {
                 title: "Search",
                 headerBackTitleVisible: false
             }}/>
+            <Stack.Screen name={"(authenticated)/workout"} options={{
+                headerShown: false
+            }}  />
         </Stack>
     );
 }

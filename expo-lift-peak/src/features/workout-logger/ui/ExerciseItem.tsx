@@ -11,11 +11,13 @@ import Animated, {FadeInUp, FadeOutUp} from "react-native-reanimated";
 import {RenderItemParams, ScaleDecorator} from "react-native-draggable-flatlist";
 import {IExerciseLog} from "@entities/workout-log";
 
-interface ExerciseItemProps extends RenderItemParams<IExerciseLog> {
+interface ExerciseItemProps {
     onPress?: (itemId: number | string) => void;
+    item: IExerciseLog;
+    index: number
 }
 
-export const ExerciseItem = ({item, onPress, drag, isActive, getIndex}: ExerciseItemProps) => {
+export const ExerciseItem = ({item, onPress,index}: ExerciseItemProps) => {
     const {getExerciseSetsStats, removeExerciseLog} = useExerciseStore();
     const [isPressed, setIsPressed] = useState(false);
     const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -56,13 +58,10 @@ export const ExerciseItem = ({item, onPress, drag, isActive, getIndex}: Exercise
 
 
     return (
-        <ScaleDecorator>
             <SwipeableRow actionTypes={['delete']} onDelete={confirmAlert}>
-                <Animated.View entering={FadeInUp.delay((getIndex() || 1) * 20)}
+                <Animated.View entering={FadeInUp.delay((index) * 20)}
                                exiting={FadeOutUp}>
                     <Pressable
-                        onLongPress={drag}
-                        disabled={isActive}
                         style={({pressed}) => [styles.container, {opacity: pressed ? 0.7 : 1}]}
                         onPressIn={handlePressIn}
                         onPressOut={handlePressOut}
@@ -99,7 +98,6 @@ export const ExerciseItem = ({item, onPress, drag, isActive, getIndex}: Exercise
                     </Pressable>
                 </Animated.View>
             </SwipeableRow>
-        </ScaleDecorator>
     );
 };
 

@@ -35,7 +35,7 @@ const Index = () => {
         elapsedTime,
         playTimer,
     } = useTimerStore();
-    const discardWorkoutFromStore = useDiscardWorkout()
+    const {discardAlert, discardWorkout: discardWorkoutFromStore} = useDiscardWorkout()
 
     const router = useRouter();
     const scrollY = useSharedValue(0);
@@ -46,7 +46,7 @@ const Index = () => {
 
     const openExerciseLog = (exerciseLogId: number | string) => {
         router.push({
-            pathname: "/(authenticated)/(tabs)/start/workout/exercise-log",
+            pathname: "/(authenticated)/workout/exercise-log",
             params: {
                 id: exerciseLogId
             }
@@ -58,15 +58,6 @@ const Index = () => {
         router.replace("/(authenticated)/(tabs)/start");
     };
 
-    const discardAlert = () => {
-        Alert.alert("Discard Workout", "Are you sure you want to discard this workout?", [
-            {
-                text: "Cancel",
-                style: "cancel"
-            },
-            {text: "Discard", onPress: () => discardWorkout(), style: "destructive"}
-        ])
-    }
 
     const onDragEnd = (params: DragEndParams<IExerciseLog>) => {
         reorder(params.from, params.to);
@@ -104,7 +95,7 @@ const Index = () => {
                     </View>
                 ),
                 headerRight: () => (
-                    <TouchableOpacity onPress={() => router.push("/(authenticated)/(tabs)/start/workout/workout-save")}>
+                    <TouchableOpacity onPress={() => router.push("/(authenticated)/workout/workout-save")}>
                         <Text style={{fontSize: 16, fontWeight: "500", color: Colors.lime}}>
                             Save
                         </Text>
@@ -134,32 +125,17 @@ const Index = () => {
                        </TouchableOpacity>
                    </View>
                 </Animated.View>
-                <DraggableFlatList
-                    style={{height: "100%"}}
-                    onScrollOffsetChange={(offset) => {
-                        scrollY.value = offset;
-                    }}
-                    data={exerciseLogs.sort((a, b) => a.order - b.order)}
-                    renderItem={({item, drag, isActive, getIndex}) => (
-                        <ExerciseItem onPress={openExerciseLog} key={item.id} item={item} drag={drag} isActive={isActive} getIndex={getIndex} />
-                    )}
-                    keyExtractor={(item) => item.id.toString()}
-                    scrollEventThrottle={16}
-                    ListHeaderComponent={() => <View style={{height: 70}} />}
-                    ListFooterComponent={() =>  (
-                        <View style={{marginTop: 20, gap: 20}}>
-                            <Link href={"/(authenticated)/(tabs)/start/workout/exercises"} asChild>
-                                <Button fullWidth title={"Add Exercise"} color={"lime"}/>
-                            </Link>
-                            <Button onPress={discardAlert} fullWidth title={"Discard Workout"} color={"danger"}/>
-                        </View>
-                    )
-                    }
-                    onDragEnd={onDragEnd}
-                    onDragBegin={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-                    onPlaceholderIndexChange={() => Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light)}
-                    activationDistance={10}
-                />
+                <Animated.ScrollView contentContainerStyle={{paddingVertical: 70}}>
+                    {exerciseLogs.sort((a, b) => a.order - b.order).map((item, index) => (
+                        <ExerciseItem onPress={openExerciseLog} key={item.id} item={item} index={index} />
+                    ))}
+                    <View style={{marginTop: 20, gap: 20}}>
+                        <Link href={"/(authenticated)/workout/exercises"} asChild>
+                            <Button fullWidth title={"Add Exercise"} color={"lime"}/>
+                        </Link>
+                        <Button onPress={discardWorkout} fullWidth title={"Discard Workout"} color={"danger"}/>
+                    </View>
+                </Animated.ScrollView>
             </View>
         </>
     );

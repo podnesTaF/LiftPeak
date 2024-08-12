@@ -11,10 +11,6 @@ const Layout = () => {
                 title: "Start a workout",
 
             }} />
-            <Stack.Screen name={"workout"} options={{
-                headerShown: false,
-                title: "Index Page"
-            }} />
         </Stack>
     );
 };
