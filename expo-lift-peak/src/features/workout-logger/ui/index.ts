@@ -1,3 +1,3 @@
 export {ExerciseItem} from './ExerciseItem'
 
-export {ActiveWorkoutPopup} from './ActiveWorkoutPopup'
+    export {ActiveWorkoutPopup} from './ActiveWorkoutPopup'

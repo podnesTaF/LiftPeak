@@ -15,6 +15,7 @@ import {
 } from "@shared/components/AnimatedScrollContext";
 import Constants from "expo-constants/src/Constants";
 import {ActiveWorkoutPopup} from "@features/workout-logger";
+import CustomTabBar from "@shared/components/navigation/CustomTabBar";
 
 function TabBarIcon(props: {
     name: React.ComponentProps<typeof Ionicons>['name'];
@@ -56,15 +57,11 @@ export default function TabLayout() {
     })
 
     return (
-            <>
                 <Tabs
+                    tabBar={props => <CustomTabBar {...props} />}
                     screenOptions={{
-                        headerShown: false,
-                        tabBarActiveTintColor: "#fff",
-                        tabBarInactiveTintColor: Colors.dark300,
                         tabBarStyle: {
-                            backgroundColor: Colors.dark700,
-                            borderTopWidth: 0,
+                            zIndex: 1000
                         }
                     }}>
                     <Tabs.Screen name={"home"} options={{
@@ -125,7 +122,5 @@ export default function TabLayout() {
                         tabBarIcon: (props) => <TabBarIcon name="log-out-outline" color={props.color} />,
                     }} />
                 </Tabs>
-                <ActiveWorkoutPopup />
-            </>
     );
 }
