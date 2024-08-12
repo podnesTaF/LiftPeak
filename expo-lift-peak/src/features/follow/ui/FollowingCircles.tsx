@@ -7,7 +7,7 @@ import {getMyFollowings} from "@entities/user";
 import {Colors} from "@shared/styles";
 
 const FollowingCircles = () => {
-    const [selected, setSelected] = React.useState<number | null>(null);
+    const [selected, setSelected] = React.useState<number | null | undefined>(null);
 
     const itemWidth = 50;
     const separatorWidth = 16;

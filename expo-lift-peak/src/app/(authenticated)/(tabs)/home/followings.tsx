@@ -1,6 +1,6 @@
 import {StyleSheet, View} from 'react-native';
 
-import React from "react";
+import React, {useEffect} from "react";
 import { defaultStyles} from "@shared/styles";
 import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
 import Animated, {useAnimatedScrollHandler} from "react-native-reanimated";
@@ -8,8 +8,9 @@ import FollowingCircles from "@features/follow/ui/FollowingCircles";
 import {PostFeed} from "@features/feed";
 import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
 
-export default function Followings() {
 
+
+export default function Followings() {
   const { scrollY } = useAnimatedScroll();
 
   const tabBarHeight = useBottomTabBarHeight() + 20;
@@ -18,7 +19,6 @@ export default function Followings() {
   const scrollHandler = useAnimatedScrollHandler(event => {
     scrollY.value = event.contentOffset.y;
   });
-
 
   return (
       <>

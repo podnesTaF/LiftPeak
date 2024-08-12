@@ -1,13 +1,18 @@
 import React, {useState} from 'react';
-import {FlatList, ScrollView, TouchableOpacity, View} from "react-native";
+import {FlatList, ScrollView, Text, TouchableOpacity, View} from "react-native";
 import {useQuery} from "@tanstack/react-query";
 import {ExerciseCard, findExerciseList} from "@entities/exercise";
 import {Colors, defaultStyles} from "@shared/styles";
 import {useExerciseStore} from "@features/workout-logger";
 import {Stack, useRouter} from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
+import {useLiveQuery} from "drizzle-orm/expo-sqlite";
+import {db} from "@db/dbInstance";
+import {exercise} from "@db/schema/exercises";
+
 
 const Exercises = () => {
+    const { data: offlineExercises } = useLiveQuery(db.select().from(exercise));
     const [value, setValue] = React.useState("");
     const router = useRouter()
 
@@ -57,13 +62,18 @@ const Exercises = () => {
             )
         }} />
             <View style={defaultStyles.container}>
-                <FlatList data={data}
-                          renderItem={({item}) =>
-                              <ExerciseCard onPress={(exerciseId) => manageExercise(exerciseId)} exercise={item} selected={isSelected(item.id)}/>
-                          }
-                          ItemSeparatorComponent={() => <View style={{height: 2, backgroundColor: Colors.dark300}}/>}
-                          keyExtractor={(item) => item.id.toString()}
-                />
+                {data ? <FlatList data={data}
+                           renderItem={({item}) =>
+                               <ExerciseCard onPress={(exerciseId) => manageExercise(exerciseId)} exercise={item}
+                                             selected={isSelected(item.id)}/>
+                           }
+                           ItemSeparatorComponent={() => <View style={{height: 2, backgroundColor: Colors.dark300}}/>}
+                           keyExtractor={(item) => item.id.toString()}
+                /> : (
+                    <Text>
+                        {JSON.stringify(offlineExercises)}
+                    </Text>
+                )}
             </View>
         </>
     );

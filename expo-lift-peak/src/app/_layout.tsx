@@ -1,13 +1,14 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
 import {useFonts} from 'expo-font';
+import {drizzle, useLiveQuery} from "drizzle-orm/expo-sqlite";
 import {Stack, useRouter, useSegments} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, {useEffect} from 'react';
 import 'react-native-reanimated';
 
 import {QueryClientProvider} from "@tanstack/react-query";
-import {Text, TouchableOpacity} from "react-native";
+import {Text, TouchableOpacity, View} from "react-native";
 import {StatusBar} from "expo-status-bar";
 import {Ionicons} from "@expo/vector-icons";
 import {useAuthStore} from "@features/auth";
@@ -16,7 +17,10 @@ import {queryClient} from "@shared/api";
 import {AnimatedScrollProvider} from "@shared/components/AnimatedScrollContext";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import ToastNotification from "@shared/components/ToastNotification";
-
+import {openDatabaseSync} from "expo-sqlite";
+import {useMigrations} from "drizzle-orm/expo-sqlite/migrator";
+import migrations from "../db/migrations/migrations";
+import {db} from "@db/dbInstance";
 export {
     // Catch any errors thrown by the Layout component.
     ErrorBoundary,
@@ -113,6 +117,24 @@ const InitialLayout = () => {
 
 function RootLayoutNav() {
     const colorScheme = useColorScheme();
+    const { success, error } = useMigrations(db, migrations);
+
+    if (error) {
+        return (
+            <View>
+                <Text>Migration error: {error.message}</Text>
+            </View>
+        );
+    }
+
+    if (!success) {
+        return (
+            <View>
+                <Text>Migration is in progress...</Text>
+            </View>
+        );
+    }
+
 
     return (
         <QueryClientProvider client={queryClient}>
