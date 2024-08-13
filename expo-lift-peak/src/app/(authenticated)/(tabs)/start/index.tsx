@@ -99,7 +99,7 @@ export default function StartWorkout() {
             <Button title={"Quick Start"} onPress={startQuickWorkout} color={"white"}>
               <Ionicons name={"flash-outline"} size={24} color={Colors.dark700} />
             </Button>
-            <Button title={"Explore Workouts"} color={"dark500"}>
+            <Button title={"Explore Workouts"} onPress={() => router.push("/(authenticated)/muscle-filter")} color={"dark500"}>
               <Ionicons name={"search-outline"} size={24} color={Colors.white} />
             </Button>
           </View>

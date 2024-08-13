@@ -111,6 +111,9 @@ const InitialLayout = () => {
             <Stack.Screen name={"(authenticated)/workout"} options={{
                 headerShown: false
             }}  />
+            <Stack.Screen name={"(authenticated)/muscle-filter"} options={{
+                headerShown: false
+            }}  />
         </Stack>
     );
 }
