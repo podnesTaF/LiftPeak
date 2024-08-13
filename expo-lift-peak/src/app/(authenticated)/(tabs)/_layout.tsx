@@ -8,9 +8,10 @@ import {useAuthStore} from "@features/auth";
 import {useAssets} from "expo-asset";
 import Animated, {
     interpolate,
-    useAnimatedStyle,
+    useAnimatedStyle, useSharedValue,
 } from "react-native-reanimated";
 import {
+    AnimatedScrollProvider,
     useAnimatedScroll
 } from "@shared/components/AnimatedScrollContext";
 import Constants from "expo-constants/src/Constants";
@@ -30,7 +31,7 @@ export default function TabLayout() {
     const {user} = useAuthStore();
 
 
-    const {scrollY} = useAnimatedScroll();
+    const scrollY = useSharedValue(0);
 
     const animatedHeaderStyle = useAnimatedStyle(() => {
         const opacity = interpolate(scrollY.value, [0, 100], [0, 1]);
@@ -57,7 +58,7 @@ export default function TabLayout() {
     })
 
     return (
-                <>
+                <AnimatedScrollProvider scrollY={scrollY}>
                     <Tabs
                         tabBar={props => <CustomTabBar {...props} />}
                         screenOptions={{
@@ -123,6 +124,6 @@ export default function TabLayout() {
                             tabBarIcon: (props) => <TabBarIcon name="log-out-outline" color={props.color} />,
                         }} />
                     </Tabs>
-                </>
+                </AnimatedScrollProvider>
     );
 }

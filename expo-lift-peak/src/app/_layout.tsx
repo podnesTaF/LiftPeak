@@ -112,8 +112,13 @@ const InitialLayout = () => {
                 headerShown: false
             }}  />
             <Stack.Screen name={"(authenticated)/muscle-filter"} options={{
+                presentation: "modal",
                 headerShown: false
             }}  />
+            <Stack.Screen name={"(authenticated)/exercise"} options={{
+                headerTitle: "Exercise",
+                headerTintColor: Colors.white
+            }}/>
         </Stack>
     );
 }
@@ -142,13 +147,11 @@ function RootLayoutNav() {
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                <AnimatedScrollProvider>
-                <GestureHandlerRootView style={{ flex: 1 }}>
-                        <StatusBar style="light"/>
-                        <InitialLayout/>
-                        <ToastNotification />
-                </GestureHandlerRootView>
-                </AnimatedScrollProvider>
+                    <GestureHandlerRootView style={{ flex: 1 }}>
+                            <StatusBar style="light"/>
+                            <InitialLayout/>
+                            <ToastNotification />
+                    </GestureHandlerRootView>
             </ThemeProvider>
         </QueryClientProvider>
     );

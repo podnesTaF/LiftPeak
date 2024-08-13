@@ -1,12 +1,12 @@
-import React, {createContext, useContext, useState} from 'react';
-import { useSharedValue } from 'react-native-reanimated';
+import React, {createContext, useContext} from 'react';
+import {SharedValue, useSharedValue} from 'react-native-reanimated';
 
 export const AnimatedScrollContext = createContext<{
     scrollY: { value: number };
 }>({ scrollY: {value: 0} });
 
-export const AnimatedScrollProvider = ({ children }: {children: React.ReactNode}) => {
-    const scrollY = useSharedValue(0);
+export const AnimatedScrollProvider = ({scrollY, children }: {scrollY: SharedValue<number>, children: React.ReactNode}) => {
+
 
     return (
         <AnimatedScrollContext.Provider value={{ scrollY }}>

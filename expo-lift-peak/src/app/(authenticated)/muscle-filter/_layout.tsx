@@ -12,6 +12,7 @@ const Layout = () => {
                 headerStyle: {
                     backgroundColor: Colors.dark700
                 },
+                presentation: "modal",
                 headerLeft: () => (
                     <TouchableOpacity onPress={router.back}>
                         <Ionicons name={'chevron-back'} size={30} color={Colors.white} />
