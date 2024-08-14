@@ -120,6 +120,10 @@ const InitialLayout = () => {
                 headerTitle: "Exercise",
                 headerTintColor: Colors.white,
             }}/>
+            <Stack.Screen name={"(authenticated)/constructor"} options={{
+                headerTitle: "Exercises",
+                headerTintColor: Colors.white,
+            }}/>
         </Stack>
     );
 }

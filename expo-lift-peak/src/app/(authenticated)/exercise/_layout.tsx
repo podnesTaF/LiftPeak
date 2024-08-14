@@ -3,7 +3,7 @@ import MaterialTopTabs from "@shared/components/tabs/MaterialTopTabs";
 import CustomTopTabBar from "@shared/components/tabs/CustomTopTabBar";
 import {SafeAreaView, Text, TouchableOpacity, View} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
-import {Stack, useLocalSearchParams, useRouter} from "expo-router";
+import {Stack, useGlobalSearchParams, useLocalSearchParams, useRouter} from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
 import {AnimatedScrollProvider} from "@shared/components/AnimatedScrollContext";
 import Animated, {interpolate, useAnimatedStyle, useSharedValue} from "react-native-reanimated";
@@ -14,19 +14,12 @@ import {useHeaderHeight} from "@react-navigation/elements";
 
 const Layout = () => {
     const router = useRouter();
-    const {id} = useLocalSearchParams<{id: string}>();
+    const {id} = useGlobalSearchParams<{id: string}>();
     const scrollY = useSharedValue(0);
     const headerHeight = useHeaderHeight()
     const {data} = useQuery({
         queryKey: ['exercisePreview', id],
         queryFn: async () => findExerciseList({id: +id!, search: ''})
-    })
-
-    const {data: exercise, isLoading} = useQuery({
-        queryKey: ['exercise', id],
-        queryFn: async () => await getFullExercise(id),
-        retry: 2,
-        retryDelay: 5000
     })
 
     const animatedHeaderStyle = useAnimatedStyle(() => {
@@ -38,6 +31,7 @@ const Layout = () => {
 
     const animatedTitleStyle = useAnimatedStyle(() => {
         const opacity = interpolate(scrollY.value, [0, 30], [1, 0]);
+
         const top = interpolate(scrollY.value, [0, 30], [12, -20]);
         return {
             opacity: scrollY.value > 0 ? opacity : 1,

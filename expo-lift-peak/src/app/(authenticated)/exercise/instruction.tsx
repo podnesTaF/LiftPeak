@@ -5,7 +5,6 @@ import {useGlobalSearchParams, useLocalSearchParams} from "expo-router";
 import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
 import Animated, {useAnimatedScrollHandler} from "react-native-reanimated";
 import {Colors, defaultStyles} from "@shared/styles";
-import {ExerciseMedia} from "@entities/media";
 import {Text, View} from "react-native";
 import {groupByPriority} from "@features/muscles";
 
@@ -15,7 +14,7 @@ const Instruction = () => {
 
     const {data: exercise, isLoading} = useQuery({
         queryKey: ['exercise', id],
-        queryFn: async () => await getFullExercise(+id),
+        queryFn: async () => await getFullExercise(id ? +id : 0),
         retry: 2,
         retryDelay: 5000
     })
@@ -26,13 +25,12 @@ const Instruction = () => {
 
     return (
         <Animated.ScrollView onScroll={scrollHandler} scrollEventThrottle={16} style={[defaultStyles.container]}>
-            {/*<ExerciseMedia mediaFiles={exercise?.mediaFiles} isLoading={isLoading} />*/}
             <View style={{gap: 16, padding: 16}}>
                 <View style={{gap: 4}}>
                     <Text style={[defaultStyles.smallTitle, {paddingBottom: 8}]}>
                         Muscle Group Targeted
                     </Text>
-                    {!isLoading && groupByPriority(exercise?.exerciseTargets)?.entries.map(([groupName, exerciseTargets], index) => (
+                    {!isLoading && groupByPriority(exercise?.exerciseTargets)?.entries?.map(([groupName, exerciseTargets], index) => (
                         <View key={groupName} style={{flexDirection: "row", gap: 10, alignItems: "center"}}>
                             <Text style={[defaultStyles.secondaryText, {color: "white"}]}>
                                 {groupName}:
@@ -49,7 +47,7 @@ const Instruction = () => {
                     <Text style={[defaultStyles.smallTitle, {paddingBottom: 8}]}>
                         Instructions
                     </Text>
-                    {!isLoading && exercise?.instructions.map((instruction, index) => (
+                    {!isLoading && exercise?.instructions?.map((instruction, index) => (
                         <View key={instruction.id} style={{flexDirection: "row", gap: 10, alignItems: "center"}}>
                             <Text style={defaultStyles.secondaryText}>
                                 {index + 1}.

@@ -10,3 +10,13 @@ export const getFullExercise = async (id: number): Promise<IExercise> => {
     const {data} = await api.get<IExercise>(`/exercises/${id}`);
     return data;
 }
+
+export const getAlternativeExercises = async (id: number): Promise<IExercise[]> => {
+    const {data} = await api.get<IExercise[]>(`/exercises/${id}/alternatives`);
+    return data;
+}
+
+export const getAlternativeExercisesShort = async (id: number): Promise<IExercise[]> => {
+    const {data} = await api.get<IExercise[]>(`/exercises/${id}/alternatives?shortForm=true`);
+    return data;
+}
