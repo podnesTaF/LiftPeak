@@ -6,6 +6,10 @@ export class CreateTargetDto {
 
   @IsOptional()
   @IsString()
+  formalName: string;
+
+  @IsOptional()
+  @IsString()
   description: string;
 
   @IsOptional()

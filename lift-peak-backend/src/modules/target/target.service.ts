@@ -14,6 +14,7 @@ export class TargetService {
   async create(dto: CreateTargetDto) {
     const target = new Target();
     target.name = dto.name;
+    target.formalName = dto.formalName;
     target.description = dto.description;
 
     if (dto.parentId) {
@@ -32,6 +33,7 @@ export class TargetService {
       const childTargets = dto.muscles.map(async (childDto) => {
         const childTarget = new Target();
         childTarget.name = childDto.name;
+        childTarget.formalName = childDto.formalName;
         childTarget.description = childDto.description;
         childTarget.parent = savedTarget;
 

@@ -51,6 +51,14 @@ export class ExerciseController {
     return this.exerciseService.addMedia(id, files);
   }
 
+  @Get(':id/alternatives')
+  async getAlternativeExercises(
+    @Param('id') id: number,
+    @Query('shortForm') shortForm?: boolean,
+  ) {
+    return this.exerciseService.getAlternativeExercises(id, shortForm);
+  }
+
   @Get(':id')
   async getExercise(@Param('id') id: number) {
     return this.exerciseService.getFullExercise(id);

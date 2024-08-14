@@ -6,7 +6,7 @@ import { FileService } from 'src/modules/file/file.service';
 import { MediaType } from 'src/modules/media/entity/media.entity';
 import { Target } from 'src/modules/target/entities/target.entity';
 import { PassThrough } from 'stream';
-import { DataSource, QueryRunner, Repository } from 'typeorm';
+import { Brackets, DataSource, QueryRunner, Repository } from 'typeorm';
 import { CreateExerciseTargetDto } from '../dto/create-exercise-target.dto';
 import { CreateExerciseDto } from '../dto/create-exercise.dto';
 import { ExerciseMedia } from '../entity/exercise-media.entity';
@@ -273,8 +273,75 @@ export class ExerciseService {
 
     const exercises = await query.getMany();
 
+    return this.toShortTargetFormat(exercises);
+  }
+
+  async getAlternativeExercises(
+    exerciseId: number,
+    shortForm: boolean = false,
+  ) {
+    const exercises = await this.exerciseRepository
+      .createQueryBuilder('exercise')
+      .leftJoin('exercise.exerciseTargets', 'exerciseTargets')
+      .leftJoin('exerciseTargets.target', 'target')
+      .where('exercise.id != :id', { id: exerciseId })
+      .andWhere((qb) => {
+        const subQuery = qb
+          .subQuery()
+          .select('et.targetId')
+          .from(ExerciseTarget, 'et')
+          .where('et.exerciseId = :exerciseId')
+          .setParameter('exerciseId', exerciseId)
+          .getQuery();
+        return 'target.id IN ' + subQuery;
+      })
+      .andWhere('exercise.type = (SELECT type FROM exercise WHERE id = :id)', {
+        id: exerciseId,
+      })
+      .andWhere(
+        'exercise.level = (SELECT level FROM exercise WHERE id = :id)',
+        { id: exerciseId },
+      )
+      .andWhere(
+        new Brackets((qb) => {
+          qb.where(
+            'exercise.equipment = (SELECT equipment FROM exercise WHERE id = :id)',
+            { id: exerciseId },
+          ).orWhere(
+            '(:exerciseId IN (SELECT ex.id FROM exercise ex WHERE ex.equipment IN (:...alternateEquipment)))',
+            {
+              exerciseId: exerciseId,
+              alternateEquipment: ['MACHINE', 'BODYWEIGHT'],
+            },
+          );
+        }),
+      )
+      .orderBy('exerciseTargets.priority', 'ASC')
+      .addOrderBy('exercise.name', 'ASC')
+      .select([
+        'exercise.id',
+        'exercise.name',
+        'exercise.type',
+        'exercise.equipment',
+        'exercise.level',
+        'exercise.previewUrl',
+        'exerciseTargets.priority',
+        'target.name',
+      ])
+      .getMany();
+
+    if (shortForm) {
+      return this.toShortTargetFormat(exercises);
+    } else {
+      return exercises;
+    }
+  }
+
+  private toShortTargetFormat(exercises: Exercise[]) {
     return exercises.map((exercise) => {
-      const targetGroup = exercise.exerciseTargets.map((et) => et.target.name);
+      const targetGroup = exercise.exerciseTargets
+        .filter((et) => et.priority === 1)
+        .map((et) => et.target.name);
       delete exercise.exerciseTargets;
       return {
         ...exercise,

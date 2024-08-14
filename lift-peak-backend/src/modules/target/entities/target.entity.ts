@@ -7,6 +7,9 @@ export class Target extends AbstractEntity {
   @Column()
   name: string;
 
+  @Column({ nullable: true })
+  formalName: string;
+
   @Column({ nullable: true, type: 'text' })
   description: string;
 
@@ -16,7 +19,7 @@ export class Target extends AbstractEntity {
   @Column({ nullable: true })
   parentId: number;
 
-  @ManyToOne(() => Target, (target) => target.muscles)
+  @ManyToOne(() => Target, (target) => target.muscles, { onDelete: 'CASCADE' })
   parent: Target;
 
   @OneToMany(() => ExerciseTarget, (et) => et.target)
