@@ -165,6 +165,7 @@ export class ExerciseService {
         'exerciseTargets',
         'exerciseTargets.target',
         'exerciseLogs',
+        'mediaFiles',
       ],
     });
   }

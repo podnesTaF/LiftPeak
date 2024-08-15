@@ -26,7 +26,7 @@ evnconfig();
 export const config: TypeOrmModuleOptions = {
   type: 'mysql',
   host: process.env.MYSQLHOST || 'localhost',
-  port: parseInt(process.env.MYSQLPORT, 10) || 3306,
+  port: parseInt(process.env.MYSQLPORT, 10),
   username: process.env.MYSQLUSER,
   password: process.env.MYSQLPASSWORD,
   database: process.env.MYSQLDATABASE,

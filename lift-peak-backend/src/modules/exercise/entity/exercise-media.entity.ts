@@ -8,4 +8,7 @@ export class ExerciseMedia extends Media {
   exerciseId: number;
   @ManyToOne(() => Exercise, (exercise) => exercise.mediaFiles)
   exercise: Exercise;
+
+  @Column()
+  previewUrl: string;
 }

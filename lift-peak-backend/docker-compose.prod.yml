@@ -1,0 +1,25 @@
+servises:
+  liftpeak_api_prod:
+    build:
+      context: .
+      dockerfile: Dockerfile.prod
+    ports:
+      - '${PORT:-4001}:${PORT:-4001}'
+    environment:
+      NODE_ENV: ${NODE_ENV:-development}
+      PORT: 4001
+      HOST: ${HOST:-0.0.0.0}
+      MYSQLHOST: ${MYSQLHOST}
+      MYSQLPORT: ${MYSQLPORT}
+      MYSQLUSER: ${MYSQLUSER}
+      MYSQLPASSWORD: ${MYSQLPASSWORD}
+      MYSQLDATABASE: ${MYSQLDATABASE}
+      JWTSECRET: ${JWTSECRET}
+      JWT_EXPIRATION_TIME: ${JWT_EXPIRATION_TIME}
+      GOOGLE_CLOUD_PROJECT_ID: ${GOOGLE_CLOUD_PROJECT_ID}
+      GOOGLE_CLOUD_PRIVATE_KEY: ${GOOGLE_CLOUD_PRIVATE_KEY}
+      GOOGLE_CLOUD_CLIENT_EMAIL: ${GOOGLE_CLOUD_CLIENT_EMAIL}
+      STORAGE_MEDIA_BUCKET: ${STORAGE_MEDIA_BUCKET}
+
+    volumes:
+      - ./src:/usr/src/app/src
