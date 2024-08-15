@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import ffmpeg from 'fluent-ffmpeg';
+import sharp from 'sharp';
 import { FileService } from 'src/modules/file/file.service';
 import { Target } from 'src/modules/target/entities/target.entity';
+import { PassThrough } from 'stream';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
 import { CreateExerciseTargetDto } from '../dto/create-exercise-target.dto';
 import { CreateExerciseDto } from '../dto/create-exercise.dto';
@@ -134,12 +137,51 @@ export class ExerciseService {
         const media = files.media.map(async (file) => {
           const exerciseMedia = new ExerciseMedia();
           exerciseMedia.exerciseId = exerciseId;
-          exerciseMedia.mediaUrl = await this.fileService.uploadFileToStorage(
-            file.originalname,
-            `exercises/${exercise.id}/media`,
-            file.mimetype,
-            file.buffer,
-          );
+
+          if (file.mimetype.startsWith('video/')) {
+            exerciseMedia.mediaUrl = await this.fileService.uploadFileToStorage(
+              file.originalname,
+              `exercises/${exercise.id}/media`,
+              file.mimetype,
+              file.buffer,
+            );
+
+            const snapshotBuffer = await this.generateSnapshotFromBuffer(
+              file.buffer,
+            );
+
+            exerciseMedia.previewUrl =
+              await this.fileService.uploadFileToStorage(
+                `preview-${file.originalname}.jpeg`,
+                `exercises/${exercise.id}/media`,
+                'image/jpeg',
+                snapshotBuffer,
+              );
+          } else if (file.mimetype.startsWith('image/')) {
+            // Resize image
+            const rescaledImageBuffer = await sharp(file.buffer)
+              .resize({
+                width: 400,
+                height: 400,
+                fit: 'inside',
+              })
+              .toBuffer();
+
+            exerciseMedia.mediaUrl = await this.fileService.uploadFileToStorage(
+              file.originalname,
+              `exercises/${exercise.id}/media`,
+              file.mimetype,
+              file.buffer,
+            );
+
+            exerciseMedia.previewUrl =
+              await this.fileService.uploadFileToStorage(
+                `preview-${file.originalname}`,
+                `exercises/${exercise.id}/media`,
+                file.mimetype,
+                rescaledImageBuffer,
+              );
+          }
 
           return await queryRunner.manager.save(ExerciseMedia, exerciseMedia);
         });
@@ -155,6 +197,28 @@ export class ExerciseService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  private async generateSnapshotFromBuffer(
+    videoBuffer: Buffer,
+  ): Promise<Buffer> {
+    return new Promise<Buffer>((resolve, reject) => {
+      const videoStream = new PassThrough();
+      videoStream.end(videoBuffer);
+
+      const buffers: Uint8Array[] = [];
+      const outputStream = new PassThrough();
+
+      outputStream.on('data', (data) => buffers.push(data));
+      outputStream.on('end', () => resolve(Buffer.concat(buffers)));
+      outputStream.on('error', (err) => reject(err));
+
+      ffmpeg(videoStream)
+        .outputOptions('-f', 'image2pipe')
+        .output(outputStream)
+        .on('error', (err) => reject(err))
+        .run();
+    });
   }
 
   async getFullExercise(exerciseId: number) {
