@@ -19,8 +19,8 @@ export class ExerciseController {
   constructor(private readonly exerciseService: ExerciseService) {}
 
   @Get('search')
-  async searchExercises(@Query() query?: { value?: string }) {
-    return this.exerciseService.searchExercises(query.value);
+  async searchExercises(@Query() query?: { value?: string; id?: number }) {
+    return this.exerciseService.searchExercises(query.value, query?.id);
   }
 
   @Post()

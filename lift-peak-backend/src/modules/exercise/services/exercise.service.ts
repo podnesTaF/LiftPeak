@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import ffmpeg from 'fluent-ffmpeg';
 import sharp from 'sharp';
 import { FileService } from 'src/modules/file/file.service';
+import { MediaType } from 'src/modules/media/entity/media.entity';
 import { Target } from 'src/modules/target/entities/target.entity';
 import { PassThrough } from 'stream';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
@@ -134,8 +135,9 @@ export class ExerciseService {
       }
 
       if (files.media && files.media.length > 0) {
-        const media = files.media.map(async (file) => {
+        const media = files.media.map(async (file, index) => {
           const exerciseMedia = new ExerciseMedia();
+          exerciseMedia.order = index + 1;
           exerciseMedia.exerciseId = exerciseId;
 
           if (file.mimetype.startsWith('video/')) {
@@ -157,6 +159,8 @@ export class ExerciseService {
                 'image/jpeg',
                 snapshotBuffer,
               );
+
+            exerciseMedia.mediaType = MediaType.VIDEO;
           } else if (file.mimetype.startsWith('image/')) {
             // Resize image
             const rescaledImageBuffer = await sharp(file.buffer)
@@ -181,6 +185,8 @@ export class ExerciseService {
                 file.mimetype,
                 rescaledImageBuffer,
               );
+
+            exerciseMedia.mediaType = MediaType.IMAGE;
           }
 
           return await queryRunner.manager.save(ExerciseMedia, exerciseMedia);
@@ -236,6 +242,7 @@ export class ExerciseService {
 
   async searchExercises(
     value?: string,
+    id?: number,
   ): Promise<(Partial<Exercise> & { targetGroup: string[] })[]> {
     const query = this.exerciseRepository
       .createQueryBuilder('exercise')
@@ -259,6 +266,9 @@ export class ExerciseService {
         .where('exercise.name LIKE :value', { value: `%${value}%` })
         .orWhere('target.name LIKE :value', { value: `%${value}%` })
         .orWhere('muscles.name LIKE :value', { value: `%${value}%` });
+    }
+    if (id) {
+      query.andWhere('exercise.id = :id', { id });
     }
 
     const exercises = await query.getMany();
