@@ -1,26 +1,38 @@
-import React, {useEffect} from 'react';
+import React from 'react';
 import MaterialTopTabs from "@shared/components/tabs/MaterialTopTabs";
 import CustomTopTabBar from "@shared/components/tabs/CustomTopTabBar";
-import {SafeAreaView, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {SafeAreaView, Text, TouchableOpacity, View} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
 import {Stack, useLocalSearchParams, useRouter} from "expo-router";
 import {Ionicons} from "@expo/vector-icons";
-import {AnimatedScrollProvider, useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
+import {AnimatedScrollProvider} from "@shared/components/AnimatedScrollContext";
 import Animated, {interpolate, useAnimatedStyle, useSharedValue} from "react-native-reanimated";
-import {Color} from "ansi-fragments/build/fragments/Color";
-import {ExerciseVideo} from "@entities/exercise";
-import Button from "@shared/components/Button";
+import {useQuery} from "@tanstack/react-query";
+import {findExerciseList, getFullExercise} from "@entities/exercise";
+import {useHeaderHeight} from "@react-navigation/elements";
+
 
 const Layout = () => {
     const router = useRouter();
     const {id} = useLocalSearchParams<{id: string}>();
     const scrollY = useSharedValue(0);
-    const [activeVideo, setActiveVideo] = React.useState<number>(0);
+    const headerHeight = useHeaderHeight()
+    const {data} = useQuery({
+        queryKey: ['exercisePreview', id],
+        queryFn: async () => findExerciseList({id: +id!, search: ''})
+    })
+
+    const {data: exercise, isLoading} = useQuery({
+        queryKey: ['exercise', id],
+        queryFn: async () => await getFullExercise(id),
+        retry: 2,
+        retryDelay: 5000
+    })
 
     const animatedHeaderStyle = useAnimatedStyle(() => {
-        const opacity = interpolate(scrollY.value, [25, 50], [0, 1]);
+        const opacity = interpolate(scrollY.value, [0, 50], [0, 1]);
         return {
-            opacity: scrollY.value > 0 ? opacity : 1,
+            opacity: scrollY.value > 0 ? opacity : 0,
         };
     });
 
@@ -28,7 +40,7 @@ const Layout = () => {
         const opacity = interpolate(scrollY.value, [0, 30], [1, 0]);
         const top = interpolate(scrollY.value, [0, 30], [12, -20]);
         return {
-            opacity,
+            opacity: scrollY.value > 0 ? opacity : 1,
             top: scrollY.value > 0 ? top : 12,
         }
     })
@@ -50,20 +62,20 @@ const Layout = () => {
                             <TouchableOpacity style={{position: "absolute", left: 12, top: 6}} onPress={router.back}>
                                 <Ionicons name={'chevron-back'} size={30} color={Colors.white}/>
                             </TouchableOpacity>
-                            <Animated.View style={[{flex: 1,alignItems: "center"}, animatedHeaderStyle]}>
+                            <Animated.View style={[{flex: 1,alignItems: "center", opacity: 0}, animatedHeaderStyle]}>
                                 <Text style={{color: 'white', fontWeight: "600", fontSize: 16}}>
-                                    SkullCrusher ({id})
+                                    {data?.[0]?.name}
                                 </Text>
                             </Animated.View>
                           </View>
                           <Animated.View style={[{padding: 12, paddingTop: 50, gap: 12 }, animatedContainerStyle]}>
                              <Animated.View style={[{position: "absolute", left:12, top:12}, animatedTitleStyle]}>
                                  <Text style={[defaultStyles.header, {fontSize: 24}]}>
-                                     SkullCrusher ({id})
+                                     {data?.[0]?.name}
                                  </Text>
                              </Animated.View>
-                              <Text style={defaultStyles.secondaryText}>
-                                  Triceps, Lats
+                              <Text style={[defaultStyles.secondaryText, {textTransform: "capitalize"}]}>
+                                  {data?.[0]?.targetGroup.join(' • ')}
                               </Text>
                           </Animated.View>
                       </SafeAreaView>
@@ -74,7 +86,7 @@ const Layout = () => {
                 tabBar={(props) => <CustomTopTabBar {...props} />}
             >
                 <MaterialTopTabs.Screen name={'index'} options={{
-                    title: "Stats"
+                    title: "Overview"
                 }} />
                 <MaterialTopTabs.Screen name={'instruction'} options={{
                     title: "Instructions"

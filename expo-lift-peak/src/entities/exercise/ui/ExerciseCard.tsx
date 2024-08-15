@@ -4,7 +4,7 @@ import {IExercise} from "@entities/exercise";
 import {Colors} from "@shared/styles";
 import Avatar from "@shared/components/Avatar";
 import {Ionicons} from "@expo/vector-icons";
-import {getExerciseTargetsToString} from "@features/workout-logger";
+import {getExerciseTargetsToString} from "@entities/exercise/utils";
 
 interface ExerciseCardProps {
     onPress?: (exerciseId: number | string) => void;

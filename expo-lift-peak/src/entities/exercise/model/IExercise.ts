@@ -1,6 +1,7 @@
 import {Instruction} from "@entities/exercise/model/Instruction";
 import {IExerciseTarget} from "@entities/exercise/model/ITarget";
 import {IExerciseLog} from "@entities/workout-log";
+import {IExerciseMedia} from "@entities/media";
 
 export interface IExercise {
     id: number;
@@ -13,6 +14,7 @@ export interface IExercise {
     instructions: Instruction[];
     exerciseTargets: IExerciseTarget[];
     exerciseLogs: IExerciseLog[];
+    mediaFiles?: IExerciseMedia[];
 
     targetGroup?: string[];
 

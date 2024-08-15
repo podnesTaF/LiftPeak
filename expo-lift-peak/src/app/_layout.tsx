@@ -84,6 +84,7 @@ const InitialLayout = () => {
         return <Text>Loading...</Text>;
     }
 
+
     return (
         <Stack screenOptions={{
             headerStyle: {
@@ -117,7 +118,7 @@ const InitialLayout = () => {
             }}  />
             <Stack.Screen name={"(authenticated)/exercise"} options={{
                 headerTitle: "Exercise",
-                headerTintColor: Colors.white
+                headerTintColor: Colors.white,
             }}/>
         </Stack>
     );

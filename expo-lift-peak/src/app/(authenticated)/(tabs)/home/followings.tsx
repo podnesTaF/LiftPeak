@@ -15,14 +15,6 @@ export default function Followings() {
 
   const tabBarHeight = useBottomTabBarHeight() + 20;
 
-  useEffect(() => {
-    console.log("mount")
-    return () => {
-      console.log("unmount")
-        scrollY.value = 0;
-    }
-  }, []);
-
   const scrollHandler = useAnimatedScrollHandler(event => {
     scrollY.value = event.contentOffset.y;
   });

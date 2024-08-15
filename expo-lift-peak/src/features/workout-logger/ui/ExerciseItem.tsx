@@ -1,6 +1,6 @@
 import React, {useRef, useState} from 'react';
 import {View, StyleSheet, Text, Alert, Pressable} from "react-native";
-import {getExerciseTargetsToString} from "@features/workout-logger/utils";
+import {getExerciseTargetsToString} from "@entities/exercise";
 import {useExerciseStore} from "@features/workout-logger/store/exerciseStore";
 import {Colors} from "@shared/styles";
 import Avatar from "@shared/components/Avatar";
@@ -8,7 +8,6 @@ import {Ionicons} from "@expo/vector-icons";
 import * as Haptics from 'expo-haptics';
 import SwipeableRow from "@shared/components/SwipeableRow";
 import Animated, {FadeInUp, FadeOutUp} from "react-native-reanimated";
-import {RenderItemParams, ScaleDecorator} from "react-native-draggable-flatlist";
 import {IExerciseLog} from "@entities/workout-log";
 
 interface ExerciseItemProps {
