@@ -9,7 +9,6 @@ const Layout = () => {
         <Stack>
             <Stack.Screen name={"index"} options={{
                 title: "Start a workout",
-
             }} />
         </Stack>
     );

@@ -21,6 +21,7 @@ import {openDatabaseSync} from "expo-sqlite";
 import {useMigrations} from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "../db/migrations/migrations";
 import {db} from "@db/dbInstance";
+import {BottomSheetModalProvider} from "@gorhom/bottom-sheet";
 export {
     // Catch any errors thrown by the Layout component.
     ErrorBoundary,
@@ -124,6 +125,11 @@ const InitialLayout = () => {
                 headerTitle: "Exercises",
                 headerTintColor: Colors.white,
             }}/>
+            <Stack.Screen name={"(authenticated)/explore"} options={{
+                headerShown: false,
+                headerBackTitleVisible: false,
+                headerTitle: ""
+            }}/>
         </Stack>
     );
 }
@@ -153,9 +159,11 @@ function RootLayoutNav() {
         <QueryClientProvider client={queryClient}>
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                     <GestureHandlerRootView style={{ flex: 1 }}>
-                            <StatusBar style="light"/>
-                            <InitialLayout/>
-                            <ToastNotification />
+                        <BottomSheetModalProvider>
+                                <StatusBar style="light"/>
+                                <InitialLayout/>
+                                <ToastNotification />
+                        </BottomSheetModalProvider>
                     </GestureHandlerRootView>
             </ThemeProvider>
         </QueryClientProvider>

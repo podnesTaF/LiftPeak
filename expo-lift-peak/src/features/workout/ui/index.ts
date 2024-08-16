@@ -1,1 +1,1 @@
-export * from './RoutineCard'
+export * from './MyRoutineCard'

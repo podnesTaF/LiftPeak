@@ -7,10 +7,11 @@ import {Colors, defaultStyles} from "@shared/styles";
 import {useHeaderHeight} from "@react-navigation/elements";
 import {Ionicons} from "@expo/vector-icons";
 import {useQuery} from "@tanstack/react-query";
-import {getRoutineList, RoutineCard} from "@features/workout";
+import {MyRoutineCard} from "@features/workout";
 import {useAuthStore} from "@features/auth";
 import {registerBackgroundTask, useTimerStore} from "@features/timer";
 import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
+import {getRoutineList} from "@entities/routine";
 
 
 
@@ -99,7 +100,7 @@ export default function StartWorkout() {
             <Button title={"Quick Start"} onPress={startQuickWorkout} color={"white"}>
               <Ionicons name={"flash-outline"} size={24} color={Colors.dark700} />
             </Button>
-            <Button title={"Explore Workouts"} onPress={() => router.push("/(authenticated)/muscle-filter")} color={"dark500"}>
+            <Button title={"Explore Workouts"} onPress={() => router.push("/(authenticated)/explore")} color={"dark500"}>
               <Ionicons name={"search-outline"} size={24} color={Colors.white} />
             </Button>
             <Button title={"Exercises"} onPress={() => router.push({pathname: "/(authenticated)/constructor"})} color={"dark500"}>
@@ -117,7 +118,7 @@ export default function StartWorkout() {
           </View>
           <View style={{gap: 16, marginVertical: 16}}>
             {data?.map((routine) => (
-                <RoutineCard workout={routine} key={routine.id} />
+                <MyRoutineCard startable={true} workout={routine} key={routine.id} />
             ))}
           </View>
         </ScrollView>
