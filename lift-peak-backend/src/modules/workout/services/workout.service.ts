@@ -91,12 +91,19 @@ export class WorkoutService {
       .leftJoin('workoutLog.exerciseLogs', 'exerciseLogs')
       .leftJoin('exerciseLogs.exercise', 'exercise')
       .leftJoin('exerciseLogs.sets', 'sets')
+      .leftJoin('workout.user', 'user')
+      .leftJoin('user.profile', 'profile')
       .where('workout.isRoutine = :isRoutine', { isRoutine: true })
       .select([
         'workout.id',
         'workout.title',
         'exercise.name',
         'COUNT(sets.id) as setCount',
+        'user.id',
+        'user.username',
+        'profile.avatarUrl',
+        'profile.firstName',
+        'profile.lastName',
       ])
       .groupBy('workout.id, exercise.name')
       .getRawMany();
@@ -114,6 +121,15 @@ export class WorkoutService {
           acc.push({
             id: routine.workout_id,
             title: routine.workout_title,
+            user: {
+              id: routine.user_id,
+              username: routine.user_username,
+              profile: {
+                avatarUrl: routine.profile_avatarUrl,
+                firstName: routine.profile_firstName,
+                lastName: routine.profile_lastName,
+              },
+            },
             exercises: [routine.exercise_name],
             sets: parseInt(routine.setCount, 10),
           });
