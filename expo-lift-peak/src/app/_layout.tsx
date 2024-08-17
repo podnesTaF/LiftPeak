@@ -7,13 +7,11 @@ import React, {useEffect} from 'react';
 import 'react-native-reanimated';
 
 import {QueryClientProvider} from "@tanstack/react-query";
-import {Text, TouchableOpacity, View} from "react-native";
+import {Text, View} from "react-native";
 import {StatusBar} from "expo-status-bar";
-import {Ionicons} from "@expo/vector-icons";
 import {useAuthStore} from "@features/auth";
 import {Colors, useColorScheme} from "@shared/styles";
 import {queryClient} from "@shared/api";
-import {AnimatedScrollProvider} from "@shared/components/AnimatedScrollContext";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import ToastNotification from "@shared/components/ToastNotification";
 import {BottomSheetModalProvider} from "@gorhom/bottom-sheet";
@@ -22,12 +20,10 @@ import {db} from "@db/dbInstance";
 import migrations from "@db/migrations/migrations";
 
 export {
-    // Catch any errors thrown by the Layout component.
     ErrorBoundary,
 } from 'expo-router';
 
 export const unstable_settings = {
-    // Ensure that reloading on `/modal` keeps a back button present.
     initialRouteName: '(top-tabs)',
 };
 
