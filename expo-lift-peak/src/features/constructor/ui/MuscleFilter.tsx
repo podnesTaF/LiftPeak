@@ -31,7 +31,7 @@ export const MuscleFilter = ({selectedMuscles, setSelectedMuscles}: MuscleFilter
                     Select muscles that you want to be targeted by your workout
                 </Text>
             </View>
-            <View style={[defaultStyles.container, {padding: 16, gap: 20, paddingBottom: 0}]}>
+            <View style={[defaultStyles.container, {padding: 16, gap: 14, paddingBottom: 0}]}>
                 <View style={styles.row}>
                     <Text style={{color: "white", fontWeight: "500", fontSize: 16, paddingVertical: 12}}>
                         View
