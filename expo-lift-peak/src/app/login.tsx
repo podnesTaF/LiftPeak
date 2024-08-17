@@ -52,10 +52,7 @@ const Login = () => {
     React.useCallback(() => {
       form.reset();
     }, [])
-);
-
-
-  
+  );
 
   return (
     <KeyboardAvoidingView
@@ -72,12 +69,14 @@ const Login = () => {
                 name={"email"}
                 label={"Email"}
                 placeholder={"enter your email"}
+                noValidationStyling          
               />
               <FormField
                 type={"password"}
                 name={"password"}
                 label={"Password"}
                 placeholder={"enter your password"}
+                noValidationStyling
               />
             </View>
             <Link href={"/forgotPassword"} asChild>

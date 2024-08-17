@@ -44,7 +44,7 @@ const ForgotPassword = () => {
             />
             <Button
               disabled={!form.formState.isValid}
-              title={"Reset Password"}
+              title={"Recover Password"}
               color={"dark100"}
               onPress={navigateOtp}
             />

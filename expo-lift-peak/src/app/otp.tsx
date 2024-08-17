@@ -1,48 +1,87 @@
-import React, { useState } from "react";
-import { OTPInput } from "@features/auth/ui";
+import React, { useEffect, useState } from "react";
 import {
   View,
-  Alert,
   KeyboardAvoidingView,
   Platform,
+  StyleSheet,
   Text,
+  TouchableOpacity,
 } from "react-native";
 import Button from "@shared/components/Button";
 import { Colors, defaultStyles } from "@shared/styles";
+import { OtpInput } from "react-native-otp-entry";
+import { router } from "expo-router";
 
 const Otp = () => {
-  const [otp, setOtp] = useState<string[]>(Array(6).fill("")); // Assuming the OTP length is 6
 
-  const handleOtpChange = (newOtp: string[]) => {
-    setOtp(newOtp);
-  };
+  const [otp, setOtp] = useState("");
+  const isOtpComplete = otp.length === 6;
 
-  const handleSubmit = () => {
-    // You can handle OTP submission here, e.g., send it to the backend or validate it
-    Alert.alert("OTP Entered", otp.join(""));
-  };
+  useEffect(() => {
+    console.log(otp)
+  },[otp])
+
+  const handleResetPassword = () => {
+    router.push("/resetPassword");
+  }
+ 
 
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "position"}
       style={[defaultStyles.container]}
     >
-      <View style={{ gap: 16, paddingBottom: 40, marginTop: 38 }}>
-        <OTPInput
-          length={6}
-          value={otp}
+      <View style={{ marginTop: 38 }}>
+        <Text style={[defaultStyles.header]}>Confirmation</Text>
+        <Text style={[defaultStyles.smallTitle, { paddingVertical: 26 }]}>
+          Enter Verification code
+        </Text>
+      </View>
+      <View style={{ paddingBottom: 40 }}>
+        <OtpInput
+          numberOfDigits={6}
+          onTextChange={(text) => {setOtp(text)}}
+          focusColor={Colors.white}
+          focusStickBlinkingDuration={400}
           disabled={false}
-          onChange={handleOtpChange}
+          theme={{
+            pinCodeContainerStyle: {
+              backgroundColor: Colors.dark500,
+              width: 59,
+              height: 59,
+              borderRadius: 12,
+              borderColor: Colors.dark500
+            },
+            pinCodeTextStyle: {
+              color: Colors.white
+            },
+ 
+          }}
         />
-        <Button
-          disabled={true}
-          title={"Confirm"}
-          color={"dark100"}
-          onPress={handleSubmit}
-        />
+      </View>
+      <View style={{ flexDirection: "row", alignItems: "center" }}>
+        <Text style={[defaultStyles.secondaryText, { fontSize: 16 }]}>
+          Don't receive the code?
+        </Text>
+        <TouchableOpacity>
+          <Text
+            style={[
+              defaultStyles.secondaryText,
+              { fontSize: 16, color: Colors.lime },
+            ]}
+          >
+            {" "}
+            Resend
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <View style={{marginVertical: 64}}>
+        <Button title={"Verify and Proceed"} color={"white"} onPress={handleResetPassword} disabled={!isOtpComplete}/>
       </View>
     </KeyboardAvoidingView>
   );
 };
 
 export default Otp;
+
+const styles = StyleSheet.create({});

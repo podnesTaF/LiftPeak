@@ -107,6 +107,9 @@ const InitialLayout = () => {
                 title: "",
                 
             }}/>
+            <Stack.Screen name="resetPassword" options={{
+                title: ""
+            }}/>
         </Stack>
     );
 }
