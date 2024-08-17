@@ -103,6 +103,10 @@ const InitialLayout = () => {
                 headerBackTitleVisible: false,
                 
             }}/>
+            <Stack.Screen name="otp" options={{
+                title: "",
+                
+            }}/>
         </Stack>
     );
 }
