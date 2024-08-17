@@ -7,7 +7,7 @@ import React, {useEffect} from 'react';
 import 'react-native-reanimated';
 
 import {QueryClientProvider} from "@tanstack/react-query";
-import {Text, TouchableOpacity} from "react-native";
+import {Text, TouchableOpacity, View} from "react-native";
 import {StatusBar} from "expo-status-bar";
 import {Ionicons} from "@expo/vector-icons";
 import {useAuthStore} from "@features/auth";
@@ -16,6 +16,10 @@ import {queryClient} from "@shared/api";
 import {AnimatedScrollProvider} from "@shared/components/AnimatedScrollContext";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import ToastNotification from "@shared/components/ToastNotification";
+import {BottomSheetModalProvider} from "@gorhom/bottom-sheet";
+import {useMigrations} from "drizzle-orm/op-sqlite/migrator";
+import {db} from "@db/dbInstance";
+import migrations from "@db/migrations/migrations";
 
 export {
     // Catch any errors thrown by the Layout component.
@@ -101,7 +105,26 @@ const InitialLayout = () => {
                 headerShown: true,
                 title: "Search",
                 headerBackTitleVisible: false,
-                
+            }}/>
+            <Stack.Screen name={"(authenticated)/workout"} options={{
+                headerShown: false
+            }}  />
+            <Stack.Screen name={"(authenticated)/muscle-filter"} options={{
+                presentation: "modal",
+                headerShown: false
+            }}  />
+            <Stack.Screen name={"(authenticated)/exercise"} options={{
+                headerTitle: "Exercise",
+                headerTintColor: Colors.white,
+            }}/>
+            <Stack.Screen name={"(authenticated)/constructor"} options={{
+                headerTitle: "Exercises",
+                headerTintColor: Colors.white,
+            }}/>
+            <Stack.Screen name={"(authenticated)/explore"} options={{
+                headerShown: false,
+                headerBackTitleVisible: false,
+                headerTitle: ""
             }}/>
         </Stack>
     );
@@ -109,14 +132,34 @@ const InitialLayout = () => {
 
 function RootLayoutNav() {
     const colorScheme = useColorScheme();
+    const { success, error } = useMigrations(db, migrations);
+
+    if (error) {
+        return (
+            <View>
+                <Text>Migration error: {error.message}</Text>
+            </View>
+        );
+    }
+
+    if (!success) {
+        return (
+            <View>
+                <Text>Migration is in progress...</Text>
+            </View>
+        );
+    }
+
 
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
                 <GestureHandlerRootView style={{ flex: 1 }}>
-                        <StatusBar style="light"/>
-                        <InitialLayout/>
-                        <ToastNotification />
+                       <BottomSheetModalProvider>
+                           <StatusBar style="light"/>
+                           <InitialLayout/>
+                           <ToastNotification />
+                       </BottomSheetModalProvider>
                 </GestureHandlerRootView>
             </ThemeProvider>
         </QueryClientProvider>
