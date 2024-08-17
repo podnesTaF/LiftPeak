@@ -1,7 +1,6 @@
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
 import {useFonts} from 'expo-font';
-import {drizzle, useLiveQuery} from "drizzle-orm/expo-sqlite";
 import {Stack, useRouter, useSegments} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import React, {useEffect} from 'react';
@@ -10,14 +9,11 @@ import 'react-native-reanimated';
 import {QueryClientProvider} from "@tanstack/react-query";
 import {Text, TouchableOpacity, View} from "react-native";
 import {StatusBar} from "expo-status-bar";
-import {Ionicons} from "@expo/vector-icons";
 import {useAuthStore} from "@features/auth";
 import {Colors, useColorScheme} from "@shared/styles";
 import {queryClient} from "@shared/api";
-import {AnimatedScrollProvider} from "@shared/components/AnimatedScrollContext";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import ToastNotification from "@shared/components/ToastNotification";
-import {openDatabaseSync} from "expo-sqlite";
 import {useMigrations} from "drizzle-orm/expo-sqlite/migrator";
 import migrations from "../db/migrations/migrations";
 import {db} from "@db/dbInstance";
@@ -33,7 +29,6 @@ export const unstable_settings = {
 };
 
 
-// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 const InitialLayout = () => {
@@ -93,22 +88,21 @@ const InitialLayout = () => {
             },
             headerTintColor: Colors.white,
         }}>
-            <Stack.Screen name={'index'} options={{headerShown: false}}/>
+            <Stack.Screen name={'index'} options={{headerShown: false, title: ''}}/>
             <Stack.Screen name="login" options={{
-                headerTransparent: true,
-                title: "Search",
-                headerLeft: () => (
-                    <TouchableOpacity onPress={router.back}>
-                        <Ionicons name="chevron-back" size={34} color={Colors.white}/>
-                    </TouchableOpacity>
-                )
+                title: "",
+            }}/>
+            <Stack.Screen name="forgotPassword" options={{
+                title: "",
+                
             }}/>
             <Stack.Screen name="signup"/>
             <Stack.Screen name="(authenticated)/(tabs)" options={{headerShown: false}}/>
             <Stack.Screen name="(authenticated)/search" options={{
                 headerShown: true,
                 title: "Search",
-                headerBackTitleVisible: false
+                headerBackTitleVisible: false,
+                
             }}/>
             <Stack.Screen name={"(authenticated)/workout"} options={{
                 headerShown: false

@@ -1,7 +1,8 @@
 import React from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import {TextInput, StyleSheet, Text, View} from "react-native";
-import {Colors} from "@shared/styles";
+import { TextInput, StyleSheet, Text, View } from "react-native";
+import { Colors } from "@shared/styles";
+import { Ionicons } from "@expo/vector-icons";
 
 interface FormFieldProps {
   name: string;
@@ -13,44 +14,61 @@ interface FormFieldProps {
 const FormField: React.FC<FormFieldProps> = ({
   name,
   label,
-  placeholder, type = "name"
+  placeholder,
+  type = "name",
 }) => {
-  const { control, formState: { errors } } = useFormContext();
+  const {
+    control,
+    formState: { errors},
+  } = useFormContext();
 
   const hasError = !!errors[name];
 
+
   return (
-      <>
-        <Controller
-            control={control}
-            render={({ field: { onChange, onBlur, value }  }) => (
-                <View style={{gap:8}}>
-                  {label && <Text style={styles.label}>{label}</Text>}
-                  <TextInput
-                      placeholderTextColor={Colors.dark300}
-                      textContentType={type}
-                      autoCapitalize="none"
-                      onChangeText={onChange}
-                      onBlur={onBlur}
-                      value={value}
-                      style={[
-                        styles.input,
-                        hasError && styles.inputError,
-                      ]}
-                      secureTextEntry={type === "password"}
-                      placeholder={placeholder}
+    <>
+      <Controller
+        control={control}
+        render={({ field: { onChange, onBlur, value } }) => (
+          <View style={{gap: 8}}>
+            {label && <Text style={styles.label}>{label}</Text>}
+            <View style={{ gap: 8, flexDirection: "row" }}>
+              <View style={styles.inputWrapper}>
+                <TextInput
+                  placeholderTextColor={Colors.dark300}
+                  textContentType={type}
+                  autoCapitalize="none"
+                  onChangeText={onChange}
+                  onBlur={onBlur}
+                  value={value}
+                  style={[styles.input, hasError && value && styles.inputError]}
+                  secureTextEntry={type === "password"}
+                  placeholder={placeholder}
+                />
+                {value !== "" && value !== undefined && (
+                  <Ionicons
+                    name={hasError ? "close-circle" : "checkmark-circle"}
+                    size={20}
+                    color={hasError ? Colors.danger : Colors.success}
+                    style={styles.icon}
                   />
-                  {hasError && <Text style={styles.errorText}>{(errors[name] as any)?.message}</Text>}
-                </View>
-            )}
-            name={name}
-        />
-      </>
+                )}
+              </View>
+            </View>
+          </View>
+        )}
+        name={name}
+      />
+    </>
   );
 };
 const styles = StyleSheet.create({
   container: {
     padding: 16,
+  },
+  inputWrapper: {
+    position: 'relative',
+    flex: 1
   },
   input: {
     borderRadius: 8,
@@ -65,15 +83,25 @@ const styles = StyleSheet.create({
     borderColor: "rgba(255, 0, 0, 0.5)",
     borderWidth: 1,
   },
+  iconContainer: {
+    width: 24,
+    alignItems: "center",
+    justifyContent: 'center'
+  },
+  icon: {
+    position: 'absolute',
+    right: 10, 
+    top: "50%",
+    transform: [{ translateY: -10 }],
+  },
   label: {
     color: Colors.dark300,
     fontSize: 16,
   },
   errorText: {
-    color: 'red',
+    color: "red",
     marginBottom: 10,
   },
 });
-
 
 export default FormField;
