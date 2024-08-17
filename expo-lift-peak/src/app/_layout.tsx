@@ -7,17 +7,16 @@ import React, {useEffect} from 'react';
 import 'react-native-reanimated';
 
 import {QueryClientProvider} from "@tanstack/react-query";
-import {Text, TouchableOpacity, View} from "react-native";
+import {Text, TouchableOpacity} from "react-native";
 import {StatusBar} from "expo-status-bar";
+import {Ionicons} from "@expo/vector-icons";
 import {useAuthStore} from "@features/auth";
 import {Colors, useColorScheme} from "@shared/styles";
 import {queryClient} from "@shared/api";
+import {AnimatedScrollProvider} from "@shared/components/AnimatedScrollContext";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import ToastNotification from "@shared/components/ToastNotification";
-import {useMigrations} from "drizzle-orm/expo-sqlite/migrator";
-import migrations from "../db/migrations/migrations";
-import {db} from "@db/dbInstance";
-import {BottomSheetModalProvider} from "@gorhom/bottom-sheet";
+
 export {
     // Catch any errors thrown by the Layout component.
     ErrorBoundary,
@@ -29,6 +28,7 @@ export const unstable_settings = {
 };
 
 
+// Prevent the splash screen from auto-hiding before asset loading is complete.
 SplashScreen.preventAutoHideAsync();
 
 const InitialLayout = () => {
@@ -80,7 +80,6 @@ const InitialLayout = () => {
         return <Text>Loading...</Text>;
     }
 
-
     return (
         <Stack screenOptions={{
             headerStyle: {
@@ -104,61 +103,21 @@ const InitialLayout = () => {
                 headerBackTitleVisible: false,
                 
             }}/>
-            <Stack.Screen name={"(authenticated)/workout"} options={{
-                headerShown: false
-            }}  />
-            <Stack.Screen name={"(authenticated)/muscle-filter"} options={{
-                presentation: "modal",
-                headerShown: false
-            }}  />
-            <Stack.Screen name={"(authenticated)/exercise"} options={{
-                headerTitle: "Exercise",
-                headerTintColor: Colors.white,
-            }}/>
-            <Stack.Screen name={"(authenticated)/constructor"} options={{
-                headerTitle: "Exercises",
-                headerTintColor: Colors.white,
-            }}/>
-            <Stack.Screen name={"(authenticated)/explore"} options={{
-                headerShown: false,
-                headerBackTitleVisible: false,
-                headerTitle: ""
-            }}/>
         </Stack>
     );
 }
 
 function RootLayoutNav() {
     const colorScheme = useColorScheme();
-    const { success, error } = useMigrations(db, migrations);
-
-    if (error) {
-        return (
-            <View>
-                <Text>Migration error: {error.message}</Text>
-            </View>
-        );
-    }
-
-    if (!success) {
-        return (
-            <View>
-                <Text>Migration is in progress...</Text>
-            </View>
-        );
-    }
-
 
     return (
         <QueryClientProvider client={queryClient}>
             <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-                    <GestureHandlerRootView style={{ flex: 1 }}>
-                        <BottomSheetModalProvider>
-                                <StatusBar style="light"/>
-                                <InitialLayout/>
-                                <ToastNotification />
-                        </BottomSheetModalProvider>
-                    </GestureHandlerRootView>
+                <GestureHandlerRootView style={{ flex: 1 }}>
+                        <StatusBar style="light"/>
+                        <InitialLayout/>
+                        <ToastNotification />
+                </GestureHandlerRootView>
             </ThemeProvider>
         </QueryClientProvider>
     );

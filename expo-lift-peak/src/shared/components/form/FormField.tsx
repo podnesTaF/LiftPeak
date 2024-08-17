@@ -1,6 +1,6 @@
-import React from "react";
+import React, { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextInput, StyleSheet, Text, View } from "react-native";
+import { TextInput, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import { Colors } from "@shared/styles";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -9,6 +9,8 @@ interface FormFieldProps {
   label?: string;
   placeholder?: string;
   type?: "emailAddress" | "password" | "name";
+  noValidationStyling?: boolean;
+  showPasswordToggle?: boolean;
 }
 
 const FormField: React.FC<FormFieldProps> = ({
@@ -16,11 +18,19 @@ const FormField: React.FC<FormFieldProps> = ({
   label,
   placeholder,
   type = "name",
+  noValidationStyling = false,
+  showPasswordToggle = false
 }) => {
   const {
     control,
     formState: { errors},
   } = useFormContext();
+
+  const [secureTextEntry, setSecureTextEntry] = useState(type === "password")
+
+  const togglePasswordVisibility = () => {
+    setSecureTextEntry((prev) => !prev);
+  }
 
   const hasError = !!errors[name];
 
@@ -41,11 +51,23 @@ const FormField: React.FC<FormFieldProps> = ({
                   onChangeText={onChange}
                   onBlur={onBlur}
                   value={value}
-                  style={[styles.input, hasError && value && styles.inputError]}
-                  secureTextEntry={type === "password"}
+                  style={[styles.input, hasError && value && !noValidationStyling && styles.inputError]}
+                  secureTextEntry={secureTextEntry}
                   placeholder={placeholder}
                 />
-                {value !== "" && value !== undefined && (
+                {showPasswordToggle && type === "password" && (
+                  <TouchableOpacity
+                    onPress={togglePasswordVisibility}
+                    style={styles.iconToggle}
+                  >
+                    <Ionicons
+                      name={secureTextEntry ? "eye-off" : "eye"}
+                      size={20}
+                      color={Colors.dark300}
+                    />
+                  </TouchableOpacity>
+                )}
+                {value !== "" && value !== undefined && !noValidationStyling && (
                   <Ionicons
                     name={hasError ? "close-circle" : "checkmark-circle"}
                     size={20}
@@ -69,6 +91,12 @@ const styles = StyleSheet.create({
   inputWrapper: {
     position: 'relative',
     flex: 1
+  },
+  iconToggle: {
+    position: 'absolute',
+    right: 20, 
+    top: "50%",
+    transform: [{ translateY: -10 }],
   },
   input: {
     borderRadius: 8,

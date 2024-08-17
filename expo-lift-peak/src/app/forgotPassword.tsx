@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "@shared/components/Button";
 import FormField from "@shared/components/form/FormField";
 import { Colors, defaultStyles } from "@shared/styles";
+import { router } from "expo-router";
 import { FormProvider, useForm } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
 
@@ -14,6 +15,12 @@ const ForgotPassword = () => {
     mode: "onChange",
     resolver: zodResolver(emailSchema),
   });
+
+  const navigateOtp = () => {
+    router.navigate('otp')
+  }
+
+  
 
   return (
     <KeyboardAvoidingView
@@ -37,10 +44,12 @@ const ForgotPassword = () => {
             />
             <Button
               disabled={!form.formState.isValid}
-              title={"Login"}
+              title={"Recover Password"}
               color={"dark100"}
-              onPress={form.handleSubmit(() => {})}
+              onPress={navigateOtp}
             />
+
+            
           </View>
         </FormProvider>
       </View>

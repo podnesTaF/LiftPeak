@@ -9,7 +9,7 @@ import {
 import { useMutation } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Link, useRouter } from "expo-router";
+import { Link, useFocusEffect, useRouter } from "expo-router";
 import { loginSchema, LoginUserRequest, useAuthStore } from "@features/auth";
 import { IUser } from "@entities/user";
 import api from "@shared/api/AxiosInstance";
@@ -48,6 +48,12 @@ const Login = () => {
     mutation.mutate(data);
   };
 
+  useFocusEffect(
+    React.useCallback(() => {
+      form.reset();
+    }, [])
+  );
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -63,12 +69,14 @@ const Login = () => {
                 name={"email"}
                 label={"Email"}
                 placeholder={"enter your email"}
+                noValidationStyling          
               />
               <FormField
                 type={"password"}
                 name={"password"}
                 label={"Password"}
                 placeholder={"enter your password"}
+                noValidationStyling
               />
             </View>
             <Link href={"/forgotPassword"} asChild>
