@@ -9,14 +9,13 @@ import {Text, View} from "react-native";
 import {groupByPriority} from "@features/muscles";
 
 const Instruction = () => {
-    const {id} = useGlobalSearchParams<{id: string}>()
+    const {exerciseId} = useLocalSearchParams<{ exerciseId: string }>()
     const {scrollY} = useAnimatedScroll();
 
     const {data: exercise, isLoading} = useQuery({
-        queryKey: ['exercise', id],
-        queryFn: async () => await getFullExercise(id ? +id : 0),
-        retry: 2,
-        retryDelay: 5000
+        queryKey: ['exercise', exerciseId],
+        queryFn: async () => await getFullExercise(exerciseId ? +exerciseId : 0),
+        enabled: !!exerciseId
     })
 
     const scrollHandler = useAnimatedScrollHandler(event => {

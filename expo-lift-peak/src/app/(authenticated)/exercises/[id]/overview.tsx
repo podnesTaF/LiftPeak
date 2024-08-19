@@ -6,20 +6,19 @@ import Animated, {
 import {Colors, defaultStyles} from "@shared/styles";
 import { getFullExercise} from "@entities/exercise";
 import {useQuery} from "@tanstack/react-query";
-import {useLocalSearchParams} from "expo-router";
+import {useGlobalSearchParams, useLocalSearchParams} from "expo-router";
 import {ExerciseMedia} from "@entities/media";
-import {View} from "react-native";
 
 const Overview = () => {
-
-    const {id} = useLocalSearchParams<{id: string}>()
+    const {exerciseId} = useLocalSearchParams<{exerciseId: string}>();
     const {scrollY} = useAnimatedScroll();
 
     const {data: exercise, isLoading} = useQuery({
-        queryKey: ['exercise', id],
-        queryFn: async () => await getFullExercise(id ? +id : 0),
+        queryKey: ['exercise', exerciseId],
+        queryFn: async () => await getFullExercise(exerciseId ? +exerciseId : 0),
         retry: 2,
-        retryDelay: 5000
+        retryDelay: 5000,
+        enabled: !!exerciseId
     })
 
     const scrollHandler = useAnimatedScrollHandler(event => {

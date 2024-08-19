@@ -105,9 +105,12 @@ const InitialLayout = () => {
                 presentation: "modal",
                 headerShown: false
             }}  />
-            <Stack.Screen name={"(authenticated)/exercise"} options={{
-                headerTitle: "Exercise",
-                headerTintColor: Colors.white,
+            <Stack.Screen name={"(authenticated)/exercises/[id]"} options={{
+                headerShown: true
+            }}/>
+            <Stack.Screen name={"(authenticated)/exercises/history/[exerciseId]"} options={{
+                title: "Exercise History",
+                headerBackTitleVisible: false
             }}/>
             <Stack.Screen name={"(authenticated)/constructor"} options={{
                 headerShown: false,

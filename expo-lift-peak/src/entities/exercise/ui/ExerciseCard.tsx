@@ -13,6 +13,7 @@ interface ExerciseCardProps {
 }
 
 export const ExerciseCard = ({onPress, exercise, selected}: ExerciseCardProps) => {
+
     return (
         <TouchableOpacity onPress={() => onPress ? onPress(exercise.id) : null} style={styles.container}>
             <View style={{flexDirection: "row", alignItems: "center", gap: 16}}>
