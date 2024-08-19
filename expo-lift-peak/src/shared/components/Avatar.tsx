@@ -9,17 +9,18 @@ interface AvatarProps {
     backgroundColor?: string;
     children?: React.ReactNode;
     url?: string;
+    borderRadius?: number
 }
 
-const Avatar = ({url, size = 40, name, backgroundColor = Colors.dark300, children}: AvatarProps) => {
+const Avatar = ({url, size = 40, name, backgroundColor = Colors.dark300, borderRadius, children}: AvatarProps) => {
     return (
         url ? (
             <Image
-                style={[styles.container, {width: size, height: size, borderRadius: size / 2}]}
+                style={[styles.container, {width: size, height: size, borderRadius: borderRadius || (size / 2)}]}
                 source={{uri: url}}
             />
         ) : (
-            <View style={[styles.container, {backgroundColor: backgroundColor, width: size, height: size}]}>
+            <View style={[styles.container, {backgroundColor: backgroundColor, width: size, height: size, borderRadius: borderRadius || (size / 2)}]}>
                 {name ? (
                     <Text style={[styles.title, {color: getContrastColor(backgroundColor)}]}>
                         {name}
@@ -33,7 +34,6 @@ const Avatar = ({url, size = 40, name, backgroundColor = Colors.dark300, childre
 
 const styles = StyleSheet.create({
     container: {
-        borderRadius: 10000,
         alignItems: 'center',
         justifyContent: 'center',
         padding: 4

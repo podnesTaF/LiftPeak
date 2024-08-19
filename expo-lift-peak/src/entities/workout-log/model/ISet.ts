@@ -7,10 +7,10 @@ export interface ISet {
     exerciseLogId: number | string;
     exerciseLog?: IExerciseLog;
 
-    distanceInM?: number;
-    weight?: number;
-    timeInS?: number;
-    reps?: number;
+    distanceInM: number | null;
+    weight: number | null;
+    timeInS: number | null;
+    reps: number | null;
     previousSetId?: number;
     previousSet?: ISet;
 

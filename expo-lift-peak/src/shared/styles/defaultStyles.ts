@@ -26,5 +26,10 @@ export const defaultStyles = StyleSheet.create({
         fontSize: 18,
         fontWeight: "600",
         color: "white"
+    },
+    row: {
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center"
     }
 })
