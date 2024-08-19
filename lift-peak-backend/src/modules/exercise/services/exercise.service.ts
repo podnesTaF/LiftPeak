@@ -5,6 +5,7 @@ import sharp from 'sharp';
 import { FileService } from 'src/modules/file/file.service';
 import { MediaType } from 'src/modules/media/entity/media.entity';
 import { Target } from 'src/modules/target/entities/target.entity';
+import { ExerciseLog } from 'src/modules/workout-log/entities/exercise-log.entity';
 import { PassThrough } from 'stream';
 import { Brackets, DataSource, QueryRunner, Repository } from 'typeorm';
 import { CreateExerciseTargetDto } from '../dto/create-exercise-target.dto';
@@ -19,6 +20,8 @@ export class ExerciseService {
   constructor(
     @InjectRepository(Exercise)
     private readonly exerciseRepository: Repository<Exercise>,
+    @InjectRepository(ExerciseLog)
+    private readonly exerciseLogRepository: Repository<ExerciseLog>,
     @InjectRepository(ExerciseMedia)
     private readonly exerciseMediaRepository: Repository<ExerciseMedia>,
     private readonly instructionService: InstructionService,
@@ -347,6 +350,13 @@ export class ExerciseService {
         ...exercise,
         targetGroup,
       };
+    });
+  }
+
+  async getExerciseLogHistory(id: number) {
+    return this.exerciseLogRepository.find({
+      where: { exerciseId: id },
+      relations: ['sets'],
     });
   }
 }
