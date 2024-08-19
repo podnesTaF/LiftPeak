@@ -23,7 +23,7 @@ interface IBottomSheetSelectProps {
     placeholder?: string;
     value: (string | number)[];
     options?: Option[];
-    onChange: (values: (string | number)[]) => void;
+    onChange?: (values: (string | number)[]) => void;
     multiple?: boolean;
     disabled?: boolean;
     children?: React.ReactNode;
@@ -79,6 +79,7 @@ const BottomSheetSelect = ({label, placeholder, value, options, onChange, multip
     );
 
     const handleCheckboxChange = (optionValue: string | number) => {
+        if(!onChange) return;
         if (multiple) {
             const newSelectedValues = selectedValues.includes(optionValue)
                 ? selectedValues.filter(val => val !== optionValue)

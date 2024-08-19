@@ -110,8 +110,7 @@ const InitialLayout = () => {
                 headerTintColor: Colors.white,
             }}/>
             <Stack.Screen name={"(authenticated)/constructor"} options={{
-                headerTitle: "Exercises",
-                headerTintColor: Colors.white,
+                headerShown: false,
             }}/>
             <Stack.Screen name={"(authenticated)/explore"} options={{
                 headerShown: false,
