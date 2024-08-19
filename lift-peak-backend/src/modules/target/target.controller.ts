@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { Roles } from '../auth/guards/roles.guard';
 import { CreateTargetDto } from './dto/create-target.dto';
@@ -19,5 +19,20 @@ export class TargetController {
   @UseGuards(JwtAuthGuard)
   async getAll() {
     return this.targetService.getAll();
+  }
+
+  @Get('/body')
+  async getBody() {
+    return this.targetService.getBody();
+  }
+
+  @Post('/:id/path')
+  @UseGuards(JwtAuthGuard)
+  @Roles('admin')
+  async addTargetPath(
+    @Body() body: { paths: { [key: string]: string[] } },
+    @Param() id: number,
+  ) {
+    return this.targetService.addTargetPath(id, body.paths);
   }
 }
