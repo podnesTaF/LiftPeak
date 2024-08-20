@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef} from 'react';
 import {Link, Tabs} from 'expo-router';
 import {Colors, defaultStyles} from "@shared/styles";
 import {Ionicons} from "@expo/vector-icons";
@@ -17,6 +17,9 @@ import {
 import Constants from "expo-constants/src/Constants";
 import {ActiveWorkoutPopup} from "@features/workout-logger";
 import CustomTabBar from "@shared/components/navigation/CustomTabBar";
+import CommentSheet from "@features/feed/ui/CommentSheet";
+import {BottomSheetModal} from "@gorhom/bottom-sheet";
+import {useCommentStore} from "@features/feed";
 
 function TabBarIcon(props: {
     name: React.ComponentProps<typeof Ionicons>['name'];
@@ -26,6 +29,11 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
+
+    const ref = useRef<BottomSheetModal>();
+    const {shown} = useCommentStore()
+    const handleClosePress = () => ref.current?.close();
+    const handlePresentPress = () => ref.current?.present();
 
     const [assets] = useAssets([require("@assets/images/logo/logo-long.png")])
     const {user} = useAuthStore();
@@ -56,6 +64,14 @@ export default function TabLayout() {
             top: scrollY.value > 0 ? top : 75,
         };
     })
+
+    useEffect(() => {
+        if (shown) {
+            handlePresentPress()
+        } else {
+            handleClosePress()
+        }
+    }, [shown]);
 
     return (
                 <AnimatedScrollProvider scrollY={scrollY}>
@@ -124,6 +140,7 @@ export default function TabLayout() {
                             tabBarIcon: (props) => <TabBarIcon name="log-out-outline" color={props.color} />,
                         }} />
                     </Tabs>
+                    <CommentSheet ref={ref as any} />
                 </AnimatedScrollProvider>
     );
 }
