@@ -48,6 +48,8 @@ export const ExpandableSetType = ({exerciseLog, setType}: ExpandableSetTypeProps
             order: typeSets.length ? typeSets.length + 1: 1,
             reps: 0,
             weight: 0,
+            timeInS: 0,
+            distanceInM: 0,
             type: setType,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),

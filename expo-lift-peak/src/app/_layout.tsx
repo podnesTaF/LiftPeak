@@ -120,6 +120,7 @@ const InitialLayout = () => {
                 headerBackTitleVisible: false,
                 headerTitle: ""
             }}/>
+            <Stack.Screen name={"(authenticated)/workout-details"}/>
         </Stack>
     );
 }

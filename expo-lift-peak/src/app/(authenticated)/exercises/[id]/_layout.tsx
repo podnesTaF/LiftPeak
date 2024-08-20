@@ -65,7 +65,6 @@ const Layout = () => {
                               <TouchableOpacity  onPress={() => router.push(`/(authenticated)/exercises/history/${id}`)}>
                                   <MaterialIcons name={'history'} size={30} color={Colors.white}/>
                               </TouchableOpacity>
-
                           </View>
                           <Animated.View style={[{padding: 12, paddingTop: 50, gap: 12 }, animatedContainerStyle]}>
                              <Animated.View style={[{position: "absolute", left:12, top:12}, animatedTitleStyle]}>

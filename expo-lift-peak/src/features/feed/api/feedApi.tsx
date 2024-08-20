@@ -19,6 +19,6 @@ export const commentWorkout = async (workoutId: number, content: string) => {
 }
 
 export const reactWorkout = async (workoutId: number) => {
-    const {data} = await api.post(`/workouts/feed/${workoutId}/react`)
+    const {data} = await api.post<{like: boolean, likesCount: number}>(`/workouts/feed/${workoutId}/react`)
     return data
 }

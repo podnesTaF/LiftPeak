@@ -7,19 +7,21 @@ import Avatar from "@shared/components/Avatar";
 import {format} from "date-fns";
 import {Ionicons} from "@expo/vector-icons";
 import {Color} from "ansi-fragments/build/fragments/Color";
+import {useRouter} from "expo-router";
 
 interface ExerciseHistoryCardUiProps {
     exercise: Partial<IExercise> & any,
-    exerciseLog: IExerciseLog
+    exerciseLog: IExerciseLog,
+    history?: boolean
 }
 
-const ExerciseHistoryCard = ({exerciseLog, exercise}: ExerciseHistoryCardUiProps) => {
-
+const ExerciseHistoryCard = ({exerciseLog, exercise, history = true}: ExerciseHistoryCardUiProps) => {
+    const router = useRouter();
     return (
         <View style={{padding: 12, borderRadius: 10, backgroundColor: Colors.dark700, gap: 20}}>
-            <TouchableOpacity style={[defaultStyles.row, {gap: 14, width: "100%"}]}>
+            <TouchableOpacity onPress={() => router.push(`/(authenticated)/exercises/${exercise.id}`)} style={[defaultStyles.row, {gap: 14, width: "100%"}]}>
                 <View style={[defaultStyles.row, {gap: 14}]}>
-                    <Avatar name={exercise.name?.slice(0, 2)} size={70} borderRadius={10}/>
+                    <Avatar url={exercise?.previewUrl} name={exercise.name?.slice(0, 2)} size={70} borderRadius={10}/>
                     <View style={{gap: 12}}>
                         <View style={{gap: 8}}>
                             <Text style={defaultStyles.smallTitle}>
@@ -29,9 +31,9 @@ const ExerciseHistoryCard = ({exerciseLog, exercise}: ExerciseHistoryCardUiProps
                                 {exercise.targetGroup?.join(" • ")}
                             </Text>
                         </View>
-                        <Text style={defaultStyles.secondaryText}>
+                        {history && <Text style={defaultStyles.secondaryText}>
                             {format(new Date(exerciseLog.createdAt), "MMMM d, yyyy")}
-                        </Text>
+                        </Text>}
                     </View>
                 </View>
                 <Ionicons name={"chevron-forward"} size={30} color={Colors.lime}/>
