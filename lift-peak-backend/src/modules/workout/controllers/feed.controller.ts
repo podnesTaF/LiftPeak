@@ -28,6 +28,7 @@ export class FeedController {
   }
 
   @Post('/:id/react')
+  @UseGuards(JwtAuthGuard)
   async handleLikeWorkout(
     @GetUser() user: AuthenticatedUser,
     @Param('id') workoutId: number,

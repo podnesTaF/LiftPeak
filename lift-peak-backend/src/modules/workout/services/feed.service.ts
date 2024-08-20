@@ -35,13 +35,18 @@ export class FeedService {
       content: dto.content,
     });
 
-    return await this.commentRepository.save(comment);
+    return {
+      comment: await this.commentRepository.save(comment),
+      commentsCount: await this.commentRepository.count({
+        where: { workoutId },
+      }),
+    };
   }
 
   async handleLikeWorkout(
     userId: number,
     workoutId: number,
-  ): Promise<{ like: boolean }> {
+  ): Promise<{ like: boolean; likesCount: number }> {
     const existingLike = await this.likeRepository.findOne({
       where: { userId, workoutId },
     });
@@ -50,6 +55,7 @@ export class FeedService {
       await this.likeRepository.delete(existingLike.id);
       return {
         like: false,
+        likesCount: await this.likeRepository.count({ where: { workoutId } }),
       };
     }
 
@@ -60,6 +66,7 @@ export class FeedService {
 
     return {
       like: true,
+      likesCount: await this.likeRepository.count({ where: { workoutId } }),
     };
   }
 }
