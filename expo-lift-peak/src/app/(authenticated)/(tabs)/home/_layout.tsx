@@ -1,22 +1,21 @@
 import React from 'react';
-import MaterialTopTabs from "@shared/components/tabs/MaterialTopTabs";
 import {Colors} from "@shared/styles";
-import CustomTopTabBar from "@shared/components/tabs/CustomTopTabBar";
+import CustomTopTabBar from "@shared/components/navigation/CustomTopTabBar";
+import MaterialTopTabs from "@shared/components/navigation/MaterialTopTabs";
 
 const Layout = () => {
     return (
-           <MaterialTopTabs
-               tabBar={(props) =>  <CustomTopTabBar {...props} />}>
-               <MaterialTopTabs.Screen name={'followings'} options={{
-                   title: "Followings"
-               }} />
-               <MaterialTopTabs.Screen name={'groups'} options={{
-                   title: "groups"
-               }} />
-               <MaterialTopTabs.Screen name={'discover'} options={{
-                   title: "discover"
-               }} />
-           </MaterialTopTabs>
+               <CustomTopTabBar>
+                   <MaterialTopTabs.Screen name={'followings'} options={{
+                       title: "Followings"
+                   }} />
+                   <MaterialTopTabs.Screen name={'groups'} options={{
+                       title: "groups"
+                   }} />
+                   <MaterialTopTabs.Screen name={'discover'} options={{
+                       title: "discover"
+                   }} />
+               </CustomTopTabBar>
     );
 };
 

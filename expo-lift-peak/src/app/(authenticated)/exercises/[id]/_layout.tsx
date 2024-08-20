@@ -1,16 +1,14 @@
-import React, {useEffect} from 'react';
-import MaterialTopTabs from "@shared/components/tabs/MaterialTopTabs";
-import CustomTopTabBar from "@shared/components/tabs/CustomTopTabBar";
+import React from 'react';
 import {SafeAreaView, Text, TouchableOpacity, View} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
-import {Stack, useGlobalSearchParams, useLocalSearchParams, useRouter} from "expo-router";
+import {Stack, useLocalSearchParams, useRouter} from "expo-router";
 import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import {AnimatedScrollProvider} from "@shared/components/AnimatedScrollContext";
 import Animated, {interpolate, useAnimatedStyle, useSharedValue} from "react-native-reanimated";
 import {useQuery} from "@tanstack/react-query";
-import {findExerciseList, getFullExercise} from "@entities/exercise";
-import {useHeaderHeight} from "@react-navigation/elements";
-
+import {findExerciseList, } from "@entities/exercise";
+import CustomTopTabBar from "@shared/components/navigation/CustomTopTabBar";
+import MaterialTopTabs from "@shared/components/navigation/MaterialTopTabs";
 
 const Layout = () => {
     const router = useRouter();
@@ -80,8 +78,7 @@ const Layout = () => {
                   )
               }}
             />
-            <MaterialTopTabs
-                tabBar={(props) => <CustomTopTabBar {...props} />}
+            <CustomTopTabBar
             >
                 <MaterialTopTabs.Screen name={'overview'} initialParams={{
                     exerciseId: id
@@ -98,7 +95,7 @@ const Layout = () => {
                 }} options={{
                     title: "Alternatives"
                 }} />
-            </MaterialTopTabs>
+            </CustomTopTabBar>
         </AnimatedScrollProvider>
     );
 };

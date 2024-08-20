@@ -2,15 +2,14 @@ import React from 'react';
 import {Stack, useLocalSearchParams} from "expo-router";
 import {useQuery} from "@tanstack/react-query";
 import {getWorkoutDetails} from "@features/workout";
-import {SafeAreaView, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {SafeAreaView, Text, TouchableOpacity, View} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
-import {Ionicons, MaterialIcons} from "@expo/vector-icons";
-import Animated from "react-native-reanimated";
+import {Ionicons} from "@expo/vector-icons";
 import {format} from "date-fns";
-import CustomTopTabBar from "@shared/components/tabs/CustomTopTabBar";
-import MaterialTopTabs from "@shared/components/tabs/MaterialTopTabs";
 import {PostActions} from "@features/feed/ui/WorkoutPost";
 import {BlurView} from "expo-blur";
+import CustomTopTabBar from "@shared/components/navigation/CustomTopTabBar";
+import MaterialTopTabs from '@shared/components/navigation/MaterialTopTabs';
 
 const Layout = () => {
     const {id} = useLocalSearchParams<{ id: string }>()
@@ -51,9 +50,7 @@ const Layout = () => {
                     )
                 }}
             />
-                <MaterialTopTabs
-                    tabBar={(props) => <CustomTopTabBar {...props} />}
-                >
+                <CustomTopTabBar>
                     <MaterialTopTabs.Screen name={'index'} initialParams={{
                         exerciseId: id
                     }} options={{
@@ -64,7 +61,7 @@ const Layout = () => {
                     }}  options={{
                         title: "Exercises"
                     }} />
-                </MaterialTopTabs>
+                </CustomTopTabBar>
             {workout && (
                 <BlurView intensity={50} tint={"dark"} style={{padding: 12, backgroundColor: Colors.dark700, paddingBottom: 32}}>
                     <PostActions workout={workout} />
