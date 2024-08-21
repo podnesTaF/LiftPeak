@@ -14,7 +14,7 @@ const CustomTopTabBar = ({screenOptions, children}: CustomTopTabBarProps) => {
             tabBarStyle: {
                 width: "auto",
                 justifyContent: 'flex-start',
-                backgroundColor: Colors.dark700
+                backgroundColor: Colors.dark700,
             },
             tabBarItemStyle: {
                 width: "auto",
@@ -31,7 +31,7 @@ const CustomTopTabBar = ({screenOptions, children}: CustomTopTabBarProps) => {
             tabBarScrollEnabled: true,
             tabBarActiveTintColor: Colors.white,
             tabBarInactiveTintColor: Colors.dark300,
-            ...screenOptions
+            ...screenOptions,
         }}>
             {children}
         </MaterialTopTabs>

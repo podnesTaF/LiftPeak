@@ -76,12 +76,7 @@ export default function TabLayout() {
     return (
                 <AnimatedScrollProvider scrollY={scrollY}>
                     <Tabs
-                        tabBar={props => <CustomTabBar {...props} />}
-                        screenOptions={{
-                            tabBarStyle: {
-                                zIndex: 1000
-                            },
-                        }}>
+                        tabBar={props => <CustomTabBar {...props} />}>
                         <Tabs.Screen name={"home"} options={{
                             headerShown: true,
                             headerShadowVisible: false,
@@ -135,9 +130,9 @@ export default function TabLayout() {
                             headerShown: false,
                             tabBarIcon: (props) => <Ionicons size={36} name="add" color={props.color} />
                         }} />
-                        <Tabs.Screen name={"logout"} options={{
-                            title: "logout",
-                            tabBarIcon: (props) => <TabBarIcon name="log-out-outline" color={props.color} />,
+                        <Tabs.Screen name={"personal-profile"} options={{
+                            title: "Profile",
+                            tabBarIcon: (props) => <Ionicons size={36} name="person-outline" color={props.color} />,
                         }} />
                     </Tabs>
                     <CommentSheet ref={ref as any} />

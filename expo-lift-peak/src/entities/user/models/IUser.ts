@@ -1,4 +1,5 @@
 import {IProfile, IUserFollow} from "@entities/user";
+import {IGym} from "@entities/gym";
 
 export interface IUser {
     id: number;
@@ -9,4 +10,8 @@ export interface IUser {
     profile?: IProfile;
     followings?: IUserFollow[];
     followers?: IUserFollow[];
+    followingsCount?: number;
+    followersCount?: number;
+    isFollowing?: boolean;
+    gyms: IGym[]
 }

@@ -1,9 +1,9 @@
 import React, {forwardRef} from 'react';
-import {TouchableOpacity, StyleSheet, Text, ActivityIndicator} from "react-native";
+import {TouchableOpacity, StyleSheet, Text, ActivityIndicator, TouchableOpacityProps} from "react-native";
 import {Colors} from "@shared/styles";
 import {getContrastColor} from "@shared/utils";
 
-interface ButtonProps {
+interface ButtonProps extends TouchableOpacityProps {
     title?: string;
     color: keyof typeof Colors;
     fullWidth?: boolean;
@@ -13,17 +13,20 @@ interface ButtonProps {
     isLoading?: boolean;
 }
 
-const Button = forwardRef<TouchableOpacity, ButtonProps>(({color,isLoading, children, title, onPress, fullWidth, disabled}, ref) => {
+const Button = forwardRef<TouchableOpacity, ButtonProps>(({color,isLoading, children, title, onPress, fullWidth, disabled, ...props}, ref) => {
     const backgroundColor = disabled ? Colors.dark300 : Colors[color];
     const textColor = getContrastColor(backgroundColor);
 
     return (
         <TouchableOpacity disabled={!!disabled} onPress={onPress}
+                          {...props}
                           style={[
                               styles.buttonContainer,
                               { width: fullWidth ? "100%" : "auto", backgroundColor },
-                              disabled && styles.buttonContainerDisabled
+                              disabled && styles.buttonContainerDisabled,
+                              props.style
                           ]}
+
         >
             {isLoading ? (
                 <ActivityIndicator size={"small"} color={textColor} />

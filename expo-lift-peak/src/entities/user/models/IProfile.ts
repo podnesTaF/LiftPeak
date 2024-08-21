@@ -1,5 +1,6 @@
-import {IUser} from "@entities/user";
+import {IUser} from "./IUser";
 import {Gender} from "@shared/dictionary";
+import {ISocialMediaLink} from './ISocialMediaLink'
 
 export interface IProfile {
     id: number;
@@ -14,4 +15,8 @@ export interface IProfile {
     wallpaperUrl?: string;
     userId: number;
     user?: IUser;
+    goal?: string;
+    country?: string;
+    city?: string;
+    socialMediaLinks?: ISocialMediaLink[];
 }
