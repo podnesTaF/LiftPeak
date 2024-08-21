@@ -9,11 +9,13 @@ import {
   Column,
   Entity,
   JoinColumn,
+  JoinTable,
   ManyToMany,
   ManyToOne,
   OneToMany,
   OneToOne,
 } from 'typeorm';
+import { Gym } from './gym.entity';
 import { Profile } from './profile.entity';
 import { UserFollower } from './user-follower.enitity';
 
@@ -63,4 +65,18 @@ export class User extends AbstractEntity {
 
   @OneToMany(() => Group, (group) => group.owner)
   groups: Group[];
+
+  @ManyToMany(() => Gym, (gym) => gym.users, { cascade: true })
+  @JoinTable({
+    name: 'user_gym',
+    joinColumn: {
+      name: 'userId',
+      referencedColumnName: 'id',
+    },
+    inverseJoinColumn: {
+      name: 'gymId',
+      referencedColumnName: 'id',
+    },
+  })
+  gyms: Gym[];
 }

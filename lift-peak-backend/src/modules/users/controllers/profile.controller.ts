@@ -14,11 +14,16 @@ import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import { AuthenticatedUser, GetUser } from '../decorators/user.decorator';
 import { CreateProfileDto } from '../dto/create-profile.dto';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
+import { SocialMediaPlatform } from '../entities/social-media.entity';
 import { ProfileService } from '../services/profile.service';
+import { SocialMediaService } from '../services/social-media.service';
 
 @Controller('profiles')
 export class ProfileController {
-  constructor(private readonly profileService: ProfileService) {}
+  constructor(
+    private readonly profileService: ProfileService,
+    private readonly socialMediaService: SocialMediaService,
+  ) {}
 
   @Post()
   @UseInterceptors(
@@ -66,6 +71,19 @@ export class ProfileController {
       avatar: files.avatar ? files.avatar[0] : null,
       wallpaper: files.wallpaper ? files.wallpaper[0] : null,
     });
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('/social-media')
+  async addSocialMedia(
+    @GetUser() user: AuthenticatedUser,
+    @Body() body: { socialMedia: SocialMediaPlatform; url: string },
+  ) {
+    return this.socialMediaService.addSocialMediaLink(
+      user.id,
+      body.socialMedia,
+      body.url,
+    );
   }
 
   @UseGuards(JwtAuthGuard)

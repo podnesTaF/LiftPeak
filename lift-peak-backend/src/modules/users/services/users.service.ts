@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import * as bcrypt from 'bcrypt';
 import { Role, RoleEnum } from 'src/modules/role/entities/role.entity';
@@ -64,5 +68,32 @@ export class UsersService {
     }
 
     return false;
+  }
+
+  async getUserInfo(
+    id: number,
+    authedId: number,
+  ): Promise<
+    User & {
+      followersCount: number;
+      followingsCount: number;
+      isFollowing: boolean;
+    }
+  > {
+    const user = await this.usersRepository.findOne({
+      where: { id },
+      relations: ['following', 'followers', 'profile.socialMediaLinks', 'gyms'],
+    });
+
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+
+    return {
+      ...user,
+      followersCount: user.followers?.length,
+      followingsCount: user.following?.length,
+      isFollowing: !!user.followers.find((f) => f.followerId === authedId),
+    };
   }
 }
