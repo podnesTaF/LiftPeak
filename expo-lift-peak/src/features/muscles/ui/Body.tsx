@@ -23,7 +23,7 @@ export const Body = ({look, selectedMuscles, setSelectedMuscles}: BodyProps) => 
         queryFn: getMusclesWithVectors
     })
 
-    const aspectRatio = 500 / 400;
+    const aspectRatio = 500 / 350;
 
 
     return (
@@ -34,7 +34,7 @@ export const Body = ({look, selectedMuscles, setSelectedMuscles}: BodyProps) => 
                                  style={[{alignItems: "center", justifyContent: "center"}]}>
             <Svg
                 width={width * 0.68}
-                height={(height * 0.9) / aspectRatio}
+                height={height * 0.60}
                 preserveAspectRatio="xMidYMid meet"
             >
                 <Path

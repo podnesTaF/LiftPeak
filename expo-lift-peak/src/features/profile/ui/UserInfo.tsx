@@ -79,7 +79,6 @@ const styles = StyleSheet.create({
         marginTop: 12,
         gap: 24,
         width: "100%",
-        height: 1000
     },
     section: {
         gap: 12

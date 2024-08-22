@@ -46,7 +46,7 @@ const Index = () => {
 
     const openExerciseLog = (exerciseLogId: number | string) => {
         router.push({
-            pathname: "/(authenticated)/workout/exercises-log",
+            pathname: "/(authenticated)/workout/exercise-log",
             params: {
                 id: exerciseLogId
             }

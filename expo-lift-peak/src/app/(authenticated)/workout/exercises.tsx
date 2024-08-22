@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {FlatList, ScrollView, Text, TouchableOpacity, View} from "react-native";
+import {FlatList, Text, TouchableOpacity, View} from "react-native";
 import {useQuery} from "@tanstack/react-query";
 import {ExerciseCard, findExerciseList} from "@entities/exercise";
 import {Colors, defaultStyles} from "@shared/styles";

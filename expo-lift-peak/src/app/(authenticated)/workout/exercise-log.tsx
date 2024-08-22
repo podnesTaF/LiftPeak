@@ -1,10 +1,9 @@
 import {useExerciseStore} from "@features/workout-logger";
-import Button from "@shared/components/Button";
-import {Colors, defaultStyles} from "@shared/styles";
+import {defaultStyles} from "@shared/styles";
 import {useLocalSearchParams} from "expo-router";
 import {Image, ScrollView, Text} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
-import {ExpandableSetType, getSetTypeGroup} from "@features/exercise-logger";
+import {ExpandableSetType} from "@features/exercise-logger";
 import {SetType} from "@entities/workout-log";
 
 const ExerciseLog = () => {

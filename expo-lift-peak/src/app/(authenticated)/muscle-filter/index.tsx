@@ -13,7 +13,7 @@ const views = [
 ] as const;
 
 const Muscles = () => {
-    const [selectedMuscles, setSelectedMuscles] = useState<string[]>([]);
+    const [selectedMuscles, setSelectedMuscles] = useState<{id: number, name: string}[]>([]);
 
 
     return (
