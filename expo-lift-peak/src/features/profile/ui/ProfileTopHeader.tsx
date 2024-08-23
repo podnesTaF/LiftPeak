@@ -41,7 +41,8 @@ const ProfileTopHeader = ({user}: {user?: IUser}) => {
         const opacity = interpolate(
             scrollY.value,
             [150, 200],
-            [0,1]
+            [0,1],
+            Extrapolation.CLAMP
         )
         return {
             bottom,

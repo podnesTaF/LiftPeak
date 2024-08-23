@@ -8,6 +8,7 @@ import Button from "@shared/components/Button";
 import {Ionicons} from "@expo/vector-icons";
 import {useMutation} from "@tanstack/react-query";
 import {IProfile} from "@entities/user/models";
+import {useRouter} from "expo-router";
 
 
 interface UserFollowListItemProps {
@@ -18,7 +19,7 @@ interface UserFollowListItemProps {
 
 export const UserFollowListItem = ({profile, isFollowing}: UserFollowListItemProps) => {
     const {user: authenticatedUser} = useAuthStore();
-
+    const router = useRouter();
     const isMe = authenticatedUser?.id === profile?.user?.id
 
     const {mutate} = useMutation({
@@ -33,7 +34,7 @@ export const UserFollowListItem = ({profile, isFollowing}: UserFollowListItemPro
     })
 
     return (
-        <TouchableOpacity style={styles.container}>
+        <TouchableOpacity onPress={() => router.push({pathname: "/(authenticated)/profile", params: {id: profile.userId}})} style={styles.container}>
             <View style={styles.userInfoContainer}>
                 <Avatar name={"" + profile?.firstName[0] + profile?.lastName[0]} size={40} />
                 <View style={{gap:8}}>

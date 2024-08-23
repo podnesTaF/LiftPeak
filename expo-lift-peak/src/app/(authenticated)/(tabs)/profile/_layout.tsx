@@ -1,17 +1,13 @@
 import React from 'react';
 import {Stack, Tabs, useLocalSearchParams, useRouter} from "expo-router";
-import {Text, TouchableOpacity, View} from "react-native";
-import {Ionicons} from "@expo/vector-icons";
-import {BlurView} from "expo-blur";
+
 import {AnimatedScrollProvider} from "@shared/components/AnimatedScrollContext";
-import Animated, {
+import {
     useSharedValue
 } from "react-native-reanimated";
 import {useQuery} from "@tanstack/react-query";
 import {getUserInfo} from "@features/profile";
 import ProfileTopHeader from "@features/profile/ui/ProfileTopHeader";
-
-const AnimatedBlurView = Animated.createAnimatedComponent(BlurView);
 
 const Layout = () => {
     const {id} = useLocalSearchParams<{id?: string}>()
@@ -22,8 +18,6 @@ const Layout = () => {
         queryFn: () => getUserInfo(id),
         enabled: !!id
     })
-
-
 
 
     return (

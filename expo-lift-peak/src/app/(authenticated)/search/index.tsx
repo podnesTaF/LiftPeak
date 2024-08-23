@@ -1,11 +1,10 @@
 import React, {useState} from 'react';
-import {FlatList, ScrollView, Text, View} from "react-native";
-import InputField from "@shared/components/form/InputField";
+import {FlatList, View} from "react-native";
 import {Colors} from "@shared/styles";
 import {useQuery} from "@tanstack/react-query";
-import api from "@shared/api/AxiosInstance";
 import {getMyFollowings, IProfile, searchUsers, UserFollowListItem} from "@entities/user";
 import {useSearch} from "@features/search";
+import SearchBar from "@shared/components/form/SearchBar";
 
 
 
@@ -14,9 +13,8 @@ const RunnersSearch = () => {
         searchValue,
         setSearchValue,
         results: userProfiles,
-        queryInfo,
     } = useSearch<IProfile[]>(searchUsers, '', 300, 'userProfiles');
-
+    const [clicked, setClicked] = useState(false);
     const {data: followings} = useQuery({
         queryKey: ["myFollowings"],
         queryFn: async () =>  getMyFollowings({idOnly: true})
@@ -28,8 +26,8 @@ const RunnersSearch = () => {
                 flex: 1,
                 paddingTop: 12
             }}>
-                <View style={{paddingVertical: 24, paddingHorizontal: 12}}>
-                    <InputField value={searchValue} onChange={(value: string) => setSearchValue(value)} placeholder={"Search"} />
+                <View style={{paddingVertical: 12, paddingHorizontal: 12}}>
+                    <SearchBar clicked={clicked} searchPhrase={searchValue} setSearchPhrase={setSearchValue} setClicked={setClicked} />
                 </View>
                 <FlatList style={{
                     flex: 1

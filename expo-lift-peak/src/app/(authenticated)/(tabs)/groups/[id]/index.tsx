@@ -1,11 +1,12 @@
 import React from 'react';
+import {View} from "react-native";
 
-const Index = () => {
+const GroupPage = () => {
     return (
-        <div>
+        <View>
             
-            </div>
+            </View>
     );
 };
 
-export default Index;
+export default GroupPage;
