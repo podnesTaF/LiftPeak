@@ -14,7 +14,6 @@ export class GroupMemberService {
   ) {}
 
   async addMember(groupId: number, userId: number) {
-    console.log(groupId);
     const groupExists = await this.groupRepository.exists({
       where: { id: groupId },
     });
@@ -24,6 +23,18 @@ export class GroupMemberService {
     }
 
     return this.groupMemberRepository.save({ groupId, userId });
+  }
+
+  async removeMember(groupId: number, userId: number) {
+    const groupExists = await this.groupRepository.exists({
+      where: { id: groupId },
+    });
+
+    if (!groupExists) {
+      throw new BadRequestException('Group not found');
+    }
+
+    return this.groupMemberRepository.delete({ groupId, userId });
   }
 
   async findAllMembers(groupId: number) {

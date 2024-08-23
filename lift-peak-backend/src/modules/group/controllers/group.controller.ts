@@ -1,8 +1,10 @@
 import {
   Body,
   Controller,
+  Get,
   Param,
   Post,
+  Query,
   UnauthorizedException,
   UploadedFiles,
   UseGuards,
@@ -53,5 +55,26 @@ export class GroupController {
       files.image[0],
       dto.type,
     );
+  }
+
+  @Get('search')
+  @UseGuards(JwtAuthGuard)
+  async searchGroups(
+    @GetUser() user: AuthenticatedUser,
+    @Query() query: { value: string },
+  ) {
+    return this.groupService.searchGroups({
+      value: query.value,
+      userId: user.id,
+    });
+  }
+
+  @Get(':id')
+  @UseGuards(JwtAuthGuard)
+  async getGroup(
+    @GetUser() user: AuthenticatedUser,
+    @Param('id') groupId: string,
+  ) {
+    return this.groupService.getGroup(+groupId, user.id);
   }
 }

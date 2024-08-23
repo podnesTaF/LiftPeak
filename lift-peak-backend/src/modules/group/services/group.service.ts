@@ -65,4 +65,39 @@ export class GroupService {
 
     return group.ownerId === userId;
   }
+
+  async searchGroups({ value, userId }: { value: string; userId: number }) {
+    if (!value) {
+      return [];
+    }
+
+    const groups = await this.groupRepository
+      .createQueryBuilder('group')
+      .leftJoin('group.members', 'members')
+      .where('group.name LIKE :value', { value: `%${value}%` })
+      .getMany();
+
+    return groups.map((group) => ({
+      ...group,
+      membersCount: group.members?.length,
+      isMember: group.members?.some((member) => member.id === userId),
+    }));
+  }
+
+  async getGroup(groupId: number, userId: number) {
+    const group = await this.groupRepository.findOne({
+      where: { id: groupId },
+      relations: ['members.user', 'owner'],
+    });
+
+    if (!group) {
+      throw new BadRequestException('Group not found');
+    }
+
+    return {
+      ...group,
+      membersCount: group.members?.length,
+      isMember: group.members?.some((member) => member.id === userId),
+    };
+  }
 }
