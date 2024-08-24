@@ -5,13 +5,14 @@ import { Colors } from "@shared/styles";
 export interface TabItemProps {
     name: string;
     label: string;
+    icon?: React.ReactNode;
     activeTab?
         : string;
     onTabPress?: (tabName: string) => void;
     children?: React.ReactNode;
 }
 
-const TabItem = ({ name, label, activeTab, onTabPress }: TabItemProps) => {
+const TabItem = ({ name, label, activeTab, onTabPress, icon }: TabItemProps) => {
     const isActive = activeTab === name;
 
     const handlePress = () => {
@@ -24,9 +25,10 @@ const TabItem = ({ name, label, activeTab, onTabPress }: TabItemProps) => {
             style={[styles.tabItem, isActive && styles.activeTabItem]}
             onPress={handlePress}
         >
-            <Text style={[styles.tabLabel, isActive && styles.activeTabLabel]}>
+            {icon}
+            {label && <Text style={[styles.tabLabel, isActive && styles.activeTabLabel]}>
                 {label}
-            </Text>
+            </Text>}
         </TouchableOpacity>
     );
 };

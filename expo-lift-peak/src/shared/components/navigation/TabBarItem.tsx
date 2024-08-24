@@ -21,7 +21,7 @@ const icons: { [key: string]: React.ComponentProps<typeof Ionicons>['name']; } =
 
 const TabBarItem = ({isFocused, label, routeName, user, userId, ...props}: TabBarItemProps) => {
 
-    if(routeName === "profile") {
+    if(routeName === "profile" || routeName.includes("groups")) {
         return null;
     }
 

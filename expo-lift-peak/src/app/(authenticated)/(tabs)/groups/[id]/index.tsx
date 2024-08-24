@@ -1,11 +1,47 @@
 import React from 'react';
-import {View} from "react-native";
+import {useLocalSearchParams} from "expo-router";
+import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
+import {useQuery} from "@tanstack/react-query";
+import {getGroup} from "@entities/group";
+import Animated, {useAnimatedScrollHandler} from "react-native-reanimated";
+import {defaultStyles} from "@shared/styles";
+import {GroupHeader} from "@features/group/ui/GroupHeader";
+import CustomTabBar from "@shared/components/tabs/CustomTabBar";
+import {MaterialIcons} from "@expo/vector-icons";
+
+
+const tabs = [
+    {
+        name: "feed",
+        icon: <MaterialIcons name={"list-alt"} size={24} color={"white"} />
+    },
+    {
+        name: "members",
+        icon: <MaterialIcons name={"groups"} size={24} color={"white"} />
+    },
+]
 
 const GroupPage = () => {
+    const {id} = useLocalSearchParams<{ id?: string }>()
+    const [activeTab, setActiveTab] = React.useState('about')
+    const {scrollY} = useAnimatedScroll();
+
+    const {data} = useQuery({
+        queryKey: ['group', id],
+        queryFn: () => getGroup(id),
+        enabled: !!id
+    })
+
+    const onScroll = useAnimatedScrollHandler((event) => {
+        scrollY.value = event.contentOffset.y;
+    });
+
     return (
-        <View>
-            
-            </View>
+        <Animated.ScrollView onScroll={onScroll} stickyHeaderIndices={[1]} contentContainerStyle={{paddingBottom: 120}}
+                             style={defaultStyles.container} scrollEventThrottle={16}>
+            <GroupHeader group={data} />
+            <CustomTabBar labelHidden={true} activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs}/>
+        </Animated.ScrollView>
     );
 };
 

@@ -6,17 +6,19 @@ import TabItem from "@shared/components/tabs/TabItem";
 interface CustomTabBarProps {
     setActiveTab: (tabName: string) => void;
     activeTab: string;
-    tabs: string[]
+    tabs: {name: string, icon?: React.ReactNode}[]
+    labelHidden?: boolean;
 }
 
-const CustomTabBar = ({setActiveTab, activeTab, tabs}: CustomTabBarProps) => {
+const CustomTabBar = ({setActiveTab, activeTab, tabs,labelHidden}: CustomTabBarProps) => {
     return (
         <View style={styles.tabBar}>
             {tabs.map((tab, index) => (
                 <TabItem
                     key={index}
-                    name={tab}
-                    label={tab}
+                    name={tab.name}
+                    icon={tab.icon}
+                    label={labelHidden ? "" : tab.name}
                     activeTab={activeTab}
                     onTabPress={setActiveTab}
                 />
