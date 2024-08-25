@@ -64,7 +64,7 @@ const Exercises = () => {
             <View style={defaultStyles.container}>
                 {data ? <FlatList data={data}
                            renderItem={({item}) =>
-                               <ExerciseCard onPress={(exerciseId) => manageExercise(exerciseId)} exercise={item}
+                               <ExerciseCard onPress={(exercise) => manageExercise(exercise.id)} exercise={item}
                                              selected={isSelected(item.id)}/>
                            }
                            ItemSeparatorComponent={() => <View style={{height: 2, backgroundColor: Colors.dark300}}/>}

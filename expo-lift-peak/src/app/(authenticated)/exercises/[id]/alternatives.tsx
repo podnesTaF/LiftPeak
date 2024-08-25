@@ -26,10 +26,7 @@ const Alternatives = () => {
     return (
         <ScrollView style={defaultStyles.container}>
             {data?.map((exercise, index) => (
-                    <ExerciseCard onPress={(id) => onRedirect(+id)} exercise={exercise} key={exercise.id} />
-                // <Link href={`/(authenticated)/exercises/${exercise.id}`} asChild={true} key={exercise.id} style={{width: "100%"}}>
-
-                // </Link>
+                    <ExerciseCard onPress={(exercise) => onRedirect(+exercise.id)} exercise={exercise} key={exercise.id} />
             ))}
         </ScrollView>
     );

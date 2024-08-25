@@ -8,6 +8,7 @@ import {Ionicons} from "@expo/vector-icons";
 import Animated, {Extrapolation, interpolate, useAnimatedStyle} from "react-native-reanimated";
 import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
 import {IGroup} from "@entities/group";
+import {useRouter} from "expo-router";
 
 interface GroupHeaderProps{
     group?: IGroup;
@@ -16,7 +17,7 @@ interface GroupHeaderProps{
 export const GroupHeader = ({group}: GroupHeaderProps) => {
     const [isFollowing, setIsFollowing] = useState<boolean>(!!group?.isMember)
     const {scrollY} = useAnimatedScroll();
-
+    const router = useRouter()
     const containerStyle = useAnimatedStyle(() => {
         const translateY = interpolate(scrollY.value, [350, 430], [0, -80], Extrapolation.CLAMP);
 
@@ -72,11 +73,11 @@ export const GroupHeader = ({group}: GroupHeaderProps) => {
                     paddingHorizontal: 16
                 }}>
                     {isFollowing ? (
-                            <Button fullWidth color={"dark500"} title={"Joined"}>
+                            <Button onPress={() => router.push("/(authenticated)/create-post")} fullWidth color={"dark500"} title={"Joined"}>
                                 <Ionicons name={"person-remove-outline"} size={24} color={Colors.white} />
                             </Button>
                         ) : (
-                            <Button fullWidth color={"white"} title={"Join"}>
+                            <Button onPress={() => router.push("/(authenticated)/create-post")}  fullWidth color={"white"} title={"Join"}>
                                 <Ionicons name={"person-add-outline"} size={24} color={Colors.dark900} />
                             </Button>
                         )

@@ -121,6 +121,11 @@ const InitialLayout = () => {
                 headerTitle: ""
             }}/>
             <Stack.Screen name={"(authenticated)/workout-details"}/>
+            <Stack.Screen name={"(authenticated)/create-post"} options={{
+                headerShown: false,
+                animation: "fade_from_bottom",
+                animationDuration: "100ms"
+            }}/>
         </Stack>
     );
 }
