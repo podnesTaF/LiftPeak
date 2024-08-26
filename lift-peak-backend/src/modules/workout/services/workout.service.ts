@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { FileService } from 'src/modules/file/file.service';
+import { MediaType } from 'src/modules/media/entity/media.entity';
 import { AuthenticatedUser } from 'src/modules/users/decorators/user.decorator';
 import { WorkoutLog } from 'src/modules/workout-log/entities/workout-log.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -42,6 +43,13 @@ export class WorkoutService {
       });
 
       const savedWorkout = await queryRunner.manager.save(Workout, workout);
+
+      const mediaContents = await this.createWorkoutMediaFiles(
+        dto.mediaUrls,
+        savedWorkout.id,
+      );
+
+      await queryRunner.manager.save(WorkoutMedia, mediaContents);
 
       if (dto.createLogDto) {
         const workoutLog = this.workoutLogRepository.create({
@@ -242,5 +250,28 @@ export class WorkoutService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  private async createWorkoutMediaFiles(
+    mediaUrls: string[],
+    workoutId: number,
+  ) {
+    const mediaContents = [];
+    if (!mediaUrls) return mediaContents;
+    for (const mediaUrl of mediaUrls) {
+      const isVideo =
+        mediaUrl.includes('.mp4') ||
+        mediaUrl.includes('.mov') ||
+        mediaUrl.includes('.avi') ||
+        mediaUrl.includes('.flv');
+      const type = isVideo ? MediaType.VIDEO : MediaType.IMAGE;
+      const mediaContent = this.mediaContentRepository.create({
+        mediaUrl,
+        mediaType: type,
+        workoutId: workoutId,
+      });
+      mediaContents.push(mediaContent);
+    }
+    return mediaContents;
   }
 }

@@ -69,6 +69,12 @@ export class GroupController {
     });
   }
 
+  @Get('/followings')
+  @UseGuards(JwtAuthGuard)
+  async getFollowedGroups(@GetUser() user: AuthenticatedUser) {
+    return this.groupService.getFollowedGroups(user.id);
+  }
+
   @Get(':id')
   @UseGuards(JwtAuthGuard)
   async getGroup(

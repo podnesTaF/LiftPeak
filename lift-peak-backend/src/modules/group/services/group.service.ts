@@ -67,10 +67,7 @@ export class GroupService {
   }
 
   async searchGroups({ value, userId }: { value: string; userId: number }) {
-    if (!value) {
-      return [];
-    }
-
+    console.log(value);
     const groups = await this.groupRepository
       .createQueryBuilder('group')
       .leftJoin('group.members', 'members')
@@ -99,5 +96,13 @@ export class GroupService {
       membersCount: group.members?.length,
       isMember: group.members?.some((member) => member.id === userId),
     };
+  }
+
+  async getFollowedGroups(userId: number) {
+    return await this.groupRepository
+      .createQueryBuilder('group')
+      .leftJoinAndSelect('group.members', 'member')
+      .where('member.userId = :id', { id: userId })
+      .getMany();
   }
 }

@@ -1,5 +1,6 @@
 import { Type } from 'class-transformer';
 import {
+  IsArray,
   IsBoolean,
   IsNumber,
   IsObject,
@@ -25,6 +26,11 @@ export class CreateWorkoutDto {
   @IsNumber()
   @IsOptional()
   routineId: number;
+
+  @IsArray()
+  @IsOptional()
+  @IsString({ each: true })
+  mediaUrls: string[];
 
   @IsObject()
   @IsOptional()

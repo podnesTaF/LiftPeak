@@ -1,10 +1,12 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
   Post,
+  Query,
   Res,
   ServiceUnavailableException,
   UploadedFile,
@@ -24,7 +26,6 @@ export class MediaController {
     FileInterceptor('file', {
       limits: {
         files: 1,
-        fileSize: 4 * 1024 * 1024,
       },
     }),
   )
@@ -58,5 +59,10 @@ export class MediaController {
     res.setHeader('Content-Type', storageFile.contentType);
     res.setHeader('Cache-Control', 'max-age=60d');
     res.end(storageFile.buffer);
+  }
+
+  @Delete()
+  async deleteMedia(@Query('url') url: string) {
+    await this.storageService.delete(url);
   }
 }
