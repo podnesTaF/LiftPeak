@@ -14,6 +14,7 @@ export const useWorkoutStore = create<WorkoutState>()(
             workout: null,
             workoutLog: null,
             exerciseLogs: [],
+            workoutMedia: [],
             sets: [],
             timer: {
                 isRunning: false,
@@ -48,8 +49,10 @@ export const useWorkoutStore = create<WorkoutState>()(
                     const generatedId = uuidv4();
                     set({workout: {...workout, id: generatedId}});
             },
+            addMedia: (media: {actualUrl: string, thumbnailUrl: string}) => set({workoutMedia: [...get().workoutMedia, media]}),
+            removeMedia: (url: string) => set({workoutMedia: get().workoutMedia.filter(media => media.actualUrl !== url)}),
             setWorkoutLog: (workoutLog: Omit<IWorkoutLog, "id">) => set({workoutLog: {...workoutLog, id: uuidv4()}}),
-            clearWorkout: () => set({workout: null, workoutLog: null}),
+            clearWorkout: () => set({workout: null, workoutLog: null, workoutMedia: []}),
         }),
         {
                 name: "workout-storage",

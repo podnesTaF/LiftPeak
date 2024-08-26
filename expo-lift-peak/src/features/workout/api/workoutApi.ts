@@ -2,6 +2,7 @@ import api from "@shared/api/AxiosInstance";
 import {CreateWorkoutDto, IWorkoutPreview} from "../model";
 import {CreateExerciseLogDto} from "@features/exercise-logger";
 import {IWorkout} from "@entities/workout";
+import * as FileSystem from "expo-file-system";
 
 export const addExercises = async (workoutId: string, exercises: CreateExerciseLogDto) => {
     const {data} = await api.post(`/workout-log/${workoutId}/exercises`, exercises);

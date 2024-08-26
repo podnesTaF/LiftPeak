@@ -10,7 +10,7 @@ const Layout = () => {
                        title: "Followings"
                    }} />
                    <MaterialTopTabs.Screen name={'groups'} options={{
-                       title: "groups"
+                       title: "Groups"
                    }} />
                    <MaterialTopTabs.Screen name={'discover'} options={{
                        title: "discover"

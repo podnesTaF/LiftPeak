@@ -19,7 +19,7 @@ export interface IWorkout {
     user?: IUser;
     createdAt: string;
     updatedAt: string;
-    mediaContents: IWorkoutMedia[]
+    mediaContents?: IWorkoutMedia[]
 }
 
 export interface ActiveWorkout extends Omit<IWorkout, "id" | "createdAt" | "workoutLogId" | "updatedAt"> {

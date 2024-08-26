@@ -1,7 +1,7 @@
 import api from "@shared/api/AxiosInstance";
 import {IGroup} from "@entities/group/model";
 
-export const searchGroups = async (value: string) => {
+export const searchGroups = async (value?: string) => {
     const {data} = await api.get<IGroup[]>("/groups/search", {
         params: {value}
     })
@@ -19,5 +19,10 @@ export const leaveGroup = async (groupId: number) => {
 export const getGroup = async (groupId?: number | string) => {
     const {data} = await api.get<IGroup>(`/groups/${groupId}`)
 
+    return data
+}
+
+export const getFollowedGroups = async () => {
+    const {data} = await api.get<IGroup[]>("/groups/followings")
     return data
 }

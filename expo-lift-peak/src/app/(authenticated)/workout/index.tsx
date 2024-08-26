@@ -35,7 +35,7 @@ const Index = () => {
         elapsedTime,
         playTimer,
     } = useTimerStore();
-    const {discardAlert, discardWorkout: discardWorkoutFromStore} = useDiscardWorkout()
+    const {clearMedia, discardWorkoutWithMedia} = useDiscardWorkout()
 
     const router = useRouter();
     const scrollY = useSharedValue(0);
@@ -53,8 +53,8 @@ const Index = () => {
         });
     }
 
-    const discardWorkout = () => {
-        discardWorkoutFromStore();
+    const discardWorkout = async () => {
+        await discardWorkoutWithMedia()
         router.replace("/(authenticated)/(tabs)/start");
     };
 

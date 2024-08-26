@@ -2,7 +2,7 @@ import {Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react
 import Button from "@shared/components/Button";
 import {Link, Stack, useRouter} from "expo-router";
 import React, {useEffect, useLayoutEffect} from "react";
-import {useExerciseStore, useWorkoutStore} from "@features/workout-logger";
+import {useDiscardWorkout, useExerciseStore, useWorkoutStore} from "@features/workout-logger";
 import {Colors, defaultStyles} from "@shared/styles";
 import {useHeaderHeight} from "@react-navigation/elements";
 import {Ionicons} from "@expo/vector-icons";
@@ -28,6 +28,7 @@ export default function StartWorkout() {
   const {
     clearExercises
   } = useExerciseStore()
+  const {discardWorkoutWithMedia} = useDiscardWorkout();
 
   const {data} = useQuery({
     queryKey: ['workoutRoutines'],
@@ -50,8 +51,9 @@ export default function StartWorkout() {
           text: "Create New",
           style: "destructive",
           onPress: () => {
-            discardWorkout()
-            startNewWorkout()
+            discardWorkoutWithMedia().then(() => {
+                startNewWorkout()
+            })
           }
         }
       ])
@@ -68,11 +70,6 @@ export default function StartWorkout() {
     router.push("/(authenticated)/workout");
   }
 
-  const discardWorkout = () => {
-    clearTimer();
-    clearWorkout();
-    clearExercises();
-  }
 
 
   return (

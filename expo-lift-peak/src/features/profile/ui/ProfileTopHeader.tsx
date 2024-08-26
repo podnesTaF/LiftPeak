@@ -4,12 +4,13 @@ import Animated, {Extrapolation, interpolate, useAnimatedStyle, useSharedValue} 
 import Constants from "expo-constants";
 import {Colors, defaultStyles} from "@shared/styles";
 import {Ionicons} from "@expo/vector-icons";
-import {useRouter} from "expo-router";
+import {usePathname, useRouter} from "expo-router";
 import {IUser} from "@entities/user";
 
 const ProfileTopHeader = ({user}: {user?: IUser}) => {
     const scrollY = useSharedValue(0);
     const router = useRouter();
+    const pathname = usePathname();
     const textStyle = useAnimatedStyle(() => {
         const bottom = interpolate(
             scrollY.value,
@@ -51,22 +52,17 @@ const ProfileTopHeader = ({user}: {user?: IUser}) => {
     })
 
     return (
-        <View style={[{flexDirection: "row", width: "100%", alignItems: "center", overflow: "hidden", justifyContent: "space-between", paddingBottom: 12, paddingTop: Constants.statusBarHeight, backgroundColor: Colors.dark700}]}>
-            <View style={{paddingHorizontal: 12}}>
-                <TouchableOpacity onPress={()=> router.back()} >
-                    <Ionicons name={"chevron-back"} size={30} color={"white"} />
+        <View style={[{flexDirection: "row", width: "100%", alignItems: "center", overflow: "hidden", justifyContent: "space-between", paddingHorizontal: 12, paddingBottom: 12, paddingTop: Constants.statusBarHeight, backgroundColor: Colors.dark700}]}>
+            {pathname !== '/personal-profile' && <View style={{paddingHorizontal: 12}}>
+                <TouchableOpacity onPress={() => router.back()}>
+                    <Ionicons name={"chevron-back"} size={30} color={"white"}/>
                 </TouchableOpacity>
-            </View>
-            <Animated.View style={[{position: "absolute", left: 70},textStyle]}>
-                <Text style={[defaultStyles.smallTitle]}>
-                    Profile
-                </Text>
-            </Animated.View>
-            <Animated.View style={[{position: "absolute", left: 70}, nameStyle]}>
+            </View>}
+            <View>
                 <Text style={defaultStyles.smallTitle}>
                     {user?.profile?.firstName} {user?.profile?.lastName}
                 </Text>
-            </Animated.View>
+            </View>
             <View style={{paddingHorizontal: 12}}>
                 <TouchableOpacity onPress={()=> router.back()} >
                     <Ionicons name={"ellipsis-vertical"} size={30} color={Colors.white}/>
