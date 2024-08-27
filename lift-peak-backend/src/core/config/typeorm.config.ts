@@ -5,7 +5,9 @@ import { ExerciseTarget } from 'src/modules/exercise/entity/exercise-target.enti
 import { Exercise } from 'src/modules/exercise/entity/exercise.entity';
 import { Instruction } from 'src/modules/exercise/entity/instruction.entity';
 import { GroupMember } from 'src/modules/group/entities/group-member.entity';
+import { GroupPost } from 'src/modules/group/entities/group-post.entity';
 import { Group } from 'src/modules/group/entities/group.entity';
+import { PostContent } from 'src/modules/group/entities/post-content.entity';
 import { Media } from 'src/modules/media/entity/media.entity';
 import { Role } from 'src/modules/role/entities/role.entity';
 import { Target } from 'src/modules/target/entities/target.entity';
@@ -56,6 +58,8 @@ export const config: TypeOrmModuleOptions = {
     Set,
     Gym,
     SocialMediaLink,
+    GroupPost,
+    PostContent,
   ],
   synchronize: true,
 };

@@ -1,3 +1,4 @@
+import { GroupPost } from 'src/modules/group/entities/group-post.entity';
 import { Group } from 'src/modules/group/entities/group.entity';
 import { Role } from 'src/modules/role/entities/role.entity';
 import { RoutineSave } from 'src/modules/workout/entities/routine-save.entity';
@@ -79,4 +80,7 @@ export class User extends AbstractEntity {
     },
   })
   gyms: Gym[];
+
+  @OneToMany(() => GroupPost, (post) => post.user)
+  posts: GroupPost[];
 }

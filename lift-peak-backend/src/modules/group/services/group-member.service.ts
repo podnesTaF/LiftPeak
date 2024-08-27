@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { GroupMember } from '../entities/group-member.entity';
+import { GroupMember, MemberRole } from '../entities/group-member.entity';
 import { Group } from '../entities/group.entity';
 
 @Injectable()
@@ -42,5 +42,19 @@ export class GroupMemberService {
       where: { groupId },
       relations: ['user'],
     });
+  }
+
+  async isUserAdminOfGroup(groupId: number, userId: number) {
+    const group = await this.groupRepository.findOne({
+      where: { id: groupId },
+      relations: ['members'],
+    });
+
+    if (!group) {
+      throw new BadRequestException('Group not found');
+    }
+
+    const member = group.members.find((member) => member.userId === +userId);
+    return member.role === MemberRole.ADMIN;
   }
 }
