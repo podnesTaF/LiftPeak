@@ -8,8 +8,6 @@ import { Instruction } from './instruction.entity';
 export enum ExerciseType {
   CARDIO = 'CARDIO',
   STRENGTH = 'STRENGTH',
-  FLEXIBILITY = 'FLEXIBILITY',
-  BALANCE = 'BALANCE',
 }
 
 export enum ExerciseLevel {

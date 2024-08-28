@@ -1,6 +1,11 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectDataSource, InjectRepository } from '@nestjs/typeorm';
 import { FileService } from 'src/modules/file/file.service';
+import { MediaType } from 'src/modules/media/entity/media.entity';
 import { AuthenticatedUser } from 'src/modules/users/decorators/user.decorator';
 import { WorkoutLog } from 'src/modules/workout-log/entities/workout-log.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -39,6 +44,13 @@ export class WorkoutService {
 
       const savedWorkout = await queryRunner.manager.save(Workout, workout);
 
+      const mediaContents = await this.createWorkoutMediaFiles(
+        dto.mediaUrls,
+        savedWorkout.id,
+      );
+
+      await queryRunner.manager.save(WorkoutMedia, mediaContents);
+
       if (dto.createLogDto) {
         const workoutLog = this.workoutLogRepository.create({
           baseWorkoutId: savedWorkout.id,
@@ -71,17 +83,74 @@ export class WorkoutService {
     }
   }
 
-  async getWorkouts(): Promise<Workout[]> {
-    return await this.workoutRepository.find({
+  async getWorkouts(userId?: number) {
+    const workouts = await this.workoutRepository.find({
       relations: ['workoutLog', 'comments', 'likes', 'user', 'mediaContents'],
+    });
+
+    return workouts.map((workout) => {
+      const { likes, comments, ...rest } = workout;
+      return {
+        ...rest,
+        commentsCount: comments.length,
+        liked: likes.some((like) => like.userId === userId),
+        likesCount: likes.length,
+      };
     });
   }
 
-  async getWorkout(workoutId: number): Promise<Workout> {
-    return await this.workoutRepository.findOne({
+  async getWorkout(workoutId: number, userId?: number) {
+    const workout = await this.workoutRepository.findOne({
       where: { id: workoutId },
-      relations: ['workoutLog', 'workoutLog.exerciseLogs.sets'],
+      relations: [
+        'workoutLog',
+        'comments',
+        'likes',
+        'user',
+        'mediaContents',
+        'workoutLog.exerciseLogs.sets',
+        'workoutLog.exerciseLogs.exercise',
+        'workoutLog.exerciseLogs.exercise.exerciseTargets',
+        'workoutLog.exerciseLogs.exercise.exerciseTargets.target',
+        'workoutLog.exerciseLogs.exercise.exerciseTargets.target.muscles',
+      ],
     });
+
+    if (!workout) {
+      throw new NotFoundException('Workout not found');
+    }
+
+    const { likes, comments, workoutLog, ...rest } = workout;
+    return {
+      ...rest,
+      commentsCount: comments.length,
+      liked: likes.some((like) => like.userId === userId),
+      likesCount: likes.length,
+      workoutLog: {
+        ...workoutLog,
+        exerciseLogs: this.getExerciseLogsInfo(workoutLog),
+      },
+    };
+  }
+
+  private getExerciseLogsInfo(workoutLog: WorkoutLog) {
+    return workoutLog.exerciseLogs.map((exerciseLog) => ({
+      id: exerciseLog.id,
+      exercise: {
+        id: exerciseLog.exercise.id,
+        name: exerciseLog.exercise.name,
+        previewUrl: exerciseLog.exercise.previewUrl,
+        type: exerciseLog.exercise.type,
+        equipment: exerciseLog.exercise.equipment,
+        metric: exerciseLog.exercise.metric,
+      },
+      targetGroup: exerciseLog.exercise.exerciseTargets.map((target) => ({
+        name: target.target.name,
+        muscles: target.target.muscles.map((muscle) => muscle.name),
+        priority: target.priority,
+      })),
+      sets: exerciseLog.sets,
+    }));
   }
 
   async getRoutineList(): Promise<IWorkoutPreview[]> {
@@ -181,5 +250,28 @@ export class WorkoutService {
     } finally {
       await queryRunner.release();
     }
+  }
+
+  private async createWorkoutMediaFiles(
+    mediaUrls: string[],
+    workoutId: number,
+  ) {
+    const mediaContents = [];
+    if (!mediaUrls) return mediaContents;
+    for (const mediaUrl of mediaUrls) {
+      const isVideo =
+        mediaUrl.includes('.mp4') ||
+        mediaUrl.includes('.mov') ||
+        mediaUrl.includes('.avi') ||
+        mediaUrl.includes('.flv');
+      const type = isVideo ? MediaType.VIDEO : MediaType.IMAGE;
+      const mediaContent = this.mediaContentRepository.create({
+        mediaUrl,
+        mediaType: type,
+        workoutId: workoutId,
+      });
+      mediaContents.push(mediaContent);
+    }
+    return mediaContents;
   }
 }

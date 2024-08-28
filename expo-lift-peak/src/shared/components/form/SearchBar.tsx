@@ -1,18 +1,34 @@
-import {Button, Keyboard, TextInput, View, StyleSheet} from "react-native";
-import {Entypo, Feather} from "@expo/vector-icons";
+import React from "react";
+import {StyleSheet, TextInput, View, Keyboard, TouchableOpacity, Dimensions} from "react-native";
+import {Feather, Entypo, Ionicons} from "@expo/vector-icons";
+import {Colors} from "@shared/styles";
+import Animated, {interpolate, useAnimatedStyle, withTiming} from "react-native-reanimated";
+import Button from "@shared/components/Button";
 
-const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }: {
+interface SearchBarProps {
     clicked: boolean;
     searchPhrase: string;
-    setSearchPhrase: (searchPhrase: string) => void;
+    setSearchPhrase: (text: string) => void;
     setClicked: (clicked: boolean) => void;
-}) => {
+}
+
+const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }: SearchBarProps) => {
+    const { width } = Dimensions.get("window");
+    const smallInputWidth = width - 100;
+    const largeInputWidth = width - 24;
+    const animatedInputStyle = useAnimatedStyle(() => {
+        const width = withTiming(interpolate(+clicked, [0, 1], [largeInputWidth, smallInputWidth]), {duration: 200});
+        return {
+            width: width,
+        };
+    })
+
     return (
         <View style={styles.container}>
-            <View style={clicked ? styles.searchBar__clicked : styles.searchBar__unclicked}>
-                <Feather name="search" size={20} color="black" style={{ marginLeft: 1 }} />
-
+            <Animated.View style={[clicked ? styles.searchBar__clicked : styles.searchBar__unclicked, animatedInputStyle]}>
+                <Ionicons name="search-outline" size={24} color={Colors.dark300} />
                 <TextInput
+                    autoComplete={"off"}
                     style={styles.input}
                     placeholder="Search"
                     value={searchPhrase}
@@ -23,26 +39,27 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }: {
                 />
 
                 {clicked && (
-                    <Entypo
-                        name="cross"
-                        size={20}
-                        color="black"
-                        style={{ padding: 1 }}
-                        onPress={() => {
-                            setSearchPhrase("");
-                        }}
-                    />
+                    <TouchableOpacity onPress={() => {
+                        setSearchPhrase("");
+                    }}>
+                        <Ionicons
+                            name="close-outline"
+                            size={24}
+                            color={Colors.dark300}
+                        />
+                    </TouchableOpacity>
                 )}
-            </View>
+            </Animated.View>
 
             {clicked && (
                 <View>
                     <Button
                         title="Cancel"
+                        color={"transparent"}
                         onPress={() => {
                             Keyboard.dismiss();
                             setClicked(false);
-                        }}></Button>
+                        }} />
                 </View>
             )}
         </View>
@@ -50,34 +67,32 @@ const SearchBar = ({ clicked, searchPhrase, setSearchPhrase, setClicked }: {
 };
 export default SearchBar;
 
+// styles
 const styles = StyleSheet.create({
     container: {
-        margin: 15,
         justifyContent: "flex-start",
         alignItems: "center",
         flexDirection: "row",
-        width: "90%",
+        width: "100%"
     },
     searchBar__unclicked: {
         padding: 10,
         flexDirection: "row",
-        width: "95%",
-        backgroundColor: "#d9dbda",
+        backgroundColor: Colors.dark500,
         borderRadius: 15,
         alignItems: "center",
     },
     searchBar__clicked: {
         padding: 10,
         flexDirection: "row",
-        width: "80%",
-        backgroundColor: "#d9dbda",
+        backgroundColor: Colors.dark500,
         borderRadius: 15,
         alignItems: "center",
-        justifyContent: "space-evenly",
     },
     input: {
         fontSize: 20,
-        marginLeft: 10,
-        width: "90%",
+        paddingHorizontal: 12,
+        width: "85%",
+        color: "white"
     },
 });

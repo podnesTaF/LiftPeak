@@ -7,23 +7,23 @@ import {
 import { useFonts } from "expo-font";
 import { Stack, useRouter, useSegments } from "expo-router";
 import * as SplashScreen from "expo-splash-screen";
-import React, { useEffect } from "react";
+import React, { useEffect, useRef } from "react";
 import "react-native-reanimated";
-
 import { QueryClientProvider } from "@tanstack/react-query";
-import { Text, View } from "react-native";
+import { Text } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { useAuthStore } from "@features/auth";
 import { Colors, useColorScheme } from "@shared/styles";
 import { queryClient } from "@shared/api";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import ToastNotification from "@shared/components/ToastNotification";
-import { BottomSheetModalProvider } from "@gorhom/bottom-sheet";
-// import {useMigrations} from "drizzle-orm/op-sqlite/migrator";
-import { db } from "@db/dbInstance";
-import migrations from "@db/migrations/migrations";
-import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
-import { stringify } from "uuid";
+import {
+  BottomSheetModal,
+  BottomSheetModalProvider,
+} from "@gorhom/bottom-sheet";
+import CommentSheet, {
+  CommentSheetProvider,
+} from "@features/feed/ui/CommentSheet";
 
 export { ErrorBoundary } from "expo-router";
 
@@ -55,33 +55,6 @@ const InitialLayout = () => {
       SplashScreen.hideAsync();
     }
   }, [loaded]);
-
-  useEffect(() => {
-    if (!loaded) {
-      return;
-    }
-    if (!isTokenValid()) {
-      clearAuth();
-      router.replace("/login");
-    }
-  }, [loaded, token]);
-
-  useEffect(() => {
-    if (!loaded) {
-      return;
-    }
-    const inAuthGroup = segments[0] === "(authenticated)";
-
-    if (token && !inAuthGroup) {
-      router.replace("/(authenticated)/(tabs)/home");
-    } else if (!token) {
-      router.replace("/");
-    }
-  }, [token, loaded]);
-
-  if (!loaded) {
-    return <Text>Loading...</Text>;
-  }
 
   return (
     <Stack
@@ -152,17 +125,22 @@ const InitialLayout = () => {
         }}
       />
       <Stack.Screen
-        name={"(authenticated)/exercise"}
+        name={"(authenticated)/exercises/[id]"}
         options={{
-          headerTitle: "Exercise",
-          headerTintColor: Colors.white,
+          headerShown: true,
+        }}
+      />
+      <Stack.Screen
+        name={"(authenticated)/exercises/history/[exerciseId]"}
+        options={{
+          title: "Exercise History",
+          headerBackTitleVisible: false,
         }}
       />
       <Stack.Screen
         name={"(authenticated)/constructor"}
         options={{
-          headerTitle: "Exercises",
-          headerTintColor: Colors.white,
+          headerShown: false,
         }}
       />
       <Stack.Screen
@@ -173,29 +151,21 @@ const InitialLayout = () => {
           headerTitle: "",
         }}
       />
+      <Stack.Screen name={"(authenticated)/workout-details"} />
+      <Stack.Screen
+        name={"(authenticated)/create-post"}
+        options={{
+          headerShown: false,
+          animation: "fade_from_bottom",
+          animationDuration: 100,
+        }}
+      />
     </Stack>
   );
 };
 
 function RootLayoutNav() {
   const colorScheme = useColorScheme();
-  // const { success, error } = useMigrations(db, migrations);
-
-  // if (error) {
-  //     return (
-  //         <View style={{marginTop: 400}}>
-  //         <Text>Migration error: {JSON.stringify(error.cause)}</Text>
-  //         </View>
-  //     );
-  // }
-
-  // if (!success) {
-  //     return (
-  //         <View>
-  //             <Text>Migration is in progress...</Text>
-  //         </View>
-  //     );
-  // }
 
   return (
     <QueryClientProvider client={queryClient}>
@@ -203,7 +173,9 @@ function RootLayoutNav() {
         <GestureHandlerRootView style={{ flex: 1 }}>
           <BottomSheetModalProvider>
             <StatusBar style="light" />
-            <InitialLayout />
+            <CommentSheetProvider>
+              <InitialLayout />
+            </CommentSheetProvider>
             <ToastNotification />
           </BottomSheetModalProvider>
         </GestureHandlerRootView>

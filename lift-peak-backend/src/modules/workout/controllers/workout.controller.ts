@@ -45,14 +45,17 @@ export class WorkoutController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getWorkouts() {
-    return this.workoutService.getWorkouts();
+  async getWorkouts(@GetUser() user: AuthenticatedUser) {
+    return this.workoutService.getWorkouts(user.id);
   }
 
   @Get(':id')
   @UseGuards(JwtAuthGuard)
-  async getWorkout(@Param('id') workoutId: number) {
-    return this.workoutService.getWorkout(workoutId);
+  async getWorkout(
+    @Param('id') workoutId: number,
+    @GetUser() user: AuthenticatedUser,
+  ) {
+    return this.workoutService.getWorkout(workoutId, user.id);
   }
 
   @Get('/routine/list')

@@ -6,15 +6,20 @@ import TabBarIcon from "@react-navigation/bottom-tabs/src/views/TabBarIcon";
 import {Ionicons} from "@expo/vector-icons";
 import TabBarItem from "@shared/components/navigation/TabBarItem";
 import {ActiveWorkoutPopup, useWorkoutStore} from "@features/workout-logger";
+import {useAuthStore} from "@features/auth";
+import {useLocalSearchParams} from "expo-router";
 
 const CustomTabBar = ({state, descriptors,navigation}: BottomTabBarProps) => {
     const {workout} = useWorkoutStore();
+    const {user} = useAuthStore();
+    const {id} = useLocalSearchParams<{id?: string}>();
     return (
         <>
             <ActiveWorkoutPopup />
             <View style={[styles.container, workout && styles.activeWorkout]}>
                 {state.routes.map((route, index) => {
                     const { options } = descriptors[route.key];
+
                     const label =
                         options.tabBarLabel !== undefined
                             ? options.tabBarLabel
@@ -54,6 +59,8 @@ const CustomTabBar = ({state, descriptors,navigation}: BottomTabBarProps) => {
                             onPress={onPress}
                             onLongPress={onLongPress}
                             label={label.toString()}
+                            user={user}
+                            userId={id ? +id : undefined}
                             isFocused={isFocused}
                         />
                     );

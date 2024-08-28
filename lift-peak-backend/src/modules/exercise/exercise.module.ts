@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { FileService } from '../file/file.service';
+import { ExerciseLog } from '../workout-log/entities/exercise-log.entity';
 import { ExerciseController } from './controllers/exercise.controller';
 import { InstructionController } from './controllers/instruction.controller';
 import { ExerciseMedia } from './entity/exercise-media.entity';
@@ -16,6 +17,7 @@ import { InstructionService } from './services/instruction.service';
       Exercise,
       ExerciseMedia,
       Instruction,
+      ExerciseLog,
       ExerciseTarget,
     ]),
   ],

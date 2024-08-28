@@ -5,11 +5,15 @@ import { ExerciseTarget } from 'src/modules/exercise/entity/exercise-target.enti
 import { Exercise } from 'src/modules/exercise/entity/exercise.entity';
 import { Instruction } from 'src/modules/exercise/entity/instruction.entity';
 import { GroupMember } from 'src/modules/group/entities/group-member.entity';
+import { GroupPost } from 'src/modules/group/entities/group-post.entity';
 import { Group } from 'src/modules/group/entities/group.entity';
+import { PostContent } from 'src/modules/group/entities/post-content.entity';
 import { Media } from 'src/modules/media/entity/media.entity';
 import { Role } from 'src/modules/role/entities/role.entity';
 import { Target } from 'src/modules/target/entities/target.entity';
+import { Gym } from 'src/modules/users/entities/gym.entity';
 import { Profile } from 'src/modules/users/entities/profile.entity';
+import { SocialMediaLink } from 'src/modules/users/entities/social-media.entity';
 import { UserFollower } from 'src/modules/users/entities/user-follower.enitity';
 import { User } from 'src/modules/users/entities/user.entity';
 import { ExerciseLog } from 'src/modules/workout-log/entities/exercise-log.entity';
@@ -52,6 +56,10 @@ export const config: TypeOrmModuleOptions = {
     WorkoutLog,
     ExerciseLog,
     Set,
+    Gym,
+    SocialMediaLink,
+    GroupPost,
+    PostContent,
   ],
   synchronize: true,
 };

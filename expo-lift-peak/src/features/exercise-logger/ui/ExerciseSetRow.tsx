@@ -61,6 +61,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                 </View>
                                 <View style={styles.inputContainer}>
                                     <InputField
+                                        inputStyle={{textAlign: "center"}}
                                         color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                         keyboardType={"numeric"}
                                         value={values.reps}
@@ -70,6 +71,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                 </View>
                                 <View style={styles.inputContainer}>
                                     <InputField
+                                        inputStyle={{textAlign: "center"}}
                                         color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                         keyboardType={"numeric"}
                                         value={values.weight}
@@ -89,6 +91,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                 </View>
                                 <View style={styles.inputContainer}>
                                     <InputField
+                                        inputStyle={{textAlign: "center"}}
                                         placeholder={"Dist"}
                                         color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                         keyboardType={"numeric"}
@@ -98,6 +101,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                 </View>
                                 <View style={styles.inputContainer}>
                                     <InputField
+                                        inputStyle={{textAlign: "center"}}
                                         placeholder={"Time"}
                                         color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                         keyboardType={"numeric"}
@@ -110,6 +114,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                         {metric === 'time' && (
                             <View style={styles.inputContainer}>
                                 <InputField
+                                    inputStyle={{textAlign: "center"}}
                                     color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                     keyboardType={"numeric"}
                                     value={values.time}

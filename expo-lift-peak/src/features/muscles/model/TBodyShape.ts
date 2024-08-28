@@ -1,11 +1,9 @@
 export type TBodyShape = {
     front: {
         path: string;
-        muscles: TMuscleGroup
     },
     back: {
         path: string;
-        muscles: TMuscleGroup
     }
 }
 

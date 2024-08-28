@@ -1,8 +1,10 @@
 import {IUser} from "@entities/user";
 import {IWorkoutLog} from "@entities/workout-log";
 import {IWorkoutMedia} from "@entities/workout/model/IWorkoutMedia";
+import {ILike} from "@entities/workout/model/ILike";
+import {IReactable} from "@entities/reaction";
 
-export interface IWorkout {
+export interface IWorkout extends IReactable{
     id: number | string;
     title: string;
     description?: string;
@@ -14,7 +16,7 @@ export interface IWorkout {
     user?: IUser;
     createdAt: string;
     updatedAt: string;
-    mediaContents: IWorkoutMedia[]
+    mediaContents?: IWorkoutMedia[]
 }
 
 export interface ActiveWorkout extends Omit<IWorkout, "id" | "createdAt" | "workoutLogId" | "updatedAt"> {

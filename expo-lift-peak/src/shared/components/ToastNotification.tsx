@@ -48,6 +48,7 @@ const ToastNotification = () => {
                 alignSelf: 'center',
                 borderLeftWidth: 5,
                 borderLeftColor: borderColor,
+                zIndex: 100
             }}
         >
             <View>

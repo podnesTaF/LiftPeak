@@ -18,6 +18,10 @@ export interface ITarget {
     parentId: number;
     parent?: ITarget;
     muscles?: ITarget[];
+    paths?: {
+        front?: string[],
+        back?: string[]
+    }
     createdAt: string;
     updatedAt: string;
 }

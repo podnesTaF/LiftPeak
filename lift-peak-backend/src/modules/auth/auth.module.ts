@@ -3,11 +3,15 @@ import { ConfigModule } from '@nestjs/config';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { GroupMember } from '../group/entities/group-member.entity';
+import { Group } from '../group/entities/group.entity';
+import { GroupMemberService } from '../group/services/group-member.service';
 import { Role } from '../role/entities/role.entity';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/services/users.service';
 import { UsersModule } from '../users/users.module';
 import { AuthController } from './auth.controller';
+import { GroupAdminGuard } from './guards/group-admin.guard';
 import { JwtAuthGuard } from './guards/jwt-auth.guard';
 import { RolesGuard } from './guards/roles.guard';
 import { AuthService } from './services/auth.service';
@@ -29,7 +33,7 @@ import { LocalStrategy } from './strategies/local.strategy';
         };
       },
     }),
-    TypeOrmModule.forFeature([User, Role]),
+    TypeOrmModule.forFeature([User, Role, Group, GroupMember]),
   ],
   controllers: [AuthController],
   providers: [
@@ -38,8 +42,16 @@ import { LocalStrategy } from './strategies/local.strategy';
     JwtStrategy,
     JwtAuthGuard,
     RolesGuard,
+    GroupMemberService,
     UsersService,
+    GroupAdminGuard,
   ],
-  exports: [AuthService, JwtModule, PassportModule],
+  exports: [
+    AuthService,
+    JwtModule,
+    PassportModule,
+    JwtAuthGuard,
+    GroupAdminGuard,
+  ],
 })
 export class AuthModule {}

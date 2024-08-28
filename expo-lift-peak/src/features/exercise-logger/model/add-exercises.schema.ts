@@ -11,6 +11,7 @@ export const CreateSetDtoSchema = z.object({
     reps: z.number().optional().nullable(),
     previousSetId: z.number().optional().nullable(),
     restInS: z.number().optional().nullable(),
+    mediaUrls: z.array(z.string()).optional().nullable(),
 });
 
 

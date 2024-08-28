@@ -3,20 +3,27 @@ import {Text, TouchableOpacity, StyleSheet, View} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import {Colors} from "@shared/styles";
 import {BottomTabBarButtonProps} from "@react-navigation/bottom-tabs";
+import {IUser} from "@entities/user";
 
 interface TabBarItemProps extends Omit<BottomTabBarButtonProps, "children"> {
     label: string;
     isFocused: boolean;
     routeName: string;
+    user?: IUser | null;
+    userId?: number;
 }
 
 const icons: { [key: string]: React.ComponentProps<typeof Ionicons>['name']; } = {
     home: "newspaper",
     start: "barbell",
-    logout: "log-out-outline"
+    "personal-profile": "person-outline"
 }
 
-const TabBarItem = ({isFocused, label, routeName, ...props}: TabBarItemProps) => {
+const TabBarItem = ({isFocused, label, routeName, user, userId, ...props}: TabBarItemProps) => {
+
+    if(routeName === "profile" || routeName.includes("groups")) {
+        return null;
+    }
 
     if (routeName === "start") {
         return <StartTabBarItem

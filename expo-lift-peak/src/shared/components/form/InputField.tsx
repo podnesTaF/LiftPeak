@@ -1,5 +1,5 @@
 import React, { useState, useRef } from 'react';
-import { StyleSheet, Text, TextInput, TextInputProps, View, TouchableOpacity } from "react-native";
+import {StyleSheet, Text, TextInput, TextInputProps, View, TouchableOpacity, StyleProp, TextStyle} from "react-native";
 import { Colors } from "@shared/styles";
 import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import {Ionicons} from "@expo/vector-icons";
@@ -22,9 +22,10 @@ interface InputFieldProps {
     onBlur?: () => void;
     keyboardType?: TextInputProps["keyboardType"];
     color?: string;
+    inputStyle?: StyleProp<TextStyle>;
 }
 
-const InputField = ({ label, placeholder, type, value, onBlur, onChange, keyboardType, color}: InputFieldProps) => {
+const InputField = ({ label, placeholder, type, value, onBlur, onChange, keyboardType, color, inputStyle}: InputFieldProps) => {
 
     return (
         <View style={styles.inputContainer}>
@@ -36,7 +37,7 @@ const InputField = ({ label, placeholder, type, value, onBlur, onChange, keyboar
                     keyboardType={keyboardType}
                     onBlur={onBlur}
                     value={value}
-                    style={[styles.input, {backgroundColor: color || Colors.dark500}]}
+                    style={[styles.input, {backgroundColor: color || Colors.dark500}, inputStyle]}
                     secureTextEntry={type === "password"}
                     placeholder={placeholder}
                 />
@@ -56,7 +57,6 @@ const styles = StyleSheet.create({
         paddingVertical: 12,
         paddingHorizontal: 12,
         fontSize: 16,
-        textAlign: 'center',  // Centers the text and placeholder
     },
     label: {
         color: Colors.dark300,

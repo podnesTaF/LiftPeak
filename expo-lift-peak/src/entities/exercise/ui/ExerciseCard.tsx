@@ -7,14 +7,15 @@ import {Ionicons} from "@expo/vector-icons";
 import {getExerciseTargetsToString} from "@entities/exercise/utils";
 
 interface ExerciseCardProps {
-    onPress?: (exerciseId: number | string) => void;
+    onPress?: (exercise: IExercise) => void;
     exercise: IExercise | Partial<IExercise> & {id: number, targetGroup: string[] };
     selected?: boolean;
 }
 
 export const ExerciseCard = ({onPress, exercise, selected}: ExerciseCardProps) => {
+
     return (
-        <TouchableOpacity onPress={() => onPress ? onPress(exercise.id) : null} style={styles.container}>
+        <TouchableOpacity onPress={() => onPress ? onPress(exercise) : null} style={styles.container}>
             <View style={{flexDirection: "row", alignItems: "center", gap: 16}}>
                 <Avatar name={""} size={64} url={exercise.previewUrl}>
                     <Ionicons name={"barbell"} size={40} color={Colors.white} />

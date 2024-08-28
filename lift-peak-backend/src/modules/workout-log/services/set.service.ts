@@ -71,14 +71,6 @@ export class SetService {
           set.timeInS = dto.timeInS;
         }
         break;
-      case ExerciseType.FLEXIBILITY:
-      case ExerciseType.BALANCE:
-        if (exercise.metric === ExerciseMetric.time) {
-          set.timeInS = dto.timeInS;
-        } else if (exercise.metric === ExerciseMetric.reps) {
-          set.reps = dto.reps;
-        }
-        break;
       default:
         throw new Error('Unsupported exercise type');
     }

@@ -3,6 +3,11 @@ import { AbstractEntity } from 'src/shared/entities/abstract.entity';
 import { Column, Entity, ManyToOne } from 'typeorm';
 import { Group } from './group.entity';
 
+export enum MemberRole {
+  ADMIN = 'admin',
+  MEMBER = 'member',
+}
+
 @Entity()
 export class GroupMember extends AbstractEntity {
   @Column()
@@ -16,4 +21,11 @@ export class GroupMember extends AbstractEntity {
 
   @ManyToOne(() => Group, (group) => group.members)
   group: Group;
+
+  @Column({
+    type: 'enum',
+    enum: MemberRole,
+    default: MemberRole.MEMBER,
+  })
+  role: MemberRole;
 }

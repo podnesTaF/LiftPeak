@@ -27,14 +27,13 @@ export class ExerciseLogService {
     workoutLogId: number,
     dto: CreateExerciseLogDto[],
   ) {
-    // Create a new transaction to ensure that all operations are atomic
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
     try {
       const workoutLog = await queryRunner.manager.findOne(WorkoutLog, {
-        where: { id: workoutLogId },
+        where: { baseWorkoutId: workoutLogId },
       });
 
       if (!workoutLog) {

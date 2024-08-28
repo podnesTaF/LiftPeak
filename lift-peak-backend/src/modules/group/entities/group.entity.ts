@@ -2,6 +2,7 @@ import { User } from 'src/modules/users/entities/user.entity';
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
 import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { GroupMember } from './group-member.entity';
+import { GroupPost } from './group-post.entity';
 
 @Entity()
 export class Group extends AbstractEntity {
@@ -47,4 +48,7 @@ export class Group extends AbstractEntity {
 
   @OneToMany(() => GroupMember, (groupMember) => groupMember.group)
   members: GroupMember[];
+
+  @OneToMany(() => GroupPost, (post) => post.group)
+  posts: GroupPost[];
 }

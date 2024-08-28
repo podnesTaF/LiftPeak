@@ -5,38 +5,47 @@ import {bodyShape} from "@features/muscles/utils/muscles";
 import {Colors} from "@shared/styles";
 import MuscleGroup from "@features/muscles/ui/MuscleGroup";
 import {ReactNativeZoomableView} from '@openspacelabs/react-native-zoomable-view';
+import {useQuery} from "@tanstack/react-query";
+import {getMusclesWithVectors} from "@features/muscles/api/MuscleApi";
+import {filterMusclesByLook} from "@features/muscles/utils";
 
 interface BodyProps {
     look: "front" | "back";
-    setSelectedMuscles: (muscles: string[]) => void;
-    selectedMuscles: string[];
+    setSelectedMuscles: (muscles: {id: number, name: string}[]) => void;
+    selectedMuscles: {id: number, name: string}[];
 }
 
 export const Body = ({look, selectedMuscles, setSelectedMuscles}: BodyProps) => {
     const {height, width} = Dimensions.get('window');
-    const aspectRatio = 500 / 400;
+
+    const {data} = useQuery({
+        queryKey: ["muscles"],
+        queryFn: getMusclesWithVectors
+    })
+
+    const aspectRatio = 500 / 350;
 
 
     return (
         <ReactNativeZoomableView maxZoom={2}
                                  minZoom={0.7}
-                                 initialZoom={1}
+                                 initialZoom={0.8}
                                  bindToBorders={true}
-                                 style={[{alignItems: "center", justifyContent: "flex-start"}]}>
+                                 style={[{alignItems: "center", justifyContent: "center"}]}>
             <Svg
                 width={width * 0.68}
-                height={(height * 0.8) / aspectRatio}
+                height={height * 0.60}
                 preserveAspectRatio="xMidYMid meet"
             >
                 <Path
                     d={bodyShape[look]?.path}
                     fill={Colors.dark500}
                 />
-                {Object.entries(bodyShape[look]?.muscles).map(([groupName, value], index) => (
+                {filterMusclesByLook(look, data).map((m, index) => (
                     <MuscleGroup
                         key={index}
-                        paths={value.paths}
-                        muscleGroupName={groupName}
+                        paths={m.paths![look]!}
+                        muscle={m}
                         selectedMuscles={selectedMuscles}
                         setSelectedMuscles={setSelectedMuscles}
                     />

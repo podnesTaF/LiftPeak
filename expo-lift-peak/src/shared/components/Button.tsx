@@ -1,33 +1,41 @@
 import React, {forwardRef} from 'react';
-import {TouchableOpacity, StyleSheet, Text} from "react-native";
+import {TouchableOpacity, StyleSheet, Text, ActivityIndicator, TouchableOpacityProps} from "react-native";
 import {Colors} from "@shared/styles";
 import {getContrastColor} from "@shared/utils";
 
-interface ButtonProps {
-    title: string;
+interface ButtonProps extends TouchableOpacityProps {
+    title?: string;
     color: keyof typeof Colors;
     fullWidth?: boolean;
     disabled?: boolean;
     onPress?: () => void;
     children?: React.ReactNode;
+    isLoading?: boolean;
 }
 
-const Button = forwardRef<TouchableOpacity, ButtonProps>(({color, children, title, onPress, fullWidth, disabled}, ref) => {
+const Button = forwardRef<TouchableOpacity, ButtonProps>(({color,isLoading, children, title, onPress, fullWidth, disabled, ...props}, ref) => {
     const backgroundColor = disabled ? Colors.dark300 : Colors[color];
     const textColor = getContrastColor(backgroundColor);
 
     return (
         <TouchableOpacity disabled={!!disabled} onPress={onPress}
+                          {...props}
                           style={[
                               styles.buttonContainer,
                               { width: fullWidth ? "100%" : "auto", backgroundColor },
-                              disabled && styles.buttonContainerDisabled
+                              disabled && styles.buttonContainerDisabled,
+                              props.style
                           ]}
+
         >
-            {children}
-            <Text style={[styles.buttonText, {color: textColor}]}>
+            {isLoading ? (
+                <ActivityIndicator size={"small"} color={textColor} />
+            ) : (
+                children
+            )}
+            {title && <Text style={[styles.buttonText, {color: textColor}]}>
                 {title}
-            </Text>
+            </Text>}
         </TouchableOpacity>
     );
 });

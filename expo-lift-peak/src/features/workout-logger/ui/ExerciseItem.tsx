@@ -25,7 +25,7 @@ export const ExerciseItem = ({item, onPress,index}: ExerciseItemProps) => {
 
     const confirmAlert = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
-        Alert.alert("Delete Exercise", "Are you sure you want to delete this exercise?", [
+        Alert.alert("Delete Exercise", "Are you sure you want to delete this exercises?", [
             {
                 text: "Cancel",
                 onPress: () => console.log("Cancel Pressed"),

@@ -1,4 +1,10 @@
-import { IsArray, IsNumber, IsOptional, IsString } from 'class-validator';
+import {
+  IsArray,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateTargetDto {
   @IsString()
@@ -19,4 +25,8 @@ export class CreateTargetDto {
   @IsOptional()
   @IsNumber()
   parentId: number;
+
+  @IsOptional()
+  @IsObject()
+  paths: { [key: string]: string[] };
 }

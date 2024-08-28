@@ -1,4 +1,11 @@
-import { Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Controller,
+  Delete,
+  Get,
+  Param,
+  Post,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import {
   AuthenticatedUser,
@@ -22,5 +29,14 @@ export class GroupMemberController {
     @GetUser() user: AuthenticatedUser,
   ) {
     return this.groupMemberService.addMember(+groupId, user?.id);
+  }
+
+  @Delete()
+  @UseGuards(JwtAuthGuard)
+  async removeMember(
+    @Param('id') groupId: string,
+    @GetUser() user: AuthenticatedUser,
+  ) {
+    return this.groupMemberService.removeMember(+groupId, user?.id);
   }
 }

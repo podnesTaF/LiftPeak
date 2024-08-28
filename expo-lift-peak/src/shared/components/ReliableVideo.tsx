@@ -26,7 +26,7 @@ const ReloadableVideo = forwardRef((props: VideoProps, ref) => {
             {!shouldVideoReload && (
                 <Video
                     {...props}
-                    ref={ref}
+                    ref={ref as any}
                     onLoadStart={() => {
                         potentiallyReloadVideo();
                         if (props.onLoadStart) {

@@ -1,2 +1,2 @@
 export {PostFeed} from './PostFeed'
-export {WorkoutPost} from './WorkoutPost'
+export {WorkoutPost, WorkoutPostBody} from './WorkoutPost'

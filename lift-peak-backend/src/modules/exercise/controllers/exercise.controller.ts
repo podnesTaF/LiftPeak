@@ -63,4 +63,9 @@ export class ExerciseController {
   async getExercise(@Param('id') id: number) {
     return this.exerciseService.getFullExercise(id);
   }
+
+  @Get('/history/:exerciseId')
+  async getExerciseLogHistory(@Param('exerciseId') exerciseId: number) {
+    return this.exerciseService.getExerciseLogHistory(exerciseId);
+  }
 }

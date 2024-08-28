@@ -1,5 +1,6 @@
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
+import { SocialMediaLink } from './social-media.entity';
 import { User } from './user.entity';
 
 export enum Gender {
@@ -30,6 +31,22 @@ export class Profile extends AbstractEntity {
 
   @Column({ nullable: true })
   wallpaperUrl: string;
+
+  @Column({ type: 'text', nullable: true })
+  goal: string;
+
+  @Column({ nullable: true })
+  country: string;
+
+  @Column({ nullable: true })
+  city: string;
+
+  @OneToMany(
+    () => SocialMediaLink,
+    (socialMediaLink) => socialMediaLink.profile,
+    { cascade: true },
+  )
+  socialMediaLinks: SocialMediaLink[];
 
   @Column({ nullable: false })
   userId: number;

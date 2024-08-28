@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {Text, TouchableOpacity, View} from "react-native";
+import {ScrollView, Text, TouchableOpacity, View} from "react-native";
 import InputField from "@shared/components/form/InputField";
 import {useDiscardWorkout, useExerciseStore, useWorkoutStore} from "@features/workout-logger";
 import {useTimerStore} from "@features/timer";
@@ -8,15 +8,18 @@ import {useToastStore} from "@shared/store";
 import {Stack, useRouter} from "expo-router";
 import {CreateExerciseLogDto, CreateExerciseLogDtoArraySchema} from "@features/exercise-logger";
 import {useMutation} from "@tanstack/react-query";
+import {MediaPicker} from "@features/media-upload";
+import {defaultStyles} from "@shared/styles";
+
 
 const WorkoutSave = () => {
     const [title, setTitle] = useState("Active Workout");
     const [description, setDescription] = useState("");
 
-    const {workout, workoutLog} = useWorkoutStore()
-    const {exerciseLogs} = useExerciseStore()
-    const {elapsedTime} = useTimerStore();
-    const discardWorkout = useDiscardWorkout()
+    const {workout, workoutLog, clearWorkout, addMedia, workoutMedia, removeMedia} = useWorkoutStore()
+    const {exerciseLogs, clearExercises} = useExerciseStore()
+    const {elapsedTime} = useTimerStore()
+    const {discardWorkout} = useDiscardWorkout();
 
     const { showToast } = useToastStore();
     const router = useRouter();
@@ -33,15 +36,16 @@ const WorkoutSave = () => {
         },
         onSuccess: (data) => {
             showToast(
-                "Success",
-                `You successfully created workout ${data.title}`,
+                "Workout Created",
+                "Workout has been successfully created",
                 "success",
-                2000
+                4000
             );
             discardWorkout();
-            router.replace('/(authenticated)/(tabs)/home');
+            router.push({pathname: "/(authenticated)/(tabs)/start"});
         }
     })
+
 
     const handleSave = async () => {
 
@@ -60,12 +64,12 @@ const WorkoutSave = () => {
                 restInS: set.restInS || null,
             })) || [],
         }));
-
         const data = {
             title,
             description,
             isRoutine: workout?.isRoutine || false,
             routineId: null,
+            mediaUrls: workoutMedia.map(media => media.actualUrl),
             createLogDto: {
                 durationInS: elapsedTime,
                 startTime: workoutLog?.startTime || new Date(Date.now() - elapsedTime),
@@ -99,7 +103,6 @@ const WorkoutSave = () => {
         mutate({createWorkoutDto: validationResult.data,exercises: exerciseLogsValidationResult.data});
     };
 
-
     return (
         <>
             <Stack.Screen
@@ -113,12 +116,13 @@ const WorkoutSave = () => {
                     )
                 }}
             />
-            <View style={[{gap:10, marginTop: 70, paddingVertical: 10}]}>
-                <View>
+            <ScrollView contentContainerStyle={{gap: 16}} style={defaultStyles.container}>
+                <View style={{gap: 12, padding: 16}}>
                     <InputField placeholder={"Title"} value={title} onChange={(v) => setTitle(v)} />
+                    <InputField placeholder={"Description"} value={description} onChange={(v) => setDescription(v)} />
                 </View>
-                <InputField placeholder={"Description"} value={description} onChange={(v) => setDescription(v)} />
-            </View>
+                <MediaPicker uploadedFiles={workoutMedia} removeMedia={removeMedia} addMedia={addMedia} />
+            </ScrollView>
         </>
     );
 };
