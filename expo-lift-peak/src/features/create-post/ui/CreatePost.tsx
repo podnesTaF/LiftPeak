@@ -1,51 +1,27 @@
 import React, {useRef, useState} from 'react';
 import {
     Alert,
-    Image,
     KeyboardAvoidingView,
     Platform,
     ScrollView,
-    StyleSheet,
     TextInput,
-    TouchableOpacity,
-    View
 } from 'react-native';
 import {v4 as uuidv4} from 'uuid';
-import {Colors, defaultStyles} from "@shared/styles";
-import {Ionicons, MaterialIcons} from "@expo/vector-icons";
+import {defaultStyles} from "@shared/styles";
 import PostAttachments from "@features/create-post/ui/PostAttachments";
-import {RoutineCard} from "@entities/routine";
-import {ExerciseCard} from "@entities/exercise";
-import {Block, BlockType, CreateContentDto, CreatePostDto} from "@features/create-post/model";
-import {PostContentType, TextType} from "@entities/post";
-import {useMutation} from "@tanstack/react-query";
-import {createPost} from "@features/create-post/api/CreatePostApi";
-import {useLocalSearchParams, useRouter} from "expo-router";
-import {useToastStore} from "@shared/store";
-import {useRoute} from "@react-navigation/core";
+import {Block, BlockType} from "@features/create-post/model";
+import {TextType} from "@entities/post";
 import {BlockRenderer} from "@features/create-post/ui/BlockRenderer";
 
-export function CreatePost() {
-    const { groupId } = useLocalSearchParams<{ groupId: string }>();
-    const [blocks, setBlocks] = useState<Block[]>([
-        { id: uuidv4(), type: TextType.TITLE, content: '' },
-    ]);
+interface CreatePostProps {
+    blocks: Block[];
+    setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
+}
 
-    const { showToast } = useToastStore();
-    const router = useRouter();
+export function CreatePost({blocks, setBlocks}: CreatePostProps) {
     const [focusedInputIdx, setFocusedInputIdx] = useState<number | null>(null);
     const scrollRef = useRef<ScrollView | null>(null);
     const inputRefs = useRef<Record<string, TextInput | null>>({});
-    const { mutate } = useMutation({
-        mutationFn: (dto: CreatePostDto) => createPost(groupId || '1', dto),
-        onSuccess: () => {
-            showToast('Post Created', 'success', 'success', 3000);
-            router.push('/(authenticated)/(tabs)/groups/' + groupId);
-        },
-        onError: () => {
-            showToast('Failed to create post', 'error', 'error', 3000);
-        },
-    });
 
 
     const addBlock = (type: BlockType = TextType.TEXT, insertAt: number | null = null, content?: string) => {
@@ -84,27 +60,6 @@ export function CreatePost() {
                 block.id === id ? { ...block, content } : block
             )
         );
-    };
-
-    const handlePostCreation = () => {
-        const dto: CreatePostDto = {
-            contents: blocks.map(({ type, content }) => {
-                const isText = Object.values(TextType).includes(type as TextType);
-
-                let contentType = isText ? 'text' : type;
-                let textType = isText ? (type as TextType) : undefined;
-
-                return {
-                    type: contentType as PostContentType,
-                    textType: textType,
-                    content: isText ? content : undefined,
-                    exerciseId: type === 'exercise' ? JSON.parse(content).id : undefined,
-                    workoutId: type === 'workout' ? JSON.parse(content).id : undefined,
-                    imageUrl: type === 'image' ? content : undefined,
-                };
-            }),
-        };
-        mutate(dto);
     };
 
     const handleBackspacePress = (block: Block, index: number) => {

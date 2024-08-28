@@ -77,7 +77,7 @@ export const GroupHeader = ({group}: GroupHeaderProps) => {
                                 <Ionicons name={"person-remove-outline"} size={24} color={Colors.white} />
                             </Button>
                         ) : (
-                            <Button onPress={() => router.push("/(authenticated)/create-post")}  fullWidth color={"white"} title={"Join"}>
+                            <Button onPress={() => router.push({pathname: "/(authenticated)/create-post", params: {groupId: group?.id}})} fullWidth color={"white"} title={"Join"}>
                                 <Ionicons name={"person-add-outline"} size={24} color={Colors.dark900} />
                             </Button>
                         )

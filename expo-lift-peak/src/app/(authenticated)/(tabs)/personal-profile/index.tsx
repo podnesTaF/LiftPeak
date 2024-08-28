@@ -28,7 +28,7 @@ const ProfileOverview = () => {
         <Animated.ScrollView onScroll={onScroll} stickyHeaderIndices={[1]} contentContainerStyle={{paddingBottom: 120}}
                              style={defaultStyles.container} scrollEventThrottle={16}>
             <ProfileHeader user={data}/>
-            <CustomTabBar activeTab={activeTab} setActiveTab={setActiveTab} tabs={['about', 'statistics']}/>
+            <CustomTabBar activeTab={activeTab} setActiveTab={setActiveTab} tabs={[{name: 'about'}, {name: 'statistics'}]}/>
             {activeTab === 'about' && (
                 data ? (
                     <UserInfo user={data}/>
