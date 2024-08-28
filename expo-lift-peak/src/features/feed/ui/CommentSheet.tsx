@@ -2,42 +2,62 @@ import React, {forwardRef, useCallback, useEffect, useRef, useState} from 'react
 import {
     BottomSheetBackdrop,
     BottomSheetFooter,
-    BottomSheetFooterProps, BottomSheetHandle, BottomSheetHandleProps,
+    BottomSheetFooterProps, BottomSheetHandleProps,
     BottomSheetModal, BottomSheetScrollView, BottomSheetTextInput,
     BottomSheetView
 } from "@gorhom/bottom-sheet";
 import {View, StyleSheet, Text, TouchableOpacity} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
-import InputField from "@shared/components/form/InputField";
 import Button from "@shared/components/Button";
 import {Ionicons, MaterialIcons} from "@expo/vector-icons";
-import ToastNotification from "@shared/components/ToastNotification";
 import {useMutation, useQuery} from "@tanstack/react-query";
 import {useToastStore} from "@shared/store";
 import {BlurView} from "expo-blur";
-import {commentWorkout, getWorkoutComments} from "@features/feed/api";
 import {useCommentStore, WorkoutPostBody} from "@features/feed";
 import Constants from 'expo-constants';
 import Comment from "@features/feed/ui/Comment";
+import {CommentType, getComments, leaveComment} from "@entities/reaction";
 
 interface CommentSheetProps {
 }
 
-const CommentSheet = forwardRef(({}:CommentSheetProps, ref: React.ForwardedRef<BottomSheetModal>) => {
-    const {workout, hide} = useCommentStore()
+export const CommentSheetProvider = ({children}: {children: React.ReactNode}) => {
+    const ref = useRef<BottomSheetModal>();
+    const {shown} = useCommentStore()
+    const handleClosePress = () => ref.current?.close();
+    const handlePresentPress = () => ref.current?.present();
+
+    useEffect(() => {
+        if (shown) {
+            handlePresentPress()
+        } else {
+            handleClosePress()
+        }
+    }, [shown]);
+
+    return (
+        <>
+            {children}
+            <CommentSheet ref={ref as any} />
+        </>
+    )
+}
+
+const CommentSheet = forwardRef<BottomSheetModal, {}>(({}:CommentSheetProps, ref: React.ForwardedRef<BottomSheetModal>) => {
+    const {workout, post, type, hide} = useCommentStore()
 
 
     const {data, refetch} = useQuery({
         queryKey: ["comments", workout?.id],
-        queryFn: () => getWorkoutComments(workout?.id as number),
-        enabled: !!workout?.id
+        queryFn: () => getComments((workout?.id || post?.id)!, type),
+        enabled: !!(workout?.id || post?.id)
     })
 
 
     const renderFooter = useCallback((props: BottomSheetFooterProps) => (
         <BottomSheetFooter {...props}>
             <BlurView style={{paddingHorizontal: 12, paddingBottom: 32, paddingVertical: 6, borderTopWidth: StyleSheet.hairlineWidth, borderColor: Colors.dark500 }} intensity={50} tint={"dark"}>
-                <CommentInput workoutId={workout?.id as number} refetch={refetch} />
+                <CommentInput type={type} relatedEntityId={workout?.id as number} refetch={refetch} />
             </BlurView>
         </BottomSheetFooter>
     ), [workout])
@@ -108,17 +128,18 @@ const CommentSheet = forwardRef(({}:CommentSheetProps, ref: React.ForwardedRef<B
 });
 
 interface CommentInputProps {
-    workoutId?: number
+    relatedEntityId?: number,
+    type: CommentType,
     refetch: any
 }
 
-const CommentInput = ({workoutId,refetch}: CommentInputProps) => {
+const CommentInput = ({relatedEntityId,type,refetch}: CommentInputProps) => {
     const {showToast} = useToastStore()
     const [comment, setComment] = useState<string>("");
 
     const {mutate, isPending} = useMutation({
         mutationFn: async (comment: string) => {
-            await commentWorkout(workoutId as number, comment);
+            await leaveComment(relatedEntityId as number,type,  comment);
         },
         onSuccess: () => {
             showToast("Comment sent!", "Your comment has been sent successfully.", "success", 2000)

@@ -3,7 +3,7 @@ import {DarkTheme, DefaultTheme, ThemeProvider} from '@react-navigation/native';
 import {useFonts} from 'expo-font';
 import {Stack, useRouter, useSegments} from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import React, {useEffect} from 'react';
+import React, {useEffect, useRef} from 'react';
 import 'react-native-reanimated';
 import {QueryClientProvider} from "@tanstack/react-query";
 import {Text} from "react-native";
@@ -13,7 +13,8 @@ import {Colors, useColorScheme} from "@shared/styles";
 import {queryClient} from "@shared/api";
 import {GestureHandlerRootView} from "react-native-gesture-handler";
 import ToastNotification from "@shared/components/ToastNotification";
-import {BottomSheetModalProvider} from "@gorhom/bottom-sheet";
+import {BottomSheetModal, BottomSheetModalProvider} from "@gorhom/bottom-sheet";
+import CommentSheet, {CommentSheetProvider} from "@features/feed/ui/CommentSheet";
 
 export {
     ErrorBoundary,
@@ -124,7 +125,7 @@ const InitialLayout = () => {
             <Stack.Screen name={"(authenticated)/create-post"} options={{
                 headerShown: false,
                 animation: "fade_from_bottom",
-                animationDuration: "100ms"
+                animationDuration:100
             }}/>
         </Stack>
     );
@@ -139,7 +140,9 @@ function RootLayoutNav() {
                 <GestureHandlerRootView style={{ flex: 1 }}>
                        <BottomSheetModalProvider>
                            <StatusBar style="light"/>
-                           <InitialLayout/>
+                           <CommentSheetProvider>
+                               <InitialLayout/>
+                           </CommentSheetProvider>
                            <ToastNotification />
                        </BottomSheetModalProvider>
                 </GestureHandlerRootView>

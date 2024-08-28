@@ -10,6 +10,8 @@ import {useMutation} from "@tanstack/react-query";
 import {reactWorkout} from "@features/feed/api";
 import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-native-reanimated";
 import {useRouter} from "expo-router";
+import {CommentType} from "@entities/reaction";
+import {IGroupPost} from "@entities/post";
 
 interface WorkoutPostProps {
     workout: IWorkout
@@ -24,7 +26,7 @@ export const WorkoutPost = ({workout} : WorkoutPostProps) => {
         <>
             <View style={{paddingVertical: 16, gap: 10, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: Colors.dark500}}>
                 <WorkoutPostBody onPress={() => router.push({pathname: "/(authenticated)/workout-details/", params: {id: workout.id}})} workout={workout} photosShown={true} />
-                <PostActions workout={workout} />
+                <PostActions item={workout} type={CommentType.WORKOUT_POST}  />
             </View>
         </>
     );
@@ -84,18 +86,19 @@ export const WorkoutPostBody = ({workout, photosShown, onPress}: {workout: IWork
 }
 
 interface WorkoutPostFooterProps {
-    workout: IWorkout
+    item: IWorkout | IGroupPost;
+    type: CommentType;
 }
 
-export const PostActions = ({workout}: WorkoutPostFooterProps) => {
-    const {show} = useCommentStore()
-    const [likeCount, setLikeCount] = React.useState(workout.likesCount);
-    const [liked, setLiked] = React.useState(workout.liked);
-    const [commentCount, setCommentCount] = React.useState(workout.commentsCount);
+export const PostActions = ({item, type}: WorkoutPostFooterProps) => {
+    const {showPostComments, showWorkoutComments} = useCommentStore()
+    const [likeCount, setLikeCount] = React.useState(item.likesCount);
+    const [liked, setLiked] = React.useState(item.liked);
+    const [commentCount, setCommentCount] = React.useState(item.commentsCount);
     const scale = useSharedValue(1);
 
     const {mutate} = useMutation({
-        mutationFn: () => reactWorkout(+workout.id),
+        mutationFn: () => reactWorkout(+item.id),
         onSuccess: (data) => {
             scale.value = withTiming(data.like ? 1.5 : 1, { duration: 200 }, () => {
                 scale.value = withTiming(1, { duration: 200 });
@@ -112,7 +115,11 @@ export const PostActions = ({workout}: WorkoutPostFooterProps) => {
     });
 
     const showCommentSheet = () => {
-        show(workout)
+       if(type === CommentType.WORKOUT_POST) {
+           showWorkoutComments(item as IWorkout);
+       } else {
+              showPostComments(item as IGroupPost);
+       }
     }
 
     return (
@@ -130,7 +137,7 @@ export const PostActions = ({workout}: WorkoutPostFooterProps) => {
                     <Ionicons name="chatbubble-outline" size={24} color={Colors.dark300} />
                 </TouchableOpacity>
                 <Pressable>
-                    <Text style={defaultStyles.secondaryText}>{commentCount}</Text>
+                    <Text style={defaultStyles.secondaryText}>{item.commentsCount}</Text>
                 </Pressable>
             </View>
             <View style={{flexDirection: "row", gap: 8, alignItems: "center"}}>

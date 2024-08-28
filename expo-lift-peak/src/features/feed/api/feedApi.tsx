@@ -1,5 +1,6 @@
 import api from "@shared/api/AxiosInstance";
-import {IWorkout, IWorkoutComment} from "@entities/workout";
+import {IWorkout} from "@entities/workout";
+import {IComment} from "@entities/reaction";
 
 export const getAllWorkouts  = async () => {
     const {data} = await api.get<IWorkout[]>("/workouts")
@@ -8,17 +9,17 @@ export const getAllWorkouts  = async () => {
 }
 
 export const getWorkoutComments = async (workoutId: number) => {
-    const {data} = await api.get<IWorkoutComment[]>(`/workouts/feed/${workoutId}/comments`)
+    const {data} = await api.get<IComment[]>(`/comments/workout/${workoutId}`)
 
     return data
 }
 
 export const commentWorkout = async (workoutId: number, content: string) => {
-    const {data} = await api.post(`/workouts/feed/${workoutId}/comment`, {content})
+    const {data} = await api.post(`/comments/leave/${workoutId}`, {content})
     return data
 }
 
 export const reactWorkout = async (workoutId: number) => {
-    const {data} = await api.post<{like: boolean, likesCount: number}>(`/workouts/feed/${workoutId}/react`)
+    const {data} = await api.post<{like: boolean, likesCount: number}>(`/likes/workout/${workoutId}`)
     return data
 }

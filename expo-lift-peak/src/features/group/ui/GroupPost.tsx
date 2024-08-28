@@ -1,5 +1,5 @@
 import React from 'react';
-import {Dimensions, FlatList, Image, Text, TouchableOpacity, View, StyleSheet} from "react-native";
+import {Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
 import {IGroupPost} from "@entities/post";
 import {useRouter} from "expo-router";
@@ -8,6 +8,8 @@ import {formatDistanceToNow} from "date-fns";
 import {Ionicons} from "@expo/vector-icons";
 import {getContentByType} from "@features/group/utils/post-filters";
 import {getTextStyle} from "@features/group/utils/post-helpers";
+import {PostActions} from "@features/feed/ui/WorkoutPost";
+import {CommentType} from "@entities/reaction";
 
 interface GroupPostProps {
     groupPost: IGroupPost;
@@ -16,9 +18,10 @@ interface GroupPostProps {
 const GroupPost = ({groupPost}: GroupPostProps) => {
 
     return (
-        <View style={{backgroundColor: Colors.dark700, padding: 12}}>
+        <View style={{backgroundColor: Colors.dark700, padding: 12, gap: 12}}>
             <GroupPostHeader groupPost={groupPost} />
             <GroupPostBody groupPost={groupPost} />
+            <PostActions type={CommentType.GROUP_POST} item={groupPost} />
         </View>
     );
 };

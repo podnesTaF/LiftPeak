@@ -30,12 +30,6 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
 
-    const ref = useRef<BottomSheetModal>();
-    const {shown} = useCommentStore()
-    const handleClosePress = () => ref.current?.close();
-    const handlePresentPress = () => ref.current?.present();
-
-    const [assets] = useAssets([require("@assets/images/logo/logo-long.png")])
     const {user} = useAuthStore();
 
 
@@ -64,14 +58,6 @@ export default function TabLayout() {
             top: scrollY.value > 0 ? top : 75,
         };
     })
-
-    useEffect(() => {
-        if (shown) {
-            handlePresentPress()
-        } else {
-            handleClosePress()
-        }
-    }, [shown]);
 
     return (
                 <AnimatedScrollProvider scrollY={scrollY}>
@@ -135,7 +121,6 @@ export default function TabLayout() {
                             tabBarIcon: (props) => <Ionicons size={36} name="person-outline" color={props.color} />,
                         }} />
                     </Tabs>
-                    <CommentSheet ref={ref as any} />
                 </AnimatedScrollProvider>
     );
 }

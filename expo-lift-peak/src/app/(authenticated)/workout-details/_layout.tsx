@@ -10,6 +10,7 @@ import {PostActions} from "@features/feed/ui/WorkoutPost";
 import {BlurView} from "expo-blur";
 import CustomTopTabBar from "@shared/components/navigation/CustomTopTabBar";
 import MaterialTopTabs from '@shared/components/navigation/MaterialTopTabs';
+import {CommentType} from "@entities/reaction";
 
 const Layout = () => {
     const {id} = useLocalSearchParams<{ id: string }>()
@@ -64,7 +65,7 @@ const Layout = () => {
                 </CustomTopTabBar>
             {workout && (
                 <BlurView intensity={50} tint={"dark"} style={{padding: 12, backgroundColor: Colors.dark700, paddingBottom: 32}}>
-                    <PostActions workout={workout} />
+                    <PostActions item={workout} type={CommentType.WORKOUT_POST} />
                 </BlurView>
             )}
         </>
