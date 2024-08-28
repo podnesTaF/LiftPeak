@@ -8,7 +8,7 @@ import { UsersController } from './controllers/users.controller';
 import { Gym } from './entities/gym.entity';
 import { Profile } from './entities/profile.entity';
 import { SocialMediaLink } from './entities/social-media.entity';
-import { UserFollower } from './entities/user-follower.enitity';
+import { UserFollower } from './entities/user-follower.entity';
 import { User } from './entities/user.entity';
 import { UserGymService } from './services/gym.service';
 import { ProfileService } from './services/profile.service';

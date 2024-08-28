@@ -1,7 +1,7 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { UserFollower } from '../entities/user-follower.enitity';
+import { UserFollower } from '../entities/user-follower.entity';
 import { User } from '../entities/user.entity';
 
 @Injectable()

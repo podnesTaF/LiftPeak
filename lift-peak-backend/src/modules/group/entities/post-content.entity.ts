@@ -6,7 +6,7 @@ import { GroupPost } from './group-post.entity';
 
 export enum PostContentType {
   TEXT = 'text',
-  IMAGE = 'IMAGE',
+  IMAGE = 'image',
   EXERCISE = 'exercise',
   WORKOUT = 'workout',
 }
