@@ -1,33 +1,54 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {
-    View,
-    TextInput,
-    Button,
-    ScrollView,
-    Image,
-    TouchableOpacity,
-    Text,
     Alert,
+    Image,
+    KeyboardAvoidingView,
+    Platform,
+    ScrollView,
     StyleSheet,
-    KeyboardAvoidingView, Platform
+    TextInput,
+    TouchableOpacity,
+    View
 } from 'react-native';
-import * as ImagePicker from 'expo-image-picker';
 import {v4 as uuidv4} from 'uuid';
 import {Colors, defaultStyles} from "@shared/styles";
 import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import PostAttachments from "@features/create-post/ui/PostAttachments";
 import {RoutineCard} from "@entities/routine";
 import {ExerciseCard} from "@entities/exercise";
+import {Block, BlockType, CreateContentDto, CreatePostDto} from "@features/create-post/model";
+import {PostContentType, TextType} from "@entities/post";
+import {useMutation} from "@tanstack/react-query";
+import {createPost} from "@features/create-post/api/CreatePostApi";
+import {useLocalSearchParams, useRouter} from "expo-router";
+import {useToastStore} from "@shared/store";
+import {useRoute} from "@react-navigation/core";
+import {BlockRenderer} from "@features/create-post/ui/BlockRenderer";
 
 export function CreatePost() {
+    const { groupId } = useLocalSearchParams<{ groupId: string }>();
     const [blocks, setBlocks] = useState<Block[]>([
-        {id: uuidv4(), type: 'title', content: ''},
+        { id: uuidv4(), type: TextType.TITLE, content: '' },
     ]);
+
+    const { showToast } = useToastStore();
+    const router = useRouter();
     const [focusedInputIdx, setFocusedInputIdx] = useState<number | null>(null);
     const scrollRef = useRef<ScrollView | null>(null);
     const inputRefs = useRef<Record<string, TextInput | null>>({});
+    const { mutate } = useMutation({
+        mutationFn: (dto: CreatePostDto) => createPost(groupId || '1', dto),
+        onSuccess: () => {
+            showToast('Post Created', 'success', 'success', 3000);
+            router.push('/(authenticated)/(tabs)/groups/' + groupId);
+        },
+        onError: () => {
+            showToast('Failed to create post', 'error', 'error', 3000);
+        },
+    });
 
-    const addBlock = (type: BlockType = 'text', insertAt: number | null = null, content?: string) => {
+
+    const addBlock = (type: BlockType = TextType.TEXT, insertAt: number | null = null, content?: string) => {
         const newBlock: Block = {
             id: uuidv4(),
             type,
@@ -35,14 +56,14 @@ export function CreatePost() {
         };
         if (insertAt === null) {
             setBlocks((prevBlocks) => [...prevBlocks, newBlock]);
-            setFocusedInputIdx(null)
+            setFocusedInputIdx(blocks.length + 1);
         } else {
             setBlocks((prevBlocks) => [
                 ...prevBlocks.slice(0, insertAt + 1),
                 newBlock,
                 ...prevBlocks.slice(insertAt + 1),
             ]);
-            if(type === 'text') {
+            if (type === 'text') {
                 setFocusedInputIdx(insertAt + 1);
             }
         }
@@ -54,47 +75,36 @@ export function CreatePost() {
 
         setTimeout(() => {
             scrollRef.current?.scrollToEnd();
-        }, 200)
+        }, 100);
     };
 
     const updateBlockContent = (id: string, content: string) => {
         setBlocks((prevBlocks) =>
             prevBlocks.map((block) =>
-                block.id === id ? {...block, content} : block
+                block.id === id ? { ...block, content } : block
             )
         );
     };
-
-    const changeBlockType = (id: string, type: BlockType) => {
-        setBlocks((prevBlocks) =>
-            prevBlocks.map((block) =>
-                block.id === id ? {...block, type} : block
-            )
-        );
-    };
-
-    const insertImage = async (id: string) => {
-        let result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.Images,
-            allowsEditing: true,
-            quality: 1,
-        });
-
-        if (!result.canceled) {
-            changeBlockType(id, 'image');
-            updateBlockContent(id, result.assets[0].uri);
-        }
-    };
-
-    const removeBlock = (id: string ) => {
-        setBlocks((prevBlocks) => prevBlocks.filter((block) => block.id !== id));
-        if(focusedInputIdx !== null) {
-            setFocusedInputIdx(null);
-        }
-    }
 
     const handlePostCreation = () => {
-        console.log('Post created:', blocks);
+        const dto: CreatePostDto = {
+            contents: blocks.map(({ type, content }) => {
+                const isText = Object.values(TextType).includes(type as TextType);
+
+                let contentType = isText ? 'text' : type;
+                let textType = isText ? (type as TextType) : undefined;
+
+                return {
+                    type: contentType as PostContentType,
+                    textType: textType,
+                    content: isText ? content : undefined,
+                    exerciseId: type === 'exercise' ? JSON.parse(content).id : undefined,
+                    workoutId: type === 'workout' ? JSON.parse(content).id : undefined,
+                    imageUrl: type === 'image' ? content : undefined,
+                };
+            }),
+        };
+        mutate(dto);
     };
 
     const handleBackspacePress = (block: Block, index: number) => {
@@ -106,6 +116,12 @@ export function CreatePost() {
                 ...prevBlocks.slice(0, index),
                 ...prevBlocks.slice(index + 1),
             ]);
+
+            if(Object.values(TextType).includes(block.type as TextType)) {
+                setFocusedInputIdx(index - 1);
+            } else {
+                setFocusedInputIdx(null);
+            }
         }
     };
 
@@ -114,19 +130,15 @@ export function CreatePost() {
             'Select Block Type',
             '',
             [
-                {text: 'Title', onPress: () => changeBlockType(blockId, 'title')},
-                {text: 'Subtitle', onPress: () => changeBlockType(blockId, 'subtitle')},
-                {text: 'Text', onPress: () => changeBlockType(blockId, 'text')},
-                {text: "Remove Block", onPress: removeBlock.bind(null, blockId), style: 'destructive'},
-                {text: 'Cancel', style: 'cancel'},
+                { text: 'Title', onPress: () => setBlocks((prevBlocks) => prevBlocks.map((block) => block.id === blockId ? { ...block, type: TextType.TITLE } : block)) },
+                { text: 'Subtitle', onPress: () => setBlocks((prevBlocks) => prevBlocks.map((block) => block.id === blockId ? { ...block, type: TextType.SUBTITLE } : block)) },
+                { text: 'Text', onPress: () => setBlocks((prevBlocks) => prevBlocks.map((block) => block.id === blockId ? { ...block, type: TextType.TEXT } : block)) },
+                { text: 'Remove Block', onPress: () => setBlocks((prevBlocks) => prevBlocks.filter((block) => block.id !== blockId)), style: 'destructive' },
+                { text: 'Cancel', style: 'cancel' },
             ],
-            {cancelable: true}
+            { cancelable: true }
         );
     };
-
-    useEffect(() => {
-        console.log("Block", focusedInputIdx)
-    }, [focusedInputIdx]);
 
     return (
         <KeyboardAvoidingView
@@ -134,88 +146,23 @@ export function CreatePost() {
             behavior={
             Platform.OS === 'ios' ? 'padding' : 'height'
         } style={[defaultStyles.container]}>
-            <ScrollView
-                    ref={scrollRef}
-                        contentContainerStyle={{ flexGrow: 1, paddingVertical: 20, paddingHorizontal: 8 }}
-                        keyboardShouldPersistTaps="handled"
-            >
-                {blocks.map((block, index) => {
-                    return (
-                        <View key={block.id} style={{flexDirection: 'row', alignItems: 'center'}}>
-                            {block.type === 'image' ? (
-                                block.content && (
-                                    <View style={{width: 180, height: 150, borderRadius: 16, marginVertical: 16, marginHorizontal: 8}}>
-                                        <Image
-                                            alt={"image"}
-                                            source={{uri: block.content}}
-                                            style={{width: "100%", height: "100%", borderRadius: 16}}
-                                        />
-                                        <TouchableOpacity onPress={() => removeBlock(block.id)} style={{position: "absolute", right: -16, top: -16, backgroundColor: Colors.dark500, borderRadius: 50, opacity: 0.6}}>
-                                            <Ionicons name={"close-outline"} color={"white"} size={32} />
-                                        </TouchableOpacity>
-                                    </View>
-                                )
-                            ) : block.type === 'workout' ? (
-                                <View style={{width: "80%", marginVertical: 24, marginHorizontal: 8}}>
-                                    <RoutineCard workout={JSON.parse(block.content)} addAvailable={false} />
-                                    <TouchableOpacity onPress={() => removeBlock(block.id)} style={{position: "absolute", right: -16, top: -16, backgroundColor: Colors.dark500, borderRadius: 50, opacity: 0.6}}>
-                                        <Ionicons name={"close-outline"} color={"white"} size={32} />
-                                    </TouchableOpacity>
-                                </View>
-                            ) : block.type === "exercise" ? (
-                                <View style={{width: "90%", marginVertical: 24, marginHorizontal: 8}}>
-                                    <ExerciseCard exercise={JSON.parse(block.content)} />
-                                    <TouchableOpacity onPress={() => removeBlock(block.id)} style={{position: "absolute", right: -16, top: -16, backgroundColor: Colors.dark500, borderRadius: 50, opacity: 0.6}}>
-                                        <Ionicons name={"close-outline"} color={"white"} size={32} />
-                                    </TouchableOpacity>
-                                </View>
-                            ) : (
-                                <>
-                                    <TextInput
-                                        ref={(ref) => (inputRefs.current[block.id] = ref)}
-                                        style={[styles.input, {
-                                            fontSize: block.type === 'title' ? 24 : block.type === 'subtitle' ? 18 : 16,
-                                            fontWeight: block.type === 'title' || block.type === 'subtitle' ? 'bold' : 'normal',
-                                            paddingVertical: block.type === 'title' ? 12 : block.type === "subtitle" ? 8 : 4,
-                                        }]}
-                                        placeholder={block.type.charAt(0).toUpperCase() + block.type.slice(1)}
-                                        placeholderTextColor={Colors.dark300}
-                                        value={block.content}
-                                        onChangeText={(text) => updateBlockContent(block.id, text)}
-                                        onKeyPress={({nativeEvent}) => {
-                                            if (nativeEvent.key === 'Backspace' && block.content === '') {
-                                                handleBackspacePress(block, index);
-                                            }
-                                        }}
-                                        onBlur={() => setFocusedInputIdx(null)}
-                                        onFocus={() => setFocusedInputIdx(index)}
-                                        blurOnSubmit={false}
-                                        multiline={true}
-                                        returnKeyType="none"
-                                    />
-                                    <TouchableOpacity onPress={() => renderOptionsMenu(block.id)} style={{marginLeft: 6}}>
-                                        <MaterialIcons name="format-size" size={20} color={Colors.dark300}/>
-                                    </TouchableOpacity>
-                                </>
-                            )}
-
-                        </View>
-                    );
-                })}
+            <ScrollView>
+                {blocks.map((block, index) => (
+                    <BlockRenderer
+                        key={block.id}
+                        block={block}
+                        index={index}
+                        inputRefs={inputRefs}
+                        updateBlockContent={updateBlockContent}
+                        handleBackspacePress={handleBackspacePress}
+                        renderOptionsMenu={renderOptionsMenu}
+                        removeBlock={(id) => setBlocks((prevBlocks) => prevBlocks.filter((block) => block.id !== id))}
+                        setFocusedInputIdx={setFocusedInputIdx}
+                        focusedInputIdx={focusedInputIdx}
+                    />
+                ))}
             </ScrollView>
             <PostAttachments onAddBlock={addBlock} insertAt={focusedInputIdx} />
         </KeyboardAvoidingView>
     );
 }
-
-const styles = StyleSheet.create({
-    input: {
-        flex: 1,
-        paddingVertical: 4,
-        paddingHorizontal: 8,
-        borderWidth: 0,
-        borderRadius: 0,
-        color: "white",
-        textAlignVertical: 'top',
-    }
-})

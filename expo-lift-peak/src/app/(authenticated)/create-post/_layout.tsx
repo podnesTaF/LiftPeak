@@ -13,7 +13,7 @@ const Layout = () => {
                     backgroundColor: Colors.dark700,
                 },
                 headerTintColor: Colors.white,
-                headerTitle: "Create Post",
+                headerTitle: "Create post",
                 headerBackTitleVisible: false,
                 headerLeft: () => (
                     <TouchableOpacity onPress={() => router.back()}>

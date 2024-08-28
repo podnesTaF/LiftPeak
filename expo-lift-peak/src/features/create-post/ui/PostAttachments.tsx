@@ -1,5 +1,5 @@
 import React, {useRef} from 'react';
-import {Ionicons, MaterialIcons} from "@expo/vector-icons";
+import {Ionicons} from "@expo/vector-icons";
 import {Keyboard, TouchableOpacity, View} from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import {Colors} from "@shared/styles";
@@ -8,6 +8,8 @@ import AttachWorkout from "@features/create-post/ui/AttachWorkout";
 import {IWorkoutPreview} from "@features/workout";
 import AttachExercise from "@features/create-post/ui/AttachExercise";
 import {IExercise} from "@entities/exercise";
+import {BlockType} from "@features/create-post/model";
+import {TextType} from "@entities/post";
 
 interface PostAttachmentsProps {
     onAddBlock: (type: BlockType,insertAt: null | number, content?: string) => void;
@@ -70,7 +72,7 @@ const PostAttachments = ({onAddBlock,insertAt}: PostAttachmentsProps) => {
                         <Ionicons name={"list"} size={30} color={Colors.dark300} />
                     </TouchableOpacity>
                 </View>
-                <TouchableOpacity onPress={() => onAddBlock("text", insertAt)} style={{marginLeft: 5}}>
+                <TouchableOpacity onPress={() => onAddBlock(TextType.TEXT, insertAt)} style={{marginLeft: 5}}>
                     <Ionicons name="add-circle" size={30} color="white"/>
                 </TouchableOpacity>
             </View>

@@ -54,7 +54,7 @@ const Layout = () => {
                     <MaterialTopTabs.Screen name={'index'} initialParams={{
                         exerciseId: id
                     }} options={{
-                        title: "Post & Stats"
+                        title: "post & Stats"
                     }} />
                     <MaterialTopTabs.Screen  name={'exercises'} initialParams={{
                         exerciseId: id

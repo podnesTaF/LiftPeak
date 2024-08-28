@@ -100,7 +100,7 @@ export default function StartWorkout() {
             <Button title={"Explore Workouts"} onPress={() => router.push("/(authenticated)/explore")} color={"dark500"}>
               <Ionicons name={"search-outline"} size={24} color={Colors.white} />
             </Button>
-            <Button title={"Exercises"} onPress={() => router.push(`/(authenticated)/exercises/${20}`)} color={"dark500"}>
+            <Button title={"Exercises"} onPress={() => router.push(`/(authenticated)/exercises/${22}`)} color={"dark500"}>
               <Ionicons name={"search-outline"} size={24} color={Colors.white} />
             </Button>
           </View>
