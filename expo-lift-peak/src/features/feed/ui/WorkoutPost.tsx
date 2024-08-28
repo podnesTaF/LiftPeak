@@ -72,7 +72,7 @@ export const WorkoutPostBody = ({workout, photosShown, onPress}: {workout: IWork
                                 style={[styles.mediaImage, {width: imageWidth, height: imageHeight}]}
                                 resizeMode="cover"
                             />
-                            {index + 1 === workout.mediaContents.length && <View style={{width: 12}}></View>}
+                            {index + 1 === workout.mediaContents?.length && <View style={{width: 12}}></View>}
                         </>
                     )}
                     keyExtractor={(item) => item.id!.toString()}

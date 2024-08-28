@@ -8,6 +8,7 @@ import {defaultStyles} from "@shared/styles";
 import {GroupHeader} from "@features/group/ui/GroupHeader";
 import CustomTabBar from "@shared/components/tabs/CustomTabBar";
 import {MaterialIcons} from "@expo/vector-icons";
+import GroupPostsFeed from "@features/group/ui/GroupPostsFeed";
 
 
 const tabs = [
@@ -23,7 +24,7 @@ const tabs = [
 
 const GroupPage = () => {
     const {id} = useLocalSearchParams<{ id?: string }>()
-    const [activeTab, setActiveTab] = React.useState('about')
+    const [activeTab, setActiveTab] = React.useState('feed')
     const {scrollY} = useAnimatedScroll();
 
     const {data} = useQuery({
@@ -41,6 +42,9 @@ const GroupPage = () => {
                              style={defaultStyles.container} scrollEventThrottle={16}>
             <GroupHeader group={data} />
             <CustomTabBar labelHidden={true} activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs}/>
+            {activeTab === "feed" && (
+                <GroupPostsFeed groupId={id} />
+            )}
         </Animated.ScrollView>
     );
 };
