@@ -59,7 +59,7 @@ const Login = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={[defaultStyles.container]}
     >
-      <View style={{ flex: 1, gap: 16, paddingBottom: 40, marginTop: 38 }}>
+      <View style={{ flex: 1, gap: 16, paddingBottom: 40, marginTop: 38, marginHorizontal: 24 }}>
         <Text style={defaultStyles.header}>Login</Text>
         <FormProvider {...form}>
           <View style={{ paddingVertical: 16, flex: 1, gap: 26 }}>
@@ -77,6 +77,7 @@ const Login = () => {
                 label={"Password"}
                 placeholder={"enter your password"}
                 noValidationStyling
+                showPasswordToggle
               />
             </View>
             <Link href={"/forgotPassword"} asChild>

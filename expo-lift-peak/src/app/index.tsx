@@ -2,13 +2,20 @@ import React from 'react';
 import {Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {useAssets} from "expo-asset";
 import {Ionicons} from "@expo/vector-icons";
-import {Link} from "expo-router";
+import {Link, useRouter} from "expo-router";
 import {Colors, defaultStyles} from "@shared/styles";
 import Button from "@shared/components/Button";
 
 const LoginCtaPage = () => {
 
     const [assets] = useAssets([require("@assets/images/logo/full-logo-white.png"), require("@assets/images/icons/flat-color-icons_google.png")]);
+
+    const router = useRouter();
+
+    const handleSignUp = () => {
+        router.push("/signup")
+    }
+
 
     return (
         <View style={[defaultStyles.container, {paddingHorizontal: 20, paddingBottom: 40}]}>
@@ -45,7 +52,7 @@ const LoginCtaPage = () => {
                     }} />
                 </View>
                 <View>
-                    <Button color={"white"} title={"Sign up with email"} />
+                    <Button color={"white"} title={"Sign up with email"} onPress={handleSignUp}/>
                 </View>
                 <View style={defaultStyles.horizontalContainer}>
                     <Text style={{color:"white", fontSize: 16}}>
