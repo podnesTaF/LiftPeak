@@ -60,9 +60,8 @@ export class Workout extends AbstractEntity {
   workoutLogId: number;
 
   @OneToOne(() => WorkoutLog, (log) => log.workout, {
-    cascade: true,
     nullable: true,
-    onDelete: 'CASCADE',
+    onDelete: 'SET NULL',
   })
   @JoinColumn({
     foreignKeyConstraintName: 'workoutBaseId',

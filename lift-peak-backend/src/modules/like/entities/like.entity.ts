@@ -25,12 +25,18 @@ export class Like extends AbstractEntity {
 
   @Column({ nullable: true })
   postId: number;
-  @ManyToOne(() => GroupPost, (post) => post.likes, { nullable: true })
+  @ManyToOne(() => GroupPost, (post) => post.likes, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'postId' })
   post: GroupPost;
 
   @Column({ nullable: false })
   userId: number;
-  @ManyToOne(() => User, (user) => user.workoutReactions, { nullable: false })
+  @ManyToOne(() => User, (user) => user.workoutReactions, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
   user: User;
 }
