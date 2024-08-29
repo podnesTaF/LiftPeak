@@ -1,4 +1,5 @@
 import { Comment } from 'src/modules/comment/entities/comment.entity';
+import { PostSeen } from 'src/modules/feed/entity/post-seen.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
 import {
@@ -49,6 +50,9 @@ export class Workout extends AbstractEntity {
 
   @OneToMany(() => Like, (like) => like.workout)
   likes: Like[];
+
+  @OneToMany(() => PostSeen, (seen) => seen.workout)
+  seenByUsers: PostSeen[];
 
   @OneToMany(() => Comment, (comment) => comment.workout)
   comments: Comment[];
