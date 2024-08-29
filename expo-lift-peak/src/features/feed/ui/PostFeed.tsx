@@ -1,8 +1,9 @@
 import React from 'react';
-import {View} from "react-native";
+import {FlatList, View} from "react-native";
 import {useQuery} from "@tanstack/react-query";
 import {getAllWorkouts} from "@features/feed/api";
 import WorkoutPost from "./WorkoutPost";
+import FollowingCircles from "@features/follow/ui/FollowingCircles";
 
 export const PostFeed = () => {
 
@@ -14,11 +15,14 @@ export const PostFeed = () => {
 
 
     return (
-        <View>
-            {workouts?.map(workout => (
-                <WorkoutPost key={workout.id} workout={workout} />
-            ))}
-        </View>
+        <FlatList
+            data={workouts}
+            ListHeaderComponent={<FollowingCircles/>}
+            renderItem={({item}) => (
+                <WorkoutPost  workout={item} />
+            )}
+            keyExtractor={(item) => item.id.toString()}
+        />
     );
 };
 

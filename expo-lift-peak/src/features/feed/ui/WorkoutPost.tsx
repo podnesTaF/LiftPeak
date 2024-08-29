@@ -26,22 +26,23 @@ import {IWorkoutMedia} from "@entities/media";
 
 interface WorkoutPostProps {
     workout: IWorkout
+    isViewable?: boolean
 }
 
-export const WorkoutPost = ({workout} : WorkoutPostProps) => {
+export const WorkoutPost = ({workout, isViewable} : WorkoutPostProps) => {
     const router = useRouter();
 
     return (
         <>
             <View style={{paddingVertical: 16, gap: 10, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: Colors.dark500}}>
-                <WorkoutPostBody onPress={() => router.push({pathname: "/(authenticated)/workout-details/", params: {id: workout.id}})} workout={workout} photosShown={true} />
+                <WorkoutPostBody isViewable={isViewable} onPress={() => router.push({pathname: "/(authenticated)/workout-details/", params: {id: workout.id}})} workout={workout} photosShown={true} />
                 <PostActions item={workout} type={CommentType.WORKOUT_POST}  />
             </View>
         </>
     );
 };
 
-export const WorkoutPostBody = ({workout, photosShown, onPress}: {workout: IWorkout, photosShown?: boolean, onPress?: Function}) => {
+export const WorkoutPostBody = ({workout, photosShown, onPress, isViewable}: {workout: IWorkout, photosShown?: boolean, onPress?: Function, isViewable?: boolean}) => {
     const screenWidth = Dimensions.get('window').width;
     const isLargeScreen = screenWidth > 500;
     const imageWidth = isLargeScreen ? 400 : screenWidth - 32;
@@ -87,7 +88,7 @@ export const WorkoutPostBody = ({workout, photosShown, onPress}: {workout: IWork
                         <>
                             {index === 0 && <View style={{ width: 12 }}></View>}
                             <View style={{ width: imageWidth, height: imageHeight }}>
-                                <MediaItem media={item} isVisible={!!visibleItems.find((id) => id === item.id)} />
+                                <MediaItem media={item} isVisible={!!visibleItems.find((id) => id === item.id) && isViewable} />
                             </View>
                             {index + 1 === workout.mediaContents?.length && <View style={{ width: 12 }}></View>}
                         </>

@@ -30,13 +30,10 @@ const PostVideo: React.FC<PostVideoProps> = ({ videoUri , isVisible}) => {
     };
 
     useEffect(() => {
-        console.log(isVisible)
         if(!isVisible) {
-            console.log("pausing")
             videoRef.current?.pauseAsync()
             setIsPlaying(false)
         } else {
-            console.log("playing")
             videoRef.current?.playAsync()
             setIsPlaying(true)
         }
@@ -45,7 +42,7 @@ const PostVideo: React.FC<PostVideoProps> = ({ videoUri , isVisible}) => {
 
     return (
         <Pressable onPress={handlePlayPause} style={styles.videoContainer}>
-            <ReliableVideo
+            <Video
                 ref={videoRef}
                 source={{ uri: videoUri }}
                 style={styles.video}
