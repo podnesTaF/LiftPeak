@@ -64,6 +64,7 @@ const WorkoutSave = () => {
                 restInS: set.restInS || null,
             })) || [],
         }));
+
         const data = {
             title,
             description,

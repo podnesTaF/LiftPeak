@@ -11,6 +11,8 @@ export const PostFeed = () => {
         queryFn: getAllWorkouts,
     })
 
+
+
     return (
         <View>
             {workouts?.map(workout => (
