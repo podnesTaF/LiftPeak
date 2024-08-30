@@ -100,7 +100,9 @@ const InitialLayout = () => {
                 headerBackTitleVisible: false,
             }}/>
             <Stack.Screen name={"(authenticated)/workout"} options={{
-                headerShown: false
+                headerShown: false,
+                animation: "fade_from_bottom",
+                animationDuration:100
             }}  />
             <Stack.Screen name={"(authenticated)/muscle-filter"} options={{
                 presentation: "modal",

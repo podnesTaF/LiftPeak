@@ -14,6 +14,7 @@ export interface WorkoutState {
     isLoading: boolean;
     error: string | null;
 
+    updateWorkoutField: (updatedField: Partial<IWorkout>) => void;
     initializeWorkout: (props: {userId: number}) => void;
     addMedia: (media: {actualUrl: string, thumbnailUrl: string}) => void;
     removeMedia: (url: string) => void

@@ -6,7 +6,6 @@ const Layout = () => {
         <Stack>
             <Stack.Screen name="index" />
             <Stack.Screen name="exercises" />
-            <Stack.Screen name="exercise-log" />
         </Stack>
     );
 };

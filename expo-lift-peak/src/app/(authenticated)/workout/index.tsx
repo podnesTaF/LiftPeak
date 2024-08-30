@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import {Alert, Pressable, StyleSheet, Text, View} from "react-native";
-import {Colors} from "@shared/styles";
+import {Colors, defaultStyles} from "@shared/styles";
 import {
     ExerciseItem,
     useDiscardWorkout,
@@ -11,18 +11,14 @@ import {
 import {useAuthStore} from "@features/auth";
 import Button from "@shared/components/Button";
 import {Link, Stack, useRouter} from "expo-router";
-import {registerBackgroundTask, unregisterTimer, useTimerStore} from "@features/timer";
+import { useTimerStore} from "@features/timer";
 import {formatTime} from "@shared/utils";
 import {Ionicons} from "@expo/vector-icons";
 import useTimerInterval from "@features/timer/hooks/useIntervalTimer";
 import Animated, {
     useSharedValue
 } from 'react-native-reanimated';
-import * as Haptics from 'expo-haptics';
 import {TouchableOpacity} from 'react-native-gesture-handler';
-import DraggableFlatList from "react-native-draggable-flatlist/src/components/DraggableFlatList";
-import {DragEndParams} from "react-native-draggable-flatlist";
-import {IExerciseLog} from "@entities/workout-log";
 import InputField from "@shared/components/form/InputField";
 
 const Index = () => {
@@ -35,7 +31,8 @@ const Index = () => {
         elapsedTime,
         playTimer,
     } = useTimerStore();
-    const {clearMedia, discardWorkoutWithMedia} = useDiscardWorkout()
+    const {workout, updateWorkoutField} = useWorkoutStore()
+    const {discardWorkoutWithMedia} = useDiscardWorkout()
 
     const router = useRouter();
     const scrollY = useSharedValue(0);
@@ -57,11 +54,6 @@ const Index = () => {
         await discardWorkoutWithMedia()
         router.replace("/(authenticated)/(tabs)/start");
     };
-
-
-    const onDragEnd = (params: DragEndParams<IExerciseLog>) => {
-        reorder(params.from, params.to);
-    }
 
 
     return (
@@ -96,8 +88,8 @@ const Index = () => {
                 ),
                 headerRight: () => (
                     <TouchableOpacity onPress={() => router.push("/(authenticated)/workout/workout-save")}>
-                        <Text style={{fontSize: 16, fontWeight: "500", color: Colors.lime}}>
-                            Save
+                        <Text style={{fontSize: 16, fontWeight: "500", color: Colors.success}}>
+                            Complete
                         </Text>
                     </TouchableOpacity>
                 )
@@ -126,14 +118,33 @@ const Index = () => {
                    </View>
                 </Animated.View>
                 <Animated.ScrollView contentContainerStyle={{paddingVertical: 70}}>
-                    {exerciseLogs.sort((a, b) => a.order - b.order).map((item, index) => (
-                        <ExerciseItem onPress={openExerciseLog} key={item.id} item={item} index={index} />
-                    ))}
-                    <View style={{marginTop: 20, gap: 20}}>
-                        <Link href={"/(authenticated)/workout/exercises"} asChild>
-                            <Button fullWidth title={"Add Exercise"} color={"lime"}/>
-                        </Link>
-                        <Button onPress={discardWorkout} fullWidth title={"Discard Workout"} color={"danger"}/>
+                    <InputField color={'transparent'} placeholder="Workout Title" value={workout?.title || ''} onChange={(text) => updateWorkoutField({title: text})} />
+                    <View style={{paddingVertical: 16, paddingHorizontal: 12, gap: 16, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: Colors.dark500}}>
+                        {exerciseLogs.length ? exerciseLogs.sort((a, b) => a.order - b.order).map((item, index) => (
+                            <ExerciseItem onPress={openExerciseLog} key={item.id} item={item} index={index} />
+                        )) : (
+                            <View style={{gap: 16}}>
+                                <View style={{flexDirection: "row", gap: 6, alignItems: 'center'}}>
+                                    <View style={{borderRadius: 100, backgroundColor: Colors.dark500, padding: 8}}>
+                                        <Ionicons name={"flash-outline"} color={"white"} size={20} />
+                                    </View>
+                                    <Text style={defaultStyles.smallTitle}>
+                                        Start by adding exercises
+                                    </Text>
+                                </View>
+                                <Text style={defaultStyles.secondaryText}>
+                                    Routines are set of exercises. You can define necessary amount of sets, reps, weights etc. These dimensions can be adjusted while running workout
+                                </Text>
+                            </View>
+                        )}
+                        <View style={{gap: 12, marginTop: 12}}>
+                            <Link href={"/(authenticated)/workout/exercises"} asChild>
+                                <Button fullWidth title={"Add Exercise"} color={"white"}>
+                                    <Ionicons name={"add"} color={"black"} size={24} />
+                                </Button>
+                            </Link>
+                            <Button onPress={discardWorkout} fullWidth title={"Discard Workout"} color={"danger"}/>
+                        </View>
                     </View>
                 </Animated.ScrollView>
             </View>

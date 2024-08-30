@@ -17,7 +17,7 @@ export default function Followings() {
     const {scrollY} = useAnimatedScroll();
     const [refreshing, setRefreshing] = useState(false);
     const [visibleItems, setVisibleItems] = useState<number[]>([]);
-
+    const timers = useRef<{ [key: string]: NodeJS.Timeout }>({}).current;
     const tabBarHeight = useBottomTabBarHeight() + 20;
 
     const {data: workouts} = useQuery({
@@ -46,9 +46,23 @@ export default function Followings() {
 
     const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken[] }) => {
         const visibleIds = viewableItems.map(item => item.item.id);
-        setTimeout(() => {
-            markAsRead({id: visibleIds[0], type: PostType.WORKOUT});
-        }, 1000);
+
+        Object.keys(timers).forEach(id => {
+            if (!visibleIds.includes(id)) {
+                clearTimeout(timers[id]);
+                delete timers[id];
+            }
+        });
+
+        visibleIds.forEach(id => {
+            if (!timers[id]) {
+                timers[id] = setTimeout(() => {
+                    markAsRead({ id, type: PostType.WORKOUT });
+                    delete timers[id];
+                }, 1000);
+            }
+        });
+
         setVisibleItems(visibleIds);
     }).current;
 

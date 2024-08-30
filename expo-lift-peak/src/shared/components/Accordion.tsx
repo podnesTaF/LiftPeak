@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, View, Button, SafeAreaView } from 'react-native';
+import { StyleSheet, View} from 'react-native';
 import Animated, {
     SharedValue,
     useAnimatedStyle,

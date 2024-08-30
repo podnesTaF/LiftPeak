@@ -1,6 +1,6 @@
 import {IExerciseLog, ISet} from "@entities/workout-log";
 import {create} from "zustand";
-import {ExerciseStoreState} from "@features/workout-logger";
+import {ExerciseStoreState} from "@features/workout-logger/model";
 import {createJSONStorage, persist} from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import 'react-native-get-random-values'

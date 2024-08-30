@@ -79,7 +79,7 @@ const styles = StyleSheet.create({
         paddingVertical: 8
     },
     text: {
-        color: Colors.lime,
+        color: Colors.dark300,
         fontSize: 12,
         fontWeight: "600",
     },

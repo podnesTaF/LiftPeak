@@ -2,13 +2,22 @@ import React, {useRef, useState} from 'react';
 import {View, StyleSheet, Text, Alert, Pressable} from "react-native";
 import {getExerciseTargetsToString} from "@entities/exercise";
 import {useExerciseStore} from "@features/workout-logger/store/exerciseStore";
-import {Colors} from "@shared/styles";
+import {Colors, defaultStyles} from "@shared/styles";
 import Avatar from "@shared/components/Avatar";
 import {Ionicons} from "@expo/vector-icons";
 import * as Haptics from 'expo-haptics';
 import SwipeableRow from "@shared/components/SwipeableRow";
-import Animated, {FadeInUp, FadeOutUp} from "react-native-reanimated";
+import Animated, {
+    FadeInUp,
+    FadeOutUp,
+    interpolate,
+    useAnimatedStyle,
+    useSharedValue,
+    withTiming
+} from "react-native-reanimated";
 import {IExerciseLog} from "@entities/workout-log";
+import ExerciseLog from "@features/exercise-logger/ui/ExerciseLog";
+import Accordion from "@shared/components/Accordion";
 
 interface ExerciseItemProps {
     onPress?: (itemId: number | string) => void;
@@ -17,11 +26,10 @@ interface ExerciseItemProps {
 }
 
 export const ExerciseItem = ({item, onPress,index}: ExerciseItemProps) => {
+    const open = useSharedValue(true);
     const {getExerciseSetsStats, removeExerciseLog} = useExerciseStore();
     const [isPressed, setIsPressed] = useState(false);
     const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
-
-
 
     const confirmAlert = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -34,6 +42,24 @@ export const ExerciseItem = ({item, onPress,index}: ExerciseItemProps) => {
             {text: "Delete", onPress: () => removeExerciseLog(item.id), style: "destructive"}
         ])
     }
+
+    const onExpand = () => {
+        open.value = !open.value;
+    };
+
+    const chevronStyle = useAnimatedStyle(() => {
+        const rotation = interpolate(Number(open.value), [0, 1], [0, 90]);
+
+        return {
+            transform: [
+                {
+                    rotate: withTiming(`${rotation}deg`, {
+                        duration: 200,
+                    }),
+                },
+            ],
+        };
+    })
 
     const handlePressIn = () => {
         setIsPressed(true);
@@ -61,10 +87,10 @@ export const ExerciseItem = ({item, onPress,index}: ExerciseItemProps) => {
                 <Animated.View entering={FadeInUp.delay((index) * 20)}
                                exiting={FadeOutUp}>
                     <Pressable
-                        style={({pressed}) => [styles.container, {opacity: pressed ? 0.7 : 1}]}
+                        style={({pressed}) => [styles.container]}
                         onPressIn={handlePressIn}
+                        onPress={onExpand}
                         onPressOut={handlePressOut}
-                        onPress={handlePress}
                     >
                         <View style={{flexDirection: "row", alignItems: "center", gap: 16}}>
                             <Avatar name={""} size={64} url={item.exercise?.previewUrl}>
@@ -73,28 +99,32 @@ export const ExerciseItem = ({item, onPress,index}: ExerciseItemProps) => {
                             <View style={{justifyContent: "space-between", gap: 12}}>
                                 <View>
                                     <Text style={{
-                                        fontSize: 18,
-                                        textTransform: "uppercase",
+                                        fontSize: 16,
+                                        textTransform: "capitalize",
                                         fontWeight: "600",
                                         color: "white"
                                     }}>
                                         {item.exercise?.name}
                                     </Text>
-                                    <Text style={{fontSize: 14, fontWeight: "500", color: Colors.dark300}}>
+                                    <Text style={defaultStyles.secondaryText}>
                                         {getExerciseTargetsToString(item.exercise?.exerciseTargets)}
                                     </Text>
                                 </View>
                                 <View>
-                                    <Text style={{fontSize: 16, fontWeight: "700", color: Colors.lime}}>
+                                    <Text style={{fontSize: 14, fontWeight: "500", color: Colors.white}}>
                                         {getExerciseSetsStats(item.id).totalSets} / {getExerciseSetsStats(item.id).setsDone} Sets
                                         Done
                                     </Text>
                                 </View>
                             </View>
                         </View>
-
-                        <Ionicons name={"chevron-forward"} size={32} color={Colors.lime}/>
+                        <Animated.View style={chevronStyle}>
+                            <Ionicons name={"chevron-forward"} color={Colors.white} size={30} />
+                        </Animated.View>
                     </Pressable>
+                    <Accordion viewKey={"accordion"} isExpanded={open}>
+                        <ExerciseLog exerciseId={item.id} />
+                    </Accordion>
                 </Animated.View>
             </SwipeableRow>
     );
@@ -102,13 +132,11 @@ export const ExerciseItem = ({item, onPress,index}: ExerciseItemProps) => {
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.dark500,
         flexDirection: "row",
-        paddingVertical: 12,
-        paddingHorizontal: 16,
         alignItems: "center",
         justifyContent: "space-between",
         width: "100%",
-        gap: 16
+        gap: 16,
+        paddingBottom: 16
     }
 });

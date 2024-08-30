@@ -6,8 +6,6 @@ import {useExerciseStore} from "@features/workout-logger";
 import {Ionicons} from "@expo/vector-icons";
 import {Colors} from "@shared/styles";
 import {ExerciseMetric} from "@entities/exercise";
-import {Color} from "ansi-fragments/build/fragments/Color";
-import * as Haptics from "expo-haptics";
 import Animated, {FadeInUp, FadeOutUp} from "react-native-reanimated";
 import SwipeableRow from "@shared/components/SwipeableRow";
 
@@ -40,7 +38,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
         <SwipeableRow onLeftAction={changeComplete} leftActionText={"Done"} backgroundColor={index % 2 === 0 ? Colors.dark500 : Colors.dark900} actionTypes={["delete"]}  onDelete={() => removeSet(exerciseLogId, set.id)}>
             <Animated.View>
                 <View key={set.id}
-                      style={[styles.row, {backgroundColor: index % 2 === 0 ? Colors.dark500 : Colors.dark900}]}>
+                      style={[styles.row]}>
                     <View style={{alignItems: "center", width: "8%"}}>
                         <TouchableOpacity onPress={changeComplete}>
                             {set.completed ? (
@@ -61,7 +59,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                 </View>
                                 <View style={styles.inputContainer}>
                                     <InputField
-                                        inputStyle={{textAlign: "center"}}
+                                        inputStyle={styles.input}
                                         color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                         keyboardType={"numeric"}
                                         value={values.reps}
@@ -71,7 +69,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                 </View>
                                 <View style={styles.inputContainer}>
                                     <InputField
-                                        inputStyle={{textAlign: "center"}}
+                                        inputStyle={styles.input}
                                         color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                         keyboardType={"numeric"}
                                         value={values.weight}
@@ -91,7 +89,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                 </View>
                                 <View style={styles.inputContainer}>
                                     <InputField
-                                        inputStyle={{textAlign: "center"}}
+                                        inputStyle={styles.input}
                                         placeholder={"Dist"}
                                         color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                         keyboardType={"numeric"}
@@ -101,7 +99,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                 </View>
                                 <View style={styles.inputContainer}>
                                     <InputField
-                                        inputStyle={{textAlign: "center"}}
+                                        inputStyle={styles.input}
                                         placeholder={"Time"}
                                         color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                         keyboardType={"numeric"}
@@ -114,7 +112,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                         {metric === 'time' && (
                             <View style={styles.inputContainer}>
                                 <InputField
-                                    inputStyle={{textAlign: "center"}}
+                                    inputStyle={styles.input}
                                     color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                     keyboardType={"numeric"}
                                     value={values.time}
@@ -152,6 +150,7 @@ const styles = StyleSheet.create({
     inputContainer: {
         width: "29%",
         alignItems: "center"
-    }
+    },
+    input: {textAlign: "center", backgroundColor: Colors.dark500}
 });
 export default ExerciseSetRow;

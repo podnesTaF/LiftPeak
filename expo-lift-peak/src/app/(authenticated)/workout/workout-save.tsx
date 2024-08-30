@@ -13,10 +13,7 @@ import {defaultStyles} from "@shared/styles";
 
 
 const WorkoutSave = () => {
-    const [title, setTitle] = useState("Active Workout");
-    const [description, setDescription] = useState("");
-
-    const {workout, workoutLog, clearWorkout, addMedia, workoutMedia, removeMedia} = useWorkoutStore()
+    const {workout, updateWorkoutField, workoutLog, clearWorkout, addMedia, workoutMedia, removeMedia} = useWorkoutStore()
     const {exerciseLogs, clearExercises} = useExerciseStore()
     const {elapsedTime} = useTimerStore()
     const {discardWorkout} = useDiscardWorkout();
@@ -66,8 +63,8 @@ const WorkoutSave = () => {
         }));
 
         const data = {
-            title,
-            description,
+            title: workout?.title,
+            description: workout?.description,
             isRoutine: workout?.isRoutine || false,
             routineId: null,
             mediaUrls: workoutMedia.map(media => media.actualUrl),
@@ -119,8 +116,8 @@ const WorkoutSave = () => {
             />
             <ScrollView contentContainerStyle={{gap: 16}} style={defaultStyles.container}>
                 <View style={{gap: 12, padding: 16}}>
-                    <InputField placeholder={"Title"} value={title} onChange={(v) => setTitle(v)} />
-                    <InputField placeholder={"Description"} value={description} onChange={(v) => setDescription(v)} />
+                    <InputField placeholder={"Title"} value={workout?.title || ""} onChange={(v) => updateWorkoutField({title: v})} />
+                    <InputField placeholder={"Description"} value={workout?.description || ''} onChange={(v) => updateWorkoutField({description: v})} />
                 </View>
                 <MediaPicker uploadedFiles={workoutMedia} removeMedia={removeMedia} addMedia={addMedia} />
             </ScrollView>
