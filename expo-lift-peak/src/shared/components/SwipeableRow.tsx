@@ -99,22 +99,22 @@ export default class SwipeableRow extends Component<PropsWithChildren<SwipeableR
 
     private renderLeftActions = (
         progress: Animated.AnimatedInterpolation<number>,
-        _dragAnimatedValue: Animated.AnimatedInterpolation<number>
+        _dragAnimatedValue: Animated.AnimatedInterpolation<number>,
     ) => {
         const { onLeftAction, backgroundColor,leftActionIcon,leftActionText } = this.props;
         const { iconOpacity } = this.state;
         if (!onLeftAction) return null;
 
+        const x = -100
+
         const trans = progress.interpolate({
             inputRange: [0, 1],
-            outputRange: [-50, 0],
-            extrapolate: 'clamp',
+            outputRange: [x, 0],
         });
 
         const opacity = progress.interpolate({
             inputRange: [0, 1],
             outputRange: [0, 1],
-            extrapolate: 'clamp',
         });
 
 
@@ -151,7 +151,7 @@ export default class SwipeableRow extends Component<PropsWithChildren<SwipeableR
         if (this.swipeableRow) {
             Animated.timing(this.swipeableRow?.state.rowTranslation, {
                 toValue: 0,
-                duration: 500,
+                duration: 400,
                 easing: Easing.inOut(Easing.ease),
                 useNativeDriver: true,
             }).start();
@@ -178,8 +178,8 @@ export default class SwipeableRow extends Component<PropsWithChildren<SwipeableR
                 rightThreshold={10}
                 leftThreshold={30}
                 renderRightActions={this.renderRightActions}
-                renderLeftActions={this.renderLeftActions} // Render the left actions
-                onSwipeableLeftWillOpen={this.handleLeftAction} // Trigger the action as soon as the left swipe is detected
+                renderLeftActions={this.renderLeftActions}
+                onSwipeableLeftWillOpen={this.handleLeftAction}
             >
                 {children}
             </Swipeable>

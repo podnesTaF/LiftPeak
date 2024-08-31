@@ -44,6 +44,7 @@ const Exercises = () => {
                 exercise: exercise,
                 exerciseId: exercise.id,
                 sets: [],
+                previousSets: exercise.previousSets,
                 order: getOrder(),
                 createdAt: new Date().toISOString(),
                 updatedAt: new Date().toISOString()

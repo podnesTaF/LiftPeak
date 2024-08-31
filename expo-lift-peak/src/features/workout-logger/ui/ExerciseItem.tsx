@@ -18,15 +18,17 @@ import Animated, {
 import {IExerciseLog} from "@entities/workout-log";
 import ExerciseLog from "@features/exercise-logger/ui/ExerciseLog";
 import Accordion from "@shared/components/Accordion";
+import Button from "@shared/components/Button";
 
 interface ExerciseItemProps {
     onPress?: (itemId: number | string) => void;
     item: IExerciseLog;
-    index: number
+    index: number;
+    isLast?: boolean;
 }
 
-export const ExerciseItem = ({item, onPress,index}: ExerciseItemProps) => {
-    const open = useSharedValue(true);
+export const ExerciseItem = ({item, onPress,index, isLast}: ExerciseItemProps) => {
+    const open = useSharedValue(!!isLast);
     const {getExerciseSetsStats, removeExerciseLog} = useExerciseStore();
     const [isPressed, setIsPressed] = useState(false);
     const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
@@ -122,6 +124,17 @@ export const ExerciseItem = ({item, onPress,index}: ExerciseItemProps) => {
                             <Ionicons name={"chevron-forward"} color={Colors.white} size={30} />
                         </Animated.View>
                     </Pressable>
+                    <View style={[defaultStyles.row, {gap: 12}]}>
+                        <Button color={"dark700"} style={{flex: 1, paddingVertical: 4}}>
+                            <Ionicons name={"settings-outline"} size={24} color={Colors.white}/>
+                        </Button>
+                        <Button color={"dark700"} style={{flex: 1, paddingVertical: 4}}>
+                            <Ionicons name={"timer-outline"} size={24} color={Colors.white}/>
+                        </Button>
+                        <Button color={"dark700"} style={{flex: 1, paddingVertical: 4}}>
+                            <Ionicons name={"information-circle-outline"} size={24} color={Colors.white}/>
+                        </Button>
+                    </View>
                     <Accordion viewKey={"accordion"} isExpanded={open}>
                         <ExerciseLog exerciseId={item.id} />
                     </Accordion>

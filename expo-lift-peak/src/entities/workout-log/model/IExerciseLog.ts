@@ -10,7 +10,7 @@ export interface IExerciseLog {
     exercise?: IExercise;
     order: number;
     sets?: ISet[];
-
+    previousSets?: ISet[];
     createdAt: string;
     updatedAt: string;
 }

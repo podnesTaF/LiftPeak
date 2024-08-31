@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {Alert, Pressable, StyleSheet, Text, View} from "react-native";
+import {Alert, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, View} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
 import {
     ExerciseItem,
@@ -16,10 +16,12 @@ import {formatTime} from "@shared/utils";
 import {Ionicons} from "@expo/vector-icons";
 import useTimerInterval from "@features/timer/hooks/useIntervalTimer";
 import Animated, {
+    useAnimatedScrollHandler,
     useSharedValue
 } from 'react-native-reanimated';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import InputField from "@shared/components/form/InputField";
+import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
 
 const Index = () => {
 
@@ -55,6 +57,9 @@ const Index = () => {
         router.replace("/(authenticated)/(tabs)/start");
     };
 
+    const onScroll = useAnimatedScrollHandler((event) => {
+        scrollY.value = event.contentOffset.y;
+    });
 
     return (
         <>
@@ -94,8 +99,12 @@ const Index = () => {
                     </TouchableOpacity>
                 )
             }}/>
-            <View style={{flex: 1, backgroundColor: Colors.dark900}}>
-                <Animated.View style={[styles.snackbarContainer, snackbarOpacity]}>
+            <KeyboardAvoidingView behavior={
+                Platform.OS === "ios" ? "padding" : "height"
+            }
+                                  style={{flex: 1, backgroundColor: Colors.dark900}}>
+                <Animated.ScrollView stickyHeaderIndices={[0]} onScroll={onScroll} contentContainerStyle={{paddingBottom: 70}}>
+                    <View style={[styles.snackbarContainer, {flexDirection: "row"}]}>
                         <TouchableOpacity>
                             <View style={{flexDirection: "row", gap: 8, alignItems: 'center'}}>
                                 <Ionicons name={"time"} color={Colors.lime} size={32} />
@@ -104,24 +113,23 @@ const Index = () => {
                                 </View>
                             </View>
                         </TouchableOpacity>
-                   <View style={{flexDirection: "row", alignItems: "center", gap: 12}}>
-                       <Text style={{color: Colors.dark100, fontWeight: "600"}}>
-                           16 sets · 34000kg
-                       </Text>
-                       <TouchableOpacity onPress={() => isRunning ? pauseTimer() : playTimer()}>
-                           {isRunning ? (
-                               <Ionicons name={"pause-circle-outline"} color={Colors.lime} size={40}/>
-                           ) : (
-                               <Ionicons name={"play-circle-outline"} color={Colors.lime} size={40}/>
-                           )}
-                       </TouchableOpacity>
-                   </View>
-                </Animated.View>
-                <Animated.ScrollView contentContainerStyle={{paddingVertical: 70}}>
+                        <View style={{flexDirection: "row", alignItems: "center", gap: 12}}>
+                            <Text style={{color: Colors.dark100, fontWeight: "600"}}>
+                                16 sets · 34000kg
+                            </Text>
+                            <TouchableOpacity onPress={() => isRunning ? pauseTimer() : playTimer()}>
+                                {isRunning ? (
+                                    <Ionicons name={"pause-circle-outline"} color={Colors.lime} size={40}/>
+                                ) : (
+                                    <Ionicons name={"play-circle-outline"} color={Colors.lime} size={40}/>
+                                )}
+                            </TouchableOpacity>
+                        </View>
+                    </View>
                     <InputField color={'transparent'} placeholder="Workout Title" value={workout?.title || ''} onChange={(text) => updateWorkoutField({title: text})} />
                     <View style={{paddingVertical: 16, paddingHorizontal: 12, gap: 16, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: Colors.dark500}}>
                         {exerciseLogs.length ? exerciseLogs.sort((a, b) => a.order - b.order).map((item, index) => (
-                            <ExerciseItem onPress={openExerciseLog} key={item.id} item={item} index={index} />
+                            <ExerciseItem onPress={openExerciseLog} key={item.id} item={item} index={index} isLast={index === (exerciseLogs.length - 1)} />
                         )) : (
                             <View style={{gap: 16}}>
                                 <View style={{flexDirection: "row", gap: 6, alignItems: 'center'}}>
@@ -147,7 +155,7 @@ const Index = () => {
                         </View>
                     </View>
                 </Animated.ScrollView>
-            </View>
+            </KeyboardAvoidingView>
         </>
     );
 };
@@ -155,17 +163,13 @@ const Index = () => {
 const styles = StyleSheet.create({
     snackbarContainer: {
         backgroundColor: Colors.dark500,
-        width: "100%",
         flexDirection: "row",
+        gap: 12,
         justifyContent: "space-between",
         alignItems: "center",
-        paddingHorizontal: 20,
-        paddingVertical: 10,
-        position: "absolute",
-        top: 0,
-        left: 0,
-        zIndex: 100,
-        borderBottomColor: Colors.dark100,
+        padding: 12,
+        marginBottom: 20,
+        borderBottomColor: Colors.dark700,
         borderWidth: StyleSheet.hairlineWidth
     }
 })

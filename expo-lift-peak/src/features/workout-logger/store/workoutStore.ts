@@ -28,8 +28,8 @@ export const useWorkoutStore = create<WorkoutState>()(
                 set({
                     workout: {
                         id: workoutId,
-                        title: "Test Index",
-                        description: "This is a test workout",
+                        title: "",
+                        description: "",
                         userId: userId,
                         createdAt: new Date().toISOString(),
                         updatedAt: new Date().toISOString()

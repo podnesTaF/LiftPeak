@@ -1,12 +1,12 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Alert, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import InputField from "@shared/components/form/InputField";
 import {ISet} from "@entities/workout-log";
-import {useExerciseStore} from "@features/workout-logger";
+import {useExerciseStore} from "@features/workout-logger/store";
 import {Ionicons} from "@expo/vector-icons";
 import {Colors} from "@shared/styles";
 import {ExerciseMetric} from "@entities/exercise";
-import Animated, {FadeInUp, FadeOutUp} from "react-native-reanimated";
+import Animated from "react-native-reanimated";
 import SwipeableRow from "@shared/components/SwipeableRow";
 
 interface ExerciseSetRowProps {
@@ -17,12 +17,13 @@ interface ExerciseSetRowProps {
 }
 
 export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps, index}: ExerciseSetRowProps) => {
-    const {updateSet, removeSet} = useExerciseStore()
+    const {updateSet, removeSet, getExerciseById} = useExerciseStore()
+
     const [values, setValues] = useState({
-        reps: set.reps?.toString() || "0",
-        weight: set.weight?.toString() || "0",
-        time: set.timeInS?.toString() || "0",
-        distanceInM: set.distanceInM?.toString() || "0"
+        reps: set.reps?.toString() || "",
+        weight: set.weight?.toString()  || "",
+        time: set.timeInS?.toString()  || "",
+        distanceInM: set.distanceInM?.toString() || "",
     });
 
     const changeComplete = () => {
@@ -34,8 +35,21 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
         updateSet(set.exerciseLogId, {...set, [name]: value});
     };
 
+    useEffect(() => {
+        const previousSet = getExerciseById(exerciseLogId)?.previousSets?.find(s => s.order === set.order);
+
+        if (previousSet) {
+            setValues({
+                reps: previousSet.reps?.toString() || values.reps,
+                weight: previousSet.weight?.toString() || values.weight,
+                time: previousSet.timeInS?.toString() || values.time,
+                distanceInM: previousSet.distanceInM?.toString() || values.distanceInM,
+            });
+        }
+    }, [exerciseLogId, set.order]);
+
     return (
-        <SwipeableRow onLeftAction={changeComplete} leftActionText={"Done"} backgroundColor={index % 2 === 0 ? Colors.dark500 : Colors.dark900} actionTypes={["delete"]}  onDelete={() => removeSet(exerciseLogId, set.id)}>
+        <SwipeableRow onLeftAction={changeComplete} leftActionText={"Done"} backgroundColor={Colors.dark900} actionTypes={["delete"]}  onDelete={() => removeSet(exerciseLogId, set.id)}>
             <Animated.View>
                 <View key={set.id}
                       style={[styles.row]}>
@@ -60,7 +74,6 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                 <View style={styles.inputContainer}>
                                     <InputField
                                         inputStyle={styles.input}
-                                        color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                         keyboardType={"numeric"}
                                         value={values.reps}
                                         onChange={(text) => onChangeInput("reps", text)}
@@ -70,7 +83,6 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                 <View style={styles.inputContainer}>
                                     <InputField
                                         inputStyle={styles.input}
-                                        color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                         keyboardType={"numeric"}
                                         value={values.weight}
                                         onChange={(text) => onChangeInput("weight", text)}
@@ -91,7 +103,6 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                     <InputField
                                         inputStyle={styles.input}
                                         placeholder={"Dist"}
-                                        color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                         keyboardType={"numeric"}
                                         value={values.distanceInM}
                                         onChange={(text) => onChangeInput("distanceInM", text)}
@@ -101,7 +112,6 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                     <InputField
                                         inputStyle={styles.input}
                                         placeholder={"Time"}
-                                        color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                         keyboardType={"numeric"}
                                         value={values.time}
                                         onChange={(text) => onChangeInput("time", text)}
@@ -113,7 +123,6 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                             <View style={styles.inputContainer}>
                                 <InputField
                                     inputStyle={styles.input}
-                                    color={index % 2 === 0 ? Colors.dark500 : Colors.dark900}
                                     keyboardType={"numeric"}
                                     value={values.time}
                                     onChange={(text) => onChangeInput("timeInS", text)}
@@ -151,6 +160,7 @@ const styles = StyleSheet.create({
         width: "29%",
         alignItems: "center"
     },
-    input: {textAlign: "center", backgroundColor: Colors.dark500}
+    input: {textAlign: "center", backgroundColor: Colors.dark500, fontWeight: "600"},
+    inactiveInputText: {color: Colors.dark300}
 });
 export default ExerciseSetRow;

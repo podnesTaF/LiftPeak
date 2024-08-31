@@ -5,7 +5,7 @@ import ExerciseSetRow from "./ExerciseSetRow";
 import {Colors, defaultStyles} from "@shared/styles";
 import {Ionicons} from "@expo/vector-icons";
 import {IExerciseLog, SetType} from "@entities/workout-log";
-import {useExerciseStore} from "@features/workout-logger";
+import {useExerciseStore} from "@features/workout-logger/store";
 import Button from "@shared/components/Button";
 
 interface SetsTableProps {
@@ -19,10 +19,10 @@ const SetsTable = ({exerciseLog}: SetsTableProps) => {
         addSet(exerciseLog.id, {
             exerciseLogId: exerciseLog.id,
             order: exerciseLog.sets?.length ? exerciseLog.sets?.length + 1: 1,
-            reps: 0,
-            weight: 0,
-            timeInS: 0,
-            distanceInM: 0,
+            reps: null,
+            weight: null,
+            timeInS: null,
+            distanceInM: null,
             type: type,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),

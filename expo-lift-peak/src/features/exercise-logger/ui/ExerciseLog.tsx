@@ -1,11 +1,6 @@
-import {useExerciseStore} from "@features/workout-logger";
-import {Colors, defaultStyles} from "@shared/styles";
-import {Image, KeyboardAvoidingView, Platform, Pressable, ScrollView, Text, View} from "react-native";
-import {Ionicons} from "@expo/vector-icons";
-import {ExpandableSetType} from "@features/exercise-logger/ui";
-import {SetType} from "@entities/workout-log";
-import TableHead from "./ExerciseTableHead";
-import ExerciseSetRow from "./ExerciseSetRow";
+import {useExerciseStore} from "@features/workout-logger/store";
+import {defaultStyles} from "@shared/styles";
+import {KeyboardAvoidingView, Platform} from "react-native";
 import React from "react";
 import SetsTable from "@features/exercise-logger/ui/SetsTable";
 
