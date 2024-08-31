@@ -6,6 +6,7 @@ import { FileService } from 'src/modules/file/file.service';
 import { MediaType } from 'src/modules/media/entity/media.entity';
 import { Target } from 'src/modules/target/entities/target.entity';
 import { ExerciseLog } from 'src/modules/workout-log/entities/exercise-log.entity';
+import { Set } from 'src/modules/workout-log/entities/set.entity';
 import { PassThrough } from 'stream';
 import { Brackets, DataSource, QueryRunner, Repository } from 'typeorm';
 import { CreateExerciseTargetDto } from '../dto/create-exercise-target.dto';
@@ -243,10 +244,51 @@ export class ExerciseService {
     });
   }
 
-  async searchExercises(
-    value?: string,
-    id?: number,
-  ): Promise<(Partial<Exercise> & { targetGroup: string[] })[]> {
+  // async searchExercises(
+  //   value?: string,
+  //   id?: number,
+  // ): Promise<(Partial<Exercise> & { targetGroup: string[] })[]> {
+  //   const query = this.exerciseRepository
+  //     .createQueryBuilder('exercise')
+  //     .leftJoin('exercise.exerciseTargets', 'exerciseTargets')
+  //     .leftJoin('exerciseTargets.target', 'target')
+  //     .leftJoin('target.muscles', 'muscles')
+  //     .select([
+  //       'exercise.id',
+  //       'exercise.name',
+  //       'target.name',
+  //       'muscles.name',
+  //       'exercise.type',
+  //       'exercise.equipment',
+  //       'exercise.previewUrl',
+  //       'exerciseTargets.priority',
+  //       'exercise.metric',
+  //     ]);
+
+  //   if (value) {
+  //     query
+  //       .where('exercise.name LIKE :value', { value: `%${value}%` })
+  //       .orWhere('target.name LIKE :value', { value: `%${value}%` })
+  //       .orWhere('muscles.name LIKE :value', { value: `%${value}%` });
+  //   }
+  //   if (id) {
+  //     query.andWhere('exercise.id = :id', { id });
+  //   }
+
+  //   const exercisesWithSets = this.withPreviousSets(await query.getMany());
+
+  //   return this.toShortTargetFormat(exercisesWithSets);
+  // }
+
+  async searchExercises({
+    value,
+    id,
+    userId,
+  }: {
+    value?: string;
+    id?: number;
+    userId?: number;
+  }) {
     const query = this.exerciseRepository
       .createQueryBuilder('exercise')
       .leftJoin('exercise.exerciseTargets', 'exerciseTargets')
@@ -274,9 +316,56 @@ export class ExerciseService {
       query.andWhere('exercise.id = :id', { id });
     }
 
-    const exercises = await query.getMany();
+    const exercises = this.toShortTargetFormat(await query.getMany());
 
-    return this.toShortTargetFormat(exercises);
+    return Promise.all(
+      exercises.map(async (exercise) => ({
+        ...exercise,
+        previousSets: await this.getPreviousSets(exercise.id, userId),
+      })),
+    );
+  }
+
+  async getPreviousSets(exerciseId: number, userId: number): Promise<Set[]> {
+    // Fetch only the necessary fields, filtering directly in the query
+    const exerciseLogs = await this.exerciseLogRepository
+      .createQueryBuilder('exerciseLog')
+      .leftJoinAndSelect('exerciseLog.sets', 'sets')
+      .innerJoin('exerciseLog.workoutLog', 'workoutLog')
+      .innerJoin('workoutLog.workout', 'workout')
+      .where('exerciseLog.exerciseId = :exerciseId', { exerciseId })
+      .andWhere('workout.userId = :userId', { userId })
+      .orderBy('exerciseLog.createdAt', 'DESC')
+      .addOrderBy('sets.order', 'ASC')
+      .select([
+        'exerciseLog.id',
+        'sets.id',
+        'sets.order',
+        'sets.weight',
+        'sets.reps',
+        'sets.distanceInM',
+        'sets.timeInS',
+        'sets.restInS',
+        'sets.type',
+      ])
+      .getMany();
+
+    const prevSets: Set[] = [];
+
+    for (const log of exerciseLogs) {
+      for (const set of log.sets) {
+        if (!prevSets.some((existingSet) => existingSet.order === set.order)) {
+          prevSets.push(set);
+        }
+      }
+
+      if (prevSets.length >= log.sets.length) {
+        break;
+      }
+    }
+    prevSets.sort((a, b) => a.order - b.order);
+
+    return prevSets;
   }
 
   async getAlternativeExercises(
