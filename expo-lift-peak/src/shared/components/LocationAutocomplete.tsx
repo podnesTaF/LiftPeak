@@ -1,19 +1,9 @@
 import { Colors } from "@shared/styles";
 import axios from "axios";
-import { useState } from "react";
-import {
-  Text,
-  SafeAreaView,
-  StyleSheet,
-  TouchableWithoutFeedback,
-  Keyboard,
-  FlatList,
-  Pressable,
-  View,
-} from "react-native";
-import InputField from "./form/InputField";
-import { useForm } from "react-hook-form";
-import { SignupSchema } from "@features/auth/utils/signUpSchema";
+import { useEffect, useState } from "react";
+import { Text, SafeAreaView, StyleSheet, TouchableWithoutFeedback, Keyboard, FlatList, Pressable, View } from "react-native";
+import { useFormContext, useWatch } from "react-hook-form";
+import FormField from "./form/FormField";
 
 interface Gym {
   name: string;
@@ -25,66 +15,66 @@ const GooglePlacesAPIKey = "AIzaSyB7Ygwv8KtiMMq0h7bPAWTAmNatjA83GEU";
 
 const ITEM_HEIGHT = 60; // Fixed height for each item
 
-const TabTwoScreen = () => {
-  const [input, setInput] = useState<string>("");
+const LocationAutocomplete = ({ name }: { name: string }) => {
   const [data, setData] = useState<Gym[]>([]);
   const [selectedLocation, setSelectedLocation] = useState<string>("");
   const [isListVisible, setIsListVisible] = useState<boolean>(false);
 
-  const form = useForm<SignupSchema>({
-    mode: "onChange",
-  })
+  const { control, setValue } = useFormContext(); // Access form context
+  const gymInput = useWatch({
+    control,
+    name,
+  });
 
-
-  const fetchGyms = async (text: string) => {
-    if (text.length > 2) {
-      try {
-        const response = await axios.get(
-          `https://maps.googleapis.com/maps/api/place/textsearch/json`,
-          {
-            params: {
-              query: `gym ${text}`,
-              key: GooglePlacesAPIKey,
-            },
-          }
-        );
-        setData(response.data.results);
-        setIsListVisible(true); // Show the dropdown list when results are available
-      } catch (error) {
-        console.error("Error fetching data:", error);
+  useEffect(() => {
+    const fetchGyms = async (text: string) => {
+      if (text && text.length > 2) {
+        try {
+          const response = await axios.get(
+            `https://maps.googleapis.com/maps/api/place/textsearch/json`,
+            {
+              params: {
+                query: `gym ${text}`,
+                key: GooglePlacesAPIKey,
+              },
+            }
+          );
+          setData(response.data.results);
+          setIsListVisible(true);
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        }
+      } else {
+        setData([]);
+        setIsListVisible(false);
       }
-    } else {
-      setData([]);
-      setIsListVisible(false); // Hide the dropdown list when input is cleared
-    }
-  };
+    };
 
-  const onChangeText = async (text: string) => {
-    setInput(text);
-    fetchGyms(text); // Fetch gyms after setting the input
-  };
+    if (gymInput !== undefined) {
+      fetchGyms(gymInput);
+    }
+  }, [gymInput]);
 
   const handleSelectLocation = (location: Gym) => {
     setSelectedLocation(location.place_id);
-    setInput(`${location.name}, ${location.formatted_address}`); // Set the input field with the selected gym and address
-    setData([]); // Clear the dropdown list
-    setIsListVisible(false); // Hide the dropdown list after selection
+    setValue(name, `${location.name}, ${location.formatted_address}`); // Set the input field with the selected gym and address
+    setData([]);
+    setIsListVisible(false);
   };
 
   const handleOutsidePress = () => {
-    setIsListVisible(false); // Hide the dropdown list when clicking outside
-    Keyboard.dismiss(); // Dismiss the keyboard if it is open
+    setIsListVisible(false);
+    Keyboard.dismiss();
   };
 
   return (
-    <TouchableWithoutFeedback style={{flex: 1}} onPress={handleOutsidePress}>
-      <SafeAreaView style={styles.container}>
+    <TouchableWithoutFeedback style={{  }} onPress={handleOutsidePress}>
+      <View style={styles.container}>
         <View style={styles.inputContainer}>
-          <InputField
+          <FormField
             placeholder="Search for gyms"
-            value={input}
-            onChange={onChangeText}
-            label={"Gym"}
+            name={name}
+            label="Find your gym"
           />
           {isListVisible && (
             <FlatList
@@ -107,23 +97,22 @@ const TabTwoScreen = () => {
             />
           )}
         </View>
-      </SafeAreaView>
+      </View>
     </TouchableWithoutFeedback>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    flex: 1,
     backgroundColor: Colors.dark900,
-    padding: 16,
+
   },
   inputContainer: {
     zIndex: 1,
-    maxHeight: 350, 
+    maxHeight: 350,
   },
   list: {
-    maxHeight: ITEM_HEIGHT * 5, 
+    maxHeight: ITEM_HEIGHT * 5,
   },
   itemContainer: {
     height: ITEM_HEIGHT,
@@ -149,4 +138,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default TabTwoScreen;
+export default LocationAutocomplete;
