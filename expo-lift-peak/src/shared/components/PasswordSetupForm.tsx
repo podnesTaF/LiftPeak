@@ -40,14 +40,13 @@ const PasswordSetupForm: React.FC<PasswordProps> = ({
   const { showToast } = useToastStore();
 
   const handlePassword = () => {
-    if (isReset) {
       showToast(
         "Success",
         "Your password has been reset successfully!",
         "success",
         2000
       );
-    }
+  
 
     setTimeout(() => {
       onPress();
@@ -62,13 +61,13 @@ const PasswordSetupForm: React.FC<PasswordProps> = ({
       <View
         style={{
           flex: 1,
-          gap: 46,
+          gap: 6,
           paddingBottom: 40,
           marginTop: 38,
           marginHorizontal: 24,
         }}
       >
-        <Text style={defaultStyles.header}>Reset Password</Text>
+        <Text style={defaultStyles.header}>{isReset ? 'Reset Password' : 'Create Password'}</Text>
         <FormProvider {...form}>
           <View style={{ paddingVertical: 16, flex: 1, gap: 26 }}>
             <View style={{ gap: 24 }}>
@@ -129,7 +128,7 @@ const PasswordSetupForm: React.FC<PasswordProps> = ({
                 disabled={!form.formState.isValid}
                 title={"Continue"}
                 color={"dark100"}
-                onPress={handlePassword}
+                onPress={isReset ? handlePassword : onPress}
               />
             </View>
           </View>

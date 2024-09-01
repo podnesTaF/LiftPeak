@@ -69,7 +69,7 @@ const Login = () => {
                 name={"email"}
                 label={"Email"}
                 placeholder={"enter your email"}
-                noValidationStyling          
+                noValidationStyling           
               />
               <FormField
                 type={"password"}

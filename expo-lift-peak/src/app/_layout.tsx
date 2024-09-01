@@ -94,11 +94,30 @@ const InitialLayout = () => {
         }}
       />
       <Stack.Screen
+        name="createPassword"
+        options={{
+          title: "",
+        }}
+      />
+      <Stack.Screen
         name="signup"
         options={{
           title: "",
         }}
       />
+      <Stack.Screen
+        name="signupOtp"
+        options={{
+          title: "",
+        }}
+      />
+        <Stack.Screen
+        name="yourDetails"
+        options={{
+          title: "",
+        }}
+      />
+
       <Stack.Screen
         name="(authenticated)/(tabs)"
         options={{ headerShown: false }}
