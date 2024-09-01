@@ -1,17 +1,6 @@
-import React, { useState, useRef } from 'react';
+import React from 'react';
 import {StyleSheet, Text, TextInput, TextInputProps, View, TouchableOpacity, StyleProp, TextStyle} from "react-native";
 import { Colors } from "@shared/styles";
-import Animated, { useSharedValue, useAnimatedStyle, withTiming } from 'react-native-reanimated';
-import {Ionicons} from "@expo/vector-icons";
-
-interface InputFieldProps {
-    label?: string;
-    type?: TextInputProps["textContentType"];
-    placeholder?: string;
-    value: string;
-    onChange: (text: string) => void;
-    onBlur?: () => void;
-}
 
 interface InputFieldProps {
     label?: string;

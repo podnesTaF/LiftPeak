@@ -1,4 +1,5 @@
 import { Comment } from 'src/modules/comment/entities/comment.entity';
+import { PostSeen } from 'src/modules/feed/entity/post-seen.entity';
 import { Like } from 'src/modules/like/entities/like.entity';
 import { User } from 'src/modules/users/entities/user.entity';
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
@@ -26,4 +27,7 @@ export class GroupPost extends AbstractEntity {
 
   @OneToMany(() => Like, (c) => c.post)
   likes: Like[];
+
+  @OneToMany(() => PostSeen, (c) => c.post)
+  seenByUsers: PostSeen[];
 }

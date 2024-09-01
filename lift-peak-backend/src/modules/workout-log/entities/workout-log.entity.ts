@@ -23,6 +23,8 @@ export class WorkoutLog extends AbstractEntity {
   baseWorkoutId: number;
   @OneToOne(() => Workout, (workout) => workout.workoutLog, {
     nullable: false,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
   })
   @JoinColumn({
     name: 'baseWorkoutId',
@@ -39,8 +41,6 @@ export class WorkoutLog extends AbstractEntity {
   })
   totalDistanceInM: number;
 
-  @OneToMany(() => ExerciseLog, (exerciseLog) => exerciseLog.workoutLog, {
-    onDelete: 'CASCADE',
-  })
+  @OneToMany(() => ExerciseLog, (exerciseLog) => exerciseLog.workoutLog)
   exerciseLogs: ExerciseLog[];
 }

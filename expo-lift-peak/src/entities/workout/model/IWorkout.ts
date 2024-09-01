@@ -5,7 +5,7 @@ import {ILike} from "@entities/workout/model/ILike";
 import {IReactable} from "@entities/reaction";
 
 export interface IWorkout extends IReactable{
-    id: number | string;
+    id?: number | string;
     title: string;
     description?: string;
     isRoutine?: boolean;

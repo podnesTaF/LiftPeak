@@ -1,5 +1,14 @@
-import React from 'react';
-import {View, StyleSheet, Text, Image, FlatList, Dimensions, TouchableOpacity, Pressable} from "react-native";
+import React, {useEffect, useRef, useState} from 'react';
+import {
+    View,
+    StyleSheet,
+    Text,
+    FlatList,
+    Dimensions,
+    TouchableOpacity,
+    Pressable,
+    ViewToken
+} from "react-native";
 import Avatar from "@shared/components/Avatar";
 import {IWorkout} from "@entities/workout";
 import {Colors, defaultStyles} from "@shared/styles";
@@ -12,32 +21,41 @@ import Animated, {useAnimatedStyle, useSharedValue, withTiming} from "react-nati
 import {useRouter} from "expo-router";
 import {CommentType} from "@entities/reaction";
 import {IGroupPost} from "@entities/post";
+import MediaItem from "@features/feed/ui/MediaItem";
+import {IWorkoutMedia} from "@entities/media";
 
 interface WorkoutPostProps {
     workout: IWorkout
+    isViewable?: boolean
 }
 
-export const WorkoutPost = ({workout} : WorkoutPostProps) => {
+export const WorkoutPost = ({workout, isViewable} : WorkoutPostProps) => {
     const router = useRouter();
-
-
 
     return (
         <>
             <View style={{paddingVertical: 16, gap: 10, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: Colors.dark500}}>
-                <WorkoutPostBody onPress={() => router.push({pathname: "/(authenticated)/workout-details/", params: {id: workout.id}})} workout={workout} photosShown={true} />
+                <WorkoutPostBody isViewable={isViewable} onPress={() => router.push({pathname: "/(authenticated)/workout-details/", params: {id: workout.id}})} workout={workout} photosShown={true} />
                 <PostActions item={workout} type={CommentType.WORKOUT_POST}  />
             </View>
         </>
     );
 };
 
-export const WorkoutPostBody = ({workout, photosShown, onPress}: {workout: IWorkout, photosShown?: boolean, onPress?: Function}) => {
+export const WorkoutPostBody = ({workout, photosShown, onPress, isViewable}: {workout: IWorkout, photosShown?: boolean, onPress?: Function, isViewable?: boolean}) => {
     const screenWidth = Dimensions.get('window').width;
     const isLargeScreen = screenWidth > 500;
     const imageWidth = isLargeScreen ? 400 : screenWidth - 32;
     const imageHeight = imageWidth * 0.8;
     const router = useRouter();
+    const [visibleItems, setVisibleItems] = useState<number[]>([]);
+
+
+
+    const onViewableItemsChanged = useRef(({ viewableItems }: { viewableItems: ViewToken[] }) => {
+        const visibleIds = viewableItems.map(item => item.item.id);
+        setVisibleItems(visibleIds);
+    }).current;
 
     return (
         <>
@@ -64,21 +82,23 @@ export const WorkoutPostBody = ({workout, photosShown, onPress}: {workout: IWork
                     horizontal
                     pagingEnabled
                     snapToInterval={imageWidth + 16} // Snap to the width of the image + separator
-                    decelerationRate={"fast"}
-                    ItemSeparatorComponent={() => <View style={{width: 16}}/>}
-                    renderItem={({item, index}) => (
+                    decelerationRate="fast"
+                    ItemSeparatorComponent={() => <View style={{ width: 16 }} />}
+                    renderItem={({ item, index }) => (
                         <>
-                            {index === 0 && <View style={{width: 12}}></View>}
-                            <Image
-                                source={{uri: item.mediaUrl}}
-                                style={[styles.mediaImage, {width: imageWidth, height: imageHeight}]}
-                                resizeMode="cover"
-                            />
-                            {index + 1 === workout.mediaContents?.length && <View style={{width: 12}}></View>}
+                            {index === 0 && <View style={{ width: 12 }}></View>}
+                            <View style={{ width: imageWidth, height: imageHeight }}>
+                                <MediaItem media={item} isVisible={!!visibleItems.find((id) => id === item.id) && isViewable} />
+                            </View>
+                            {index + 1 === workout.mediaContents?.length && <View style={{ width: 12 }}></View>}
                         </>
                     )}
-                    keyExtractor={(item) => item.id!.toString()}
+                    keyExtractor={(item) => item.id.toString()}
                     showsHorizontalScrollIndicator={false}
+                    onViewableItemsChanged={onViewableItemsChanged}
+                    viewabilityConfig={{
+                        itemVisiblePercentThreshold: 60,
+                    }}
                 />}
           </View>
         </>

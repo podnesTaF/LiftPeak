@@ -17,7 +17,10 @@ export class Set extends AbstractEntity {
 
   @Column()
   exerciseLogId: number;
-  @ManyToOne(() => ExerciseLog, (exerciseLog) => exerciseLog.sets)
+  @ManyToOne(() => ExerciseLog, (exerciseLog) => exerciseLog.sets, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   exerciseLog: ExerciseLog;
 
   @Column({
@@ -44,7 +47,7 @@ export class Set extends AbstractEntity {
     nullable: true,
   })
   previousSetId: number;
-  @ManyToOne(() => Set)
+  @ManyToOne(() => Set, { onDelete: 'SET NULL' })
   previousSet: Set;
 
   @Column({

@@ -8,7 +8,10 @@ import { WorkoutLog } from './workout-log.entity';
 export class ExerciseLog extends AbstractEntity {
   @Column()
   workoutLogId: number;
-  @ManyToOne(() => WorkoutLog, (workoutLog) => workoutLog.exerciseLogs)
+  @ManyToOne(() => WorkoutLog, (workoutLog) => workoutLog.exerciseLogs, {
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'workoutLogId', referencedColumnName: 'id' })
   workoutLog: WorkoutLog;
 
@@ -22,6 +25,6 @@ export class ExerciseLog extends AbstractEntity {
   })
   order: number;
 
-  @OneToMany(() => Set, (set) => set.exerciseLog, { onDelete: 'CASCADE' })
+  @OneToMany(() => Set, (set) => set.exerciseLog, { onDelete: 'SET NULL' })
   sets: Set[];
 }

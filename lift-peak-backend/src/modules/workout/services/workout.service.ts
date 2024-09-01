@@ -86,6 +86,7 @@ export class WorkoutService {
   async getWorkouts(userId?: number) {
     const workouts = await this.workoutRepository.find({
       relations: ['workoutLog', 'comments', 'likes', 'user', 'mediaContents'],
+      order: { createdAt: 'DESC' },
     });
 
     return workouts.map((workout) => {

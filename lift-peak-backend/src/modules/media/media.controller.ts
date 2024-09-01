@@ -16,10 +16,14 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { Response } from 'express';
 import { FileService } from '../file/file.service';
 import { StorageFile } from '../file/types/file';
+import { MediaService } from './media.service';
 
 @Controller('media')
 export class MediaController {
-  constructor(private storageService: FileService) {}
+  constructor(
+    private storageService: FileService,
+    private mediaService: MediaService,
+  ) {}
 
   @Post()
   @UseInterceptors(
@@ -33,11 +37,17 @@ export class MediaController {
     @UploadedFile() file: Express.Multer.File,
     @Body() { prefix }: { prefix: string },
   ) {
+    const processedBuffer = await this.mediaService.processFile(
+      file.buffer,
+      file.originalname,
+      file.mimetype,
+    );
+
     const url = await this.storageService.uploadFileToStorage(
       file.originalname,
       prefix,
       file.mimetype,
-      file.buffer,
+      processedBuffer,
     );
 
     return { mediaUrl: url };

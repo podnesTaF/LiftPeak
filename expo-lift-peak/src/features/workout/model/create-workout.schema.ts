@@ -14,6 +14,7 @@ const CreateWorkoutDtoSchema = z.object({
     isRoutine: z.boolean().optional(),
     routineId: z.number().nullable().optional(),
     createLogDto: CreateWorkoutLogDtoSchema.nullable().optional(),
+    mediaUrls: z.array(z.string()).optional(),
 });
 
 export type CreateWorkoutDto = z.infer<typeof CreateWorkoutDtoSchema>;

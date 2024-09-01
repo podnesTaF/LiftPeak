@@ -111,13 +111,12 @@ const InitialLayout = () => {
           title: "",
         }}
       />
-        <Stack.Screen
+      <Stack.Screen
         name="yourDetails"
         options={{
           title: "",
         }}
       />
-
       <Stack.Screen
         name="(authenticated)/(tabs)"
         options={{ headerShown: false }}
@@ -134,6 +133,8 @@ const InitialLayout = () => {
         name={"(authenticated)/workout"}
         options={{
           headerShown: false,
+          animation: "fade_from_bottom",
+          animationDuration: 100,
         }}
       />
       <Stack.Screen

@@ -29,7 +29,7 @@ const FollowingCircles = ({type = "users"}: {type?: "groups" | "users"}) => {
     })
 
     return (
-        <View style={{paddingVertical: 16, borderBottomWidth: StyleSheet.hairlineWidth, borderBottomColor: Colors.dark300}}>
+        <View style={{paddingVertical: 16,}}>
             {type === 'users' ? <FlatList
                 data={users}
                 horizontal

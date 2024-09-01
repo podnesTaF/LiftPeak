@@ -30,7 +30,10 @@ export class Comment extends AbstractEntity {
 
   @Column({ nullable: true })
   workoutId?: number;
-  @ManyToOne(() => Workout, (workout) => workout.comments, { nullable: true })
+  @ManyToOne(() => Workout, (workout) => workout.comments, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
   workout?: Workout;
 
   @Column({ nullable: true })

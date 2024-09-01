@@ -7,9 +7,12 @@ import { DataSource } from 'typeorm';
 import { config as typeOrmConfig } from './core/config/typeorm.config';
 import { HttpRequestLogger } from './core/loggers/http-request.logger';
 import { AuthModule } from './modules/auth/auth.module';
+import { CommentModule } from './modules/comment/comment.module';
 import { ExerciseModule } from './modules/exercise/exercise.module';
+import { FeedModule } from './modules/feed/feed.module';
 import { FileModule } from './modules/file/file.module';
 import { GroupModule } from './modules/group/group.module';
+import { LikeModule } from './modules/like/like.module';
 import { MediaModule } from './modules/media/media.module';
 import { RoleModule } from './modules/role/role.module';
 import { TargetModule } from './modules/target/target.module';
@@ -36,6 +39,9 @@ import { WorkoutModule } from './modules/workout/workout.module';
     TargetModule,
     WorkoutLogModule,
     GroupModule,
+    CommentModule,
+    LikeModule,
+    FeedModule,
   ],
   controllers: [],
 })

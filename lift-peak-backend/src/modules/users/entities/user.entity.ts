@@ -1,4 +1,5 @@
 import { Comment } from 'src/modules/comment/entities/comment.entity';
+import { PostSeen } from 'src/modules/feed/entity/post-seen.entity';
 import { GroupPost } from 'src/modules/group/entities/group-post.entity';
 import { Group } from 'src/modules/group/entities/group.entity';
 import { Like } from 'src/modules/like/entities/like.entity';
@@ -83,4 +84,7 @@ export class User extends AbstractEntity {
 
   @OneToMany(() => GroupPost, (post) => post.user)
   posts: GroupPost[];
+
+  @OneToMany(() => PostSeen, (postSeen) => postSeen.user)
+  seenPosts: PostSeen[];
 }
