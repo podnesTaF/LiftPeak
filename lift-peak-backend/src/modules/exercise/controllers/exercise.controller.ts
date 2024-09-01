@@ -26,12 +26,18 @@ export class ExerciseController {
   @UseGuards(JwtAuthGuard)
   async searchExercises(
     @GetUser() user: AuthenticatedUser,
-    @Query() query?: { value?: string; id?: number },
+    @Query() query?: { value?: string; id?: number; muscles?: string },
   ) {
+    let muscleIds = [];
+    if (query.muscles) {
+      muscleIds = query.muscles.split(',').map((id) => +id);
+    }
+
     return this.exerciseService.searchExercises({
       value: query.value,
       id: query?.id,
       userId: user?.id,
+      muscleIds,
     });
   }
 

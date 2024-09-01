@@ -284,10 +284,12 @@ export class ExerciseService {
     value,
     id,
     userId,
+    muscleIds,
   }: {
     value?: string;
     id?: number;
     userId?: number;
+    muscleIds?: number[];
   }) {
     const query = this.exerciseRepository
       .createQueryBuilder('exercise')
@@ -312,6 +314,18 @@ export class ExerciseService {
         .orWhere('target.name LIKE :value', { value: `%${value}%` })
         .orWhere('muscles.name LIKE :value', { value: `%${value}%` });
     }
+
+    if (muscleIds && muscleIds.length) {
+      query.andWhere(
+        new Brackets((qb) => {
+          qb.where('target.id IN (:...muscleIds)', { muscleIds }).orWhere(
+            'muscles.id IN (:...muscleIds)',
+            { muscleIds },
+          );
+        }),
+      );
+    }
+
     if (id) {
       query.andWhere('exercise.id = :id', { id });
     }
