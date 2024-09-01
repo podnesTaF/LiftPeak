@@ -97,19 +97,20 @@ const Index = () => {
                             Complete
                         </Text>
                     </TouchableOpacity>
-                )
+                ),
+                headerShadowVisible: false
             }}/>
             <KeyboardAvoidingView behavior={
                 Platform.OS === "ios" ? "padding" : "height"
             }
                                   style={{flex: 1, backgroundColor: Colors.dark900}}>
                 <Animated.ScrollView stickyHeaderIndices={[0]} onScroll={onScroll} contentContainerStyle={{paddingBottom: 70}}>
-                    <View style={[styles.snackbarContainer, {flexDirection: "row"}]}>
+                    <View style={styles.snackbarContainer}>
                         <TouchableOpacity>
                             <View style={{flexDirection: "row", gap: 8, alignItems: 'center'}}>
-                                <Ionicons name={"time"} color={Colors.lime} size={32} />
+                                <Ionicons name={"time"} color={Colors.success} size={32} />
                                 <View style={{gap:10, alignItems: 'flex-end', flexDirection: "row"}}>
-                                    <Text numberOfLines={1} style={{color: Colors.lime, fontSize: 16, fontWeight: "semibold"}}>{formatTime(elapsedTime)}</Text>
+                                    <Text numberOfLines={1} style={{color: Colors.success, fontSize: 16, fontWeight: "semibold"}}>{formatTime(elapsedTime)}</Text>
                                 </View>
                             </View>
                         </TouchableOpacity>
@@ -119,9 +120,9 @@ const Index = () => {
                             </Text>
                             <TouchableOpacity onPress={() => isRunning ? pauseTimer() : playTimer()}>
                                 {isRunning ? (
-                                    <Ionicons name={"pause-circle-outline"} color={Colors.lime} size={40}/>
+                                    <Ionicons name={"pause-circle-outline"} color={Colors.success} size={40}/>
                                 ) : (
-                                    <Ionicons name={"play-circle-outline"} color={Colors.lime} size={40}/>
+                                    <Ionicons name={"play-circle-outline"} color={Colors.success} size={40}/>
                                 )}
                             </TouchableOpacity>
                         </View>
@@ -162,15 +163,16 @@ const Index = () => {
 
 const styles = StyleSheet.create({
     snackbarContainer: {
-        backgroundColor: Colors.dark500,
+        backgroundColor: Colors.dark700,
         flexDirection: "row",
+        flexWrap: "nowrap",
         gap: 12,
         justifyContent: "space-between",
         alignItems: "center",
         padding: 12,
         marginBottom: 20,
         borderBottomColor: Colors.dark700,
-        borderWidth: StyleSheet.hairlineWidth
+        borderBottomWidth: StyleSheet.hairlineWidth
     }
 })
 

@@ -1,16 +1,8 @@
 import React, {useState} from 'react';
-import {View, StyleSheet, Text, ScrollView, TouchableOpacity} from "react-native";
-
-import {Body} from "@features/muscles";
-import {Colors, defaultStyles} from "@shared/styles";
-import {camelCaseToWords} from "@shared/utils";
-import {Ionicons} from "@expo/vector-icons";
+import {StyleSheet} from "react-native";
+import {Colors} from "@shared/styles";
 import {MuscleFilter} from "@features/constructor";
 
-const views = [
-    "front",
-    "back"
-] as const;
 
 const Muscles = () => {
     const [selectedMuscles, setSelectedMuscles] = useState<{id: number, name: string}[]>([]);
