@@ -1,24 +1,26 @@
 import React, {useEffect, useState} from 'react';
 import {Alert, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import InputField from "@shared/components/form/InputField";
-import {ISet} from "@entities/workout-log";
-import {useExerciseStore} from "@features/workout-logger/store";
+import {IExerciseLog, ISet} from "@entities/workout-log";
 import {Ionicons} from "@expo/vector-icons";
 import {Colors} from "@shared/styles";
 import {ExerciseMetric} from "@entities/exercise";
 import Animated from "react-native-reanimated";
 import SwipeableRow from "@shared/components/SwipeableRow";
+import {useWorkout} from "@features/workout-logger/hooks";
+import {useWorkoutContext} from "@features/workout/store/workoutContext";
 
 interface ExerciseSetRowProps {
     exerciseLogId: number | string;
     set: ISet;
     metric?: ExerciseMetric;
-    index: number
+    index: number;
+    exerciseLog?: IExerciseLog
 }
 
-export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps, index}: ExerciseSetRowProps) => {
-    const {updateSet, removeSet, getExerciseById} = useExerciseStore()
-
+export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps, index, exerciseLog}: ExerciseSetRowProps) => {
+    const {mode} = useWorkoutContext();
+    const {removeSet, updateSet} = useWorkout(mode === "routine")
     const [values, setValues] = useState({
         reps: set.reps?.toString() || "",
         weight: set.weight?.toString()  || "",
@@ -36,7 +38,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
     };
 
     useEffect(() => {
-        const previousSet = getExerciseById(exerciseLogId)?.previousSets?.find(s => s.order === set.order);
+        const previousSet = exerciseLog?.previousSets?.find(s => s.order === set.order);
 
         if (previousSet) {
             setValues({

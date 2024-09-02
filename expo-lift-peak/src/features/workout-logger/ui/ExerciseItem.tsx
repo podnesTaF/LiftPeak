@@ -15,10 +15,13 @@ import Animated, {
     useSharedValue,
     withTiming
 } from "react-native-reanimated";
-import {IExerciseLog} from "@entities/workout-log";
+import {IExerciseLog, ISet} from "@entities/workout-log";
 import ExerciseLog from "@features/exercise-logger/ui/ExerciseLog";
 import Accordion from "@shared/components/Accordion";
 import Button from "@shared/components/Button";
+import {useWorkout} from "@features/workout-logger/hooks";
+import {useRouter} from "expo-router";
+import {useWorkoutContext} from "@features/workout/store/workoutContext";
 
 interface ExerciseItemProps {
     onPress?: (itemId: number | string) => void;
@@ -29,9 +32,11 @@ interface ExerciseItemProps {
 
 export const ExerciseItem = ({item, onPress,index, isLast}: ExerciseItemProps) => {
     const open = useSharedValue(!!isLast);
-    const {getExerciseSetsStats, removeExerciseLog} = useExerciseStore();
+    const {mode} = useWorkoutContext();
     const [isPressed, setIsPressed] = useState(false);
     const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const {removeExerciseLog, getExerciseSetsStats} = useWorkout(mode === 'routine')
+    const router = useRouter();
 
     const confirmAlert = () => {
         Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Light);
@@ -114,8 +119,7 @@ export const ExerciseItem = ({item, onPress,index, isLast}: ExerciseItemProps) =
                                 </View>
                                 <View>
                                     <Text style={{fontSize: 14, fontWeight: "500", color: Colors.white}}>
-                                        {getExerciseSetsStats(item.id).totalSets} / {getExerciseSetsStats(item.id).setsDone} Sets
-                                        Done
+                                         {getExerciseSetsStats(item.id)?.setsDone} / {getExerciseSetsStats(item.id)?.totalSets} Sets
                                     </Text>
                                 </View>
                             </View>
@@ -131,12 +135,12 @@ export const ExerciseItem = ({item, onPress,index, isLast}: ExerciseItemProps) =
                         <Button color={"dark700"} style={{flex: 1, paddingVertical: 4}}>
                             <Ionicons name={"timer-outline"} size={24} color={Colors.white}/>
                         </Button>
-                        <Button color={"dark700"} style={{flex: 1, paddingVertical: 4}}>
+                        <Button color={"dark700"} onPress={() => router.push(`/(authenticated)/exercises/${item.exerciseId}`)} style={{flex: 1, paddingVertical: 4}}>
                             <Ionicons name={"information-circle-outline"} size={24} color={Colors.white}/>
                         </Button>
                     </View>
                     <Accordion viewKey={"accordion"} isExpanded={open}>
-                        <ExerciseLog exerciseId={item.id} />
+                        <ExerciseLog exerciseLog={item} />
                     </Accordion>
                 </Animated.View>
             </SwipeableRow>

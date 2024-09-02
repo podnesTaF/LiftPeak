@@ -22,7 +22,7 @@ const ExploreWorkouts = () => {
                 <Text style={defaultStyles.secondaryText}>
                     Special for you and community workouts based on your preferences.
                 </Text>
-                <Link href={"/(authenticated)/constructor"} asChild style={{width: "100%"}}>
+                <Link href={"/(authenticated)/generator"} asChild style={{width: "100%"}}>
                     <Button title={"Generate Workouts"} color={"success"} fullWidth />
                 </Link>
             </View>

@@ -83,7 +83,7 @@ export default function Followings() {
                         onRefresh={onRefresh}
                     />
                 }
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) => item.id!.toString()}
                 onViewableItemsChanged={onViewableItemsChanged}
                 viewabilityConfig={{
                     itemVisiblePercentThreshold: 40,

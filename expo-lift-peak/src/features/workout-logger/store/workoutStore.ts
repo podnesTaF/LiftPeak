@@ -13,7 +13,6 @@ export const useWorkoutStore = create<WorkoutState>()(
         (set, get) => ({
             workout: null,
             workoutLog: null,
-            exerciseLogs: [],
             workoutMedia: [],
             sets: [],
             timer: {
@@ -22,7 +21,7 @@ export const useWorkoutStore = create<WorkoutState>()(
             },
             isLoading: false,
             error: null,
-            initializeWorkout: ({userId}:{userId: number}) => {
+            initializeWorkout: ({userId, isRoutine}:{userId: number, isRoutine?: boolean}) => {
                 const workoutId = uuidv4();
                 const workoutLogId = uuidv4();
                 set({
@@ -32,6 +31,7 @@ export const useWorkoutStore = create<WorkoutState>()(
                         description: "",
                         userId: userId,
                         createdAt: new Date().toISOString(),
+                        isRoutine: isRoutine,
                         updatedAt: new Date().toISOString()
                     },
                     workoutLog: {
@@ -45,7 +45,7 @@ export const useWorkoutStore = create<WorkoutState>()(
                     }
                 });
             },
-            setWorkout: (workout: Omit<IWorkout, "id">) => {
+           setWorkout: (workout: Omit<IWorkout, "id">) => {
                     const generatedId = uuidv4();
                     set({workout: {...workout, id: generatedId}});
             },

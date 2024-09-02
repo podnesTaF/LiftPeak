@@ -1,18 +1,57 @@
-import {IExerciseLog, ISet} from "@entities/workout-log";
-import {create} from "zustand";
-import {ExerciseStoreState} from "@features/workout-logger/model";
-import {createJSONStorage, persist} from "zustand/middleware";
+import { create } from "zustand";
+import { createJSONStorage, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import 'react-native-get-random-values'
 import { v4 as uuidv4 } from 'uuid';
+import {RoutineStoreState, WorkoutState} from "@features/workout-logger";
+import {IExerciseLog, ISet, IWorkoutLog} from "@entities/workout-log";
+import {IWorkout} from "@entities/workout";
 
-
-export const useExerciseStore = create<ExerciseStoreState>()(
+export const useRoutineStore = create<RoutineStoreState>()(
     persist(
         (set, get) => ({
+            workout: null,
+            workoutLog: null,
+            sets: [],
             exerciseLogs: [],
+            timer: {
+                isRunning: false,
+                elapsedTime: 0
+            },
             isLoading: false,
             error: null,
+            initializeWorkout: ({ userId }: { userId: number }) => {
+                const routineId = uuidv4();
+                const routineLogId = uuidv4();
+                set({
+                    workout: {
+                        id: routineId,
+                        title: "",
+                        description: "",
+                        isRoutine: true,
+                        userId: userId,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    },
+                    workoutLog: {
+                        id: routineLogId,
+                        baseWorkoutId: routineLogId,
+                        startTime: new Date().toISOString(),
+                        totalVolume: 0,
+                        totalDistanceInM: 0,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    }
+                });
+            },
+            setWorkout: (routine: Omit<IWorkout, "id">) => {
+                const generatedId = uuidv4();
+                set({ workout: { ...routine, id: generatedId } });
+            },
+            updateWorkoutField: (updatedField) => {
+                set({ workout: { ...get().workout as any, ...updatedField } });
+            },
+            setWorkoutLog: (routineLog: Omit<IWorkoutLog, "id">) => set({ workoutLog: { ...routineLog, id: uuidv4() } }),
+            clearWorkout: () => set({ workout: null, workoutLog: null }),
             addExerciseLog: (exerciseLog: Omit<IExerciseLog, "id">) => set({exerciseLogs: [...get().exerciseLogs, {...exerciseLog, id: uuidv4()}]}),
             updateExerciseLog: (exerciseLog: IExerciseLog) => set({exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseLog.id ? exerciseLog : log)}),
             removeExerciseLog: (exerciseLogId: number | string) => set({exerciseLogs: get().exerciseLogs.filter(log => log.id !== exerciseLogId)}),
@@ -61,8 +100,8 @@ export const useExerciseStore = create<ExerciseStoreState>()(
             }
         }),
         {
-            name: "exercise-storage",
-            storage:  createJSONStorage(() => AsyncStorage),
+            name: "routine-storage",
+            storage: createJSONStorage(() => AsyncStorage)
         }
     )
-)
+);

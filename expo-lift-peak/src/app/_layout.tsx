@@ -115,8 +115,13 @@ const InitialLayout = () => {
                 title: "Exercise History",
                 headerBackTitleVisible: false
             }}/>
+            <Stack.Screen name={"(authenticated)/generator"} options={{
+                headerShown: false,
+            }}/>
             <Stack.Screen name={"(authenticated)/constructor"} options={{
                 headerShown: false,
+                animation: "fade_from_bottom",
+                animationDuration:100
             }}/>
             <Stack.Screen name={"(authenticated)/explore"} options={{
                 headerShown: false,

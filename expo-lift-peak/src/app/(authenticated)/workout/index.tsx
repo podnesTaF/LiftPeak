@@ -21,12 +21,9 @@ import Animated, {
 } from 'react-native-reanimated';
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import InputField from "@shared/components/form/InputField";
-import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
+import WorkoutLogger from "@features/workout-logger/ui/WorkoutLogger";
 
 const Index = () => {
-
-    const {user} = useAuthStore()
-    const {exerciseLogs, clearExercises, reorder} = useExerciseStore();
     const {
         isRunning,
         pauseTimer,
@@ -34,28 +31,15 @@ const Index = () => {
         playTimer,
     } = useTimerStore();
     const {workout, updateWorkoutField} = useWorkoutStore()
-    const {discardWorkoutWithMedia} = useDiscardWorkout()
+
 
     const router = useRouter();
     const scrollY = useSharedValue(0);
 
-    const { snackbarOpacity, clockTitleStyle, headerTitleStyle} = useWorkoutHeaderAnimation(scrollY)
+    const { clockTitleStyle, headerTitleStyle} = useWorkoutHeaderAnimation(scrollY)
 
     useTimerInterval();
 
-    const openExerciseLog = (exerciseLogId: number | string) => {
-        router.push({
-            pathname: "/(authenticated)/workout/exercise-log",
-            params: {
-                id: exerciseLogId
-            }
-        });
-    }
-
-    const discardWorkout = async () => {
-        await discardWorkoutWithMedia()
-        router.replace("/(authenticated)/(tabs)/start");
-    };
 
     const onScroll = useAnimatedScrollHandler((event) => {
         scrollY.value = event.contentOffset.y;
@@ -128,33 +112,7 @@ const Index = () => {
                         </View>
                     </View>
                     <InputField color={'transparent'} placeholder="Workout Title" value={workout?.title || ''} onChange={(text) => updateWorkoutField({title: text})} />
-                    <View style={{paddingVertical: 16, paddingHorizontal: 12, gap: 16, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: Colors.dark500}}>
-                        {exerciseLogs.length ? exerciseLogs.sort((a, b) => a.order - b.order).map((item, index) => (
-                            <ExerciseItem onPress={openExerciseLog} key={item.id} item={item} index={index} isLast={index === (exerciseLogs.length - 1)} />
-                        )) : (
-                            <View style={{gap: 16}}>
-                                <View style={{flexDirection: "row", gap: 6, alignItems: 'center'}}>
-                                    <View style={{borderRadius: 100, backgroundColor: Colors.dark500, padding: 8}}>
-                                        <Ionicons name={"flash-outline"} color={"white"} size={20} />
-                                    </View>
-                                    <Text style={defaultStyles.smallTitle}>
-                                        Start by adding exercises
-                                    </Text>
-                                </View>
-                                <Text style={defaultStyles.secondaryText}>
-                                    Routines are set of exercises. You can define necessary amount of sets, reps, weights etc. These dimensions can be adjusted while running workout
-                                </Text>
-                            </View>
-                        )}
-                        <View style={{gap: 12, marginTop: 12}}>
-                            <Link href={"/(authenticated)/workout/exercises"} asChild>
-                                <Button fullWidth title={"Add Exercise"} color={"white"}>
-                                    <Ionicons name={"add"} color={"black"} size={24} />
-                                </Button>
-                            </Link>
-                            <Button onPress={discardWorkout} fullWidth title={"Discard Workout"} color={"danger"}/>
-                        </View>
-                    </View>
+                    <WorkoutLogger />
                 </Animated.ScrollView>
             </KeyboardAvoidingView>
         </>
