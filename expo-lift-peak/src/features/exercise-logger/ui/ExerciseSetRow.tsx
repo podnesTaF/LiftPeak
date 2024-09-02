@@ -15,12 +15,13 @@ interface ExerciseSetRowProps {
     set: ISet;
     metric?: ExerciseMetric;
     index: number;
-    exerciseLog?: IExerciseLog
+    exerciseLog?: IExerciseLog;
+    isRoutine?: boolean
 }
 
-export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps, index, exerciseLog}: ExerciseSetRowProps) => {
+export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps, index, exerciseLog, isRoutine}: ExerciseSetRowProps) => {
     const {mode} = useWorkoutContext();
-    const {removeSet, updateSet} = useWorkout(mode === "routine")
+    const {updateSet} = useWorkout(mode === "routine")
     const [values, setValues] = useState({
         reps: set.reps?.toString() || "",
         weight: set.weight?.toString()  || "",
@@ -51,92 +52,104 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
     }, [exerciseLogId, set.order]);
 
     return (
-        <SwipeableRow onLeftAction={changeComplete} leftActionText={"Done"} backgroundColor={Colors.dark900} actionTypes={["delete"]}  onDelete={() => removeSet(exerciseLogId, set.id)}>
-            <Animated.View>
-                <View key={set.id}
-                      style={[styles.row]}>
-                    <View style={{alignItems: "center", width: "8%"}}>
-                        <TouchableOpacity onPress={changeComplete}>
-                            {set.completed ? (
-                                <Ionicons name={"checkmark-circle"} size={30}
-                                          color={set.completed ? Colors.lime : Colors.dark300}/>
-                            ) : (
-                                <Text style={{color: 'white'}}>{index + 1}</Text>
-                            )}
-                        </TouchableOpacity>
-                    </View>
-                    <View style={styles.metricContainer}>
-                        {metric === 'reps' && (
-                            <>
-                                <View style={styles.inputContainer}>
-                                    <Text style={[styles.text, {fontSize: 12, color: Colors.dark300}]}>
-                                        100kg x 10
-                                    </Text>
-                                </View>
-                                <View style={styles.inputContainer}>
-                                    <InputField
-                                        inputStyle={styles.input}
-                                        keyboardType={"numeric"}
-                                        value={values.reps}
-                                        onChange={(text) => onChangeInput("reps", text)}
-                                        placeholder={"reps"}
-                                    />
-                                </View>
-                                <View style={styles.inputContainer}>
-                                    <InputField
-                                        inputStyle={styles.input}
-                                        keyboardType={"numeric"}
-                                        value={values.weight}
-                                        onChange={(text) => onChangeInput("weight", text)}
-                                        placeholder={"kg"}
-                                    />
-                                </View>
-                            </>
+            <View key={set.id}
+                  style={[styles.row]}>
+                <View style={{alignItems: "center", width: "8%"}}>
+                    <TouchableOpacity onPress={changeComplete}>
+                        {set.completed ? (
+                            <Ionicons name={"checkmark-circle"} size={30}
+                                      color={set.completed ? Colors.lime : Colors.dark300}/>
+                        ) : (
+                            <Text style={{color: 'white'}}>{index + 1}</Text>
                         )}
-                        {metric === ExerciseMetric.distance && (
-                            <>
-                                <View style={styles.inputContainer}>
-                                    <Text
-                                        style={[styles.text, {fontSize: 14, fontWeight: "600", color: Colors.dark300}]}>
-                                        10km in 59:00
-                                    </Text>
-                                </View>
-                                <View style={styles.inputContainer}>
-                                    <InputField
-                                        inputStyle={styles.input}
-                                        placeholder={"Dist"}
-                                        keyboardType={"numeric"}
-                                        value={values.distanceInM}
-                                        onChange={(text) => onChangeInput("distanceInM", text)}
-                                    />
-                                </View>
-                                <View style={styles.inputContainer}>
-                                    <InputField
-                                        inputStyle={styles.input}
-                                        placeholder={"Time"}
-                                        keyboardType={"numeric"}
-                                        value={values.time}
-                                        onChange={(text) => onChangeInput("time", text)}
-                                    />
-                                </View>
-                            </>
-                        )}
-                        {metric === 'time' && (
+                    </TouchableOpacity>
+                </View>
+                <View style={styles.metricContainer}>
+                    {metric === 'reps' && (
+                        <>
+                            <View style={styles.inputContainer}>
+                                <Text style={[styles.text, {fontSize: 12, color: Colors.dark300}]}>
+                                    100kg x 10
+                                </Text>
+                            </View>
                             <View style={styles.inputContainer}>
                                 <InputField
                                     inputStyle={styles.input}
                                     keyboardType={"numeric"}
-                                    value={values.time}
-                                    onChange={(text) => onChangeInput("timeInS", text)}
+                                    value={values.reps}
+                                    onChange={(text) => onChangeInput("reps", text)}
+                                    placeholder={"reps"}
                                 />
                             </View>
-                        )}
-                    </View>
+                            <View style={styles.inputContainer}>
+                                <InputField
+                                    inputStyle={styles.input}
+                                    keyboardType={"numeric"}
+                                    value={values.weight}
+                                    onChange={(text) => onChangeInput("weight", text)}
+                                    placeholder={"kg"}
+                                />
+                            </View>
+                        </>
+                    )}
+                    {metric === ExerciseMetric.distance && (
+                        <>
+                            <View style={styles.inputContainer}>
+                                <Text
+                                    style={[styles.text, {fontSize: 14, fontWeight: "600", color: Colors.dark300}]}>
+                                    10km in 59:00
+                                </Text>
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <InputField
+                                    inputStyle={styles.input}
+                                    placeholder={"Dist"}
+                                    keyboardType={"numeric"}
+                                    value={values.distanceInM}
+                                    onChange={(text) => onChangeInput("distanceInM", text)}
+                                />
+                            </View>
+                            <View style={styles.inputContainer}>
+                                <InputField
+                                    inputStyle={styles.input}
+                                    placeholder={"Time"}
+                                    keyboardType={"numeric"}
+                                    value={values.time}
+                                    onChange={(text) => onChangeInput("time", text)}
+                                />
+                            </View>
+                        </>
+                    )}
+                    {metric === 'time' && (
+                        <View style={styles.inputContainer}>
+                            <InputField
+                                inputStyle={styles.input}
+                                keyboardType={"numeric"}
+                                value={values.time}
+                                onChange={(text) => onChangeInput("timeInS", text)}
+                            />
+                        </View>
+                    )}
                 </View>
-            </Animated.View>
-        </SwipeableRow>
+            </View>
     );
 };
+
+export const ExerciseSwipeableRow = ({exerciseLogId, set, children}: {exerciseLogId: number | string, set: ISet, children: React.ReactNode}) => {
+    const {removeSet, updateSet} = useWorkout()
+
+    const changeComplete = () => {
+        updateSet(set.exerciseLogId, {...set, completed: !set.completed});
+    };
+
+    return (
+        <SwipeableRow onLeftAction={changeComplete} leftActionText={"Done"} backgroundColor={Colors.dark900} actionTypes={["delete"]}  onDelete={() => removeSet(exerciseLogId, set.id)}>
+            <Animated.View>
+                {children}
+            </Animated.View>
+        </SwipeableRow>
+    )
+}
 
 const styles = StyleSheet.create({
     row: {

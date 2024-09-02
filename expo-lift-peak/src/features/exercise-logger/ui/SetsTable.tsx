@@ -1,7 +1,7 @@
 import React from 'react';
 import {Text, View} from "react-native";
 import TableHead from "./ExerciseTableHead";
-import ExerciseSetRow from "./ExerciseSetRow";
+import ExerciseSetRow, {ExerciseSwipeableRow} from "./ExerciseSetRow";
 import {Colors, defaultStyles} from "@shared/styles";
 import {Ionicons} from "@expo/vector-icons";
 import {IExerciseLog, SetType} from "@entities/workout-log";
@@ -42,14 +42,21 @@ const SetsTable = ({exerciseLog, isRoutine}: SetsTableProps) => {
                    <>
                        <TableHead metric={exerciseLog.exercise?.metric} />
                        {exerciseLog.sets?.map((set, index) => (
-                           <ExerciseSetRow
-                               exerciseLogId={exerciseLog.id}
-                               key={set.id}
-                               exerciseLog={exerciseLog}
-                               set={set}
-                               index={index}
-                               metric={exerciseLog.exercise?.metric}
-                           />
+                           isRoutine ? (
+                               <ExerciseSetRow
+                                   exerciseLogId={exerciseLog.id}
+                                   key={set.id}
+                                   exerciseLog={exerciseLog}
+                                   set={set}
+                                   index={index}
+                                   isRoutine={isRoutine}
+                                   metric={exerciseLog.exercise?.metric}
+                               />
+                           ) : (
+                               <ExerciseSwipeableRow exerciseLogId={exerciseLog.id} set={set}>
+                                   <ExerciseSetRow exerciseLogId={exerciseLog.id} set={set} index={index} isRoutine={isRoutine}  metric={exerciseLog.exercise?.metric} />
+                               </ExerciseSwipeableRow>
+                           )
                        ))}
                    </>
                ) : (

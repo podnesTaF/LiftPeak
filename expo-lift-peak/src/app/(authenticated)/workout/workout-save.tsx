@@ -3,7 +3,13 @@ import {ScrollView, Text, TouchableOpacity, View} from "react-native";
 import InputField from "@shared/components/form/InputField";
 import {useDiscardWorkout, useExerciseStore, useWorkoutStore} from "@features/workout-logger";
 import {useTimerStore} from "@features/timer";
-import {createWorkout, CreateWorkoutDto, CreateWorkoutDtoSchema} from "@features/workout";
+import {
+    createWorkout,
+    CreateWorkoutDto,
+    CreateWorkoutDtoSchema,
+    formatExercises,
+    formatWorkoutData
+} from "@features/workout";
 import {useToastStore} from "@shared/store";
 import {Stack, useRouter} from "expo-router";
 import {CreateExerciseLogDto, CreateExerciseLogDtoArraySchema} from "@features/exercise-logger";
@@ -46,37 +52,12 @@ const WorkoutSave = () => {
 
     const handleSave = async () => {
 
-        const exerciseLogsData = exerciseLogs.map(log => ({
-            workoutLogId: null,
-            exerciseId: log.exerciseId,
-            order: log.order || null,
-            sets: log.sets?.map(set => ({
-                order: set.order || null,
-                type: set.type,
-                distanceInM: set.distanceInM ? +set.distanceInM : null,
-                weight: set.weight ? +set.weight : null,
-                timeInS: set.timeInS ?  +set.timeInS : null,
-                reps: set.reps ? +set.reps : null,
-                previousSetId: set.previousSetId || null,
-                restInS: set.restInS || null,
-            })) || [],
-        }));
+        const exerciseLogsData = formatExercises(exerciseLogs);
 
-        const data = {
-            title: workout?.title,
-            description: workout?.description,
-            isRoutine: workout?.isRoutine || false,
-            routineId: null,
-            mediaUrls: workoutMedia.map(media => media.actualUrl),
-            createLogDto: {
-                durationInS: elapsedTime,
-                startTime: workoutLog?.startTime || new Date(Date.now() - elapsedTime),
-                totalVolume: exerciseLogs?.reduce((total, log) => total + (log.sets?.reduce((t, s) => t + (s.weight ? +s.weight : 0),0) || 0), 0) || 0,
-                totalDistanceInM: 0,
-            },
-        };
+        const data = formatWorkoutData({workout, workoutLog, workoutMedia, elapsedTime, exerciseLogs: exerciseLogs});
 
         const exerciseLogsValidationResult = CreateExerciseLogDtoArraySchema.safeParse(exerciseLogsData);
+
         if (!exerciseLogsValidationResult.success) {
             showToast(
                 "Validation Error",

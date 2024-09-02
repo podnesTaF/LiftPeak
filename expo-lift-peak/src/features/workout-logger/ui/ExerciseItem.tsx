@@ -117,11 +117,11 @@ export const ExerciseItem = ({item, onPress,index, isLast}: ExerciseItemProps) =
                                         {getExerciseTargetsToString(item.exercise?.exerciseTargets)}
                                     </Text>
                                 </View>
-                                <View>
+                                {mode !== "routine" && <View>
                                     <Text style={{fontSize: 14, fontWeight: "500", color: Colors.white}}>
-                                         {getExerciseSetsStats(item.id)?.setsDone} / {getExerciseSetsStats(item.id)?.totalSets} Sets
+                                        {getExerciseSetsStats(item.id)?.setsDone} / {getExerciseSetsStats(item.id)?.totalSets} Sets
                                     </Text>
-                                </View>
+                                </View>}
                             </View>
                         </View>
                         <Animated.View style={chevronStyle}>
