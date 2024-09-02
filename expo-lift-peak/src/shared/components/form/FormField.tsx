@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Controller, useFormContext } from "react-hook-form";
-import { TextInput, StyleSheet, Text, View, TouchableOpacity } from "react-native";
+import { TextInput, StyleSheet, Text, View, TouchableOpacity, TouchableWithoutFeedback, Keyboard } from "react-native";
 import { Colors } from "@shared/styles";
 import { Ionicons } from "@expo/vector-icons";
 
@@ -39,6 +39,7 @@ const FormField: React.FC<FormFieldProps> = ({
 
   return (
     <>
+
       <Controller
         control={control}
         render={({ field: { onChange, onBlur, value } }) => (
@@ -83,7 +84,9 @@ const FormField: React.FC<FormFieldProps> = ({
         )}
         name={name}
       />
+
     </>
+
   );
 };
 const styles = StyleSheet.create({

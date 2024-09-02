@@ -6,7 +6,7 @@ const signupOtp = () => {
 
   const handleOtpVerification = (otp: string) => {
     console.log("OTP Entered", otp);
-    router.push("/createPassword");
+    router.push("/signup/createPassword");
   };
 
   return <Otp onPress={handleOtpVerification}/>;

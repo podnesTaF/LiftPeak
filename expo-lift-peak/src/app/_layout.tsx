@@ -69,6 +69,13 @@ const InitialLayout = () => {
         name={"index"}
         options={{ headerShown: false, title: "" }}
       />
+     <Stack.Screen
+        name="signup"
+        options={{
+          title: ""
+        }}
+      />
+
       <Stack.Screen
         name="login"
         options={{
@@ -89,30 +96,6 @@ const InitialLayout = () => {
       />
       <Stack.Screen
         name="resetPassword"
-        options={{
-          title: "",
-        }}
-      />
-      <Stack.Screen
-        name="createPassword"
-        options={{
-          title: "",
-        }}
-      />
-      <Stack.Screen
-        name="signup"
-        options={{
-          title: "",
-        }}
-      />
-      <Stack.Screen
-        name="signupOtp"
-        options={{
-          title: "",
-        }}
-      />
-      <Stack.Screen
-        name="yourDetails"
         options={{
           title: "",
         }}

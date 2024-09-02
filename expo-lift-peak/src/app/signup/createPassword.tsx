@@ -7,7 +7,7 @@ const createPassword = () => {
   const router = useRouter()
 
   const handleCreatePassword = () => {
-    router.push('/yourDetails')
+    router.push('/signup/yourDetails')
   }
 
 

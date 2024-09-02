@@ -1,99 +1,163 @@
-import { Ionicons } from "@expo/vector-icons";
-import { Colors } from "@shared/styles";
-import { useCallback, useState } from "react";
 import {
-  FlatList,
-  StyleSheet,
+  View,
   Text,
   TouchableOpacity,
-  View,
+  StyleSheet,
+  FlatList,
+  Modal,
+  TouchableWithoutFeedback,
+  Platform,
+  Keyboard,
 } from "react-native";
+import React, { useCallback, useRef, useState, useEffect } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { Colors } from "@shared/styles";
 
-interface DropDownProps{
-    label?: string
-}
-
-const DropDown: React.FC<DropDownProps> = ({
-    label
-}) => {
-  const [expanded, setExpanded] = useState(false);
-
-  const toggleExpanded = useCallback(() => setExpanded(!expanded), [expanded]);
-
-  return (
-    <View style={{  gap: 8 }}>
-        {label && <Text style={styles.label}>{label}</Text>}
-      <TouchableOpacity
-        style={[styles.button, styles.input]}
-        activeOpacity={0.8}
-        onPress={toggleExpanded}
-      >
-        <Text style={styles.text}>Select</Text>
-        <Ionicons name={expanded ? "chevron-up" : "chevron-down"} size={20} color={Colors.dark300} />
-      </TouchableOpacity>
-      {expanded ? (
-        <View style={styles.options}>
-          <FlatList
-            keyExtractor={(item) => item.value}
-            data={[
-              { value: "React Native1", label: "rn" },
-              { value: "Swift2", label: "sw" },
-            ]}
-            renderItem={({ item }) => (
-              <TouchableOpacity activeOpacity={0.8} style={styles.optionItem}>
-                <Text style={{color: Colors.white}}>{item.value}</Text>
-              </TouchableOpacity>
-            )}
-            ItemSeparatorComponent={() => <View style={styles.separator} />}
-          />
-        </View>
-      ) : null}
-    </View>
-  );
+type OptionItem = {
+  value: string;
+  label: string;
 };
 
-export default DropDown;
+interface DropDownProps {
+  data: OptionItem[];
+  onChange: (item: OptionItem) => void;
+  placeholder: string;
+  label?: string;
+}
+
+export default function Dropdown({
+  data,
+  onChange,
+  placeholder,
+  label,
+}: DropDownProps) {
+  const [expanded, setExpanded] = useState(false);
+  const [value, setValue] = useState("");
+  const buttonRef = useRef<View>(null);
+  const [top, setTop] = useState(0);
+  const [width, setWidth] = useState(0);
+
+  const toggleExpanded = useCallback(() => {
+    // Dismiss the keyboard whenever the dropdown is expanded
+    if (!expanded) {
+      Keyboard.dismiss();
+    }
+    setExpanded(!expanded);
+  }, [expanded]);
+
+  const onSelect = useCallback((item: OptionItem) => {
+    onChange(item);
+    setValue(item.label);
+    setExpanded(false);
+  }, []);
+
+  useEffect(() => {
+    if (buttonRef.current) {
+      buttonRef.current.measure((fx, fy, width, height, px, py) => {
+        const finalValue = py + height + (Platform.OS === "android" ? -32 : 3);
+        setTop(finalValue);
+        setWidth(width);
+      });
+    }
+  }, [expanded]);
+
+  return (
+    <View style={{ gap: 8 }}>
+      {label && <Text style={styles.label}>{label}</Text>}
+      <View ref={buttonRef} style={{}}>
+        <TouchableOpacity
+          style={styles.button}
+          activeOpacity={0.8}
+          onPress={toggleExpanded}
+        >
+          <Text style={styles.text}>{value || placeholder}</Text>
+          <Ionicons
+            name={expanded ? "chevron-up" : "chevron-down"}
+            size={20}
+            color={Colors.dark300}
+          />
+        </TouchableOpacity>
+        {expanded ? (
+          <Modal visible={expanded} transparent>
+            <TouchableWithoutFeedback onPress={() => setExpanded(false)}>
+              <View style={styles.backdrop}>
+                <View
+                  style={[
+                    styles.options,
+                    {
+                      top,
+                      width: width,
+                    },
+                  ]}
+                >
+                  <FlatList
+                    keyExtractor={(item) => item.value}
+                    data={data}
+                    renderItem={({ item }) => (
+                      <TouchableOpacity
+                        activeOpacity={0.8}
+                        style={styles.optionItem}
+                        onPress={() => onSelect(item)}
+                      >
+                        <Text style={styles.flatText}>{item.label}</Text>
+                      </TouchableOpacity>
+                    )}
+                    ItemSeparatorComponent={() => (
+                      <View style={styles.separator} />
+                    )}
+                  />
+                </View>
+              </View>
+            </TouchableWithoutFeedback>
+          </Modal>
+        ) : null}
+      </View>
+    </View>
+  );
+}
 
 const styles = StyleSheet.create({
+  flatText: {
+    color: Colors.white,
+    fontSize: 16,
+    paddingHorizontal: 8,
+  },
+  backdrop: {
+    padding: 20,
+    justifyContent: "center",
+    alignItems: "center",
+    flex: 1,
+  },
   optionItem: {
-    minHeight: 48,
+    height: 40,
     justifyContent: "center",
   },
   separator: {
     height: 4,
+    borderBottomWidth: 1,
+    borderBottomColor: Colors.dark500,
   },
   options: {
     position: "absolute",
-    top: 20, // Adjust as necessary
     backgroundColor: Colors.dark700,
-    width: "100%",
     padding: 10,
     borderRadius: 6,
-    borderBottomWidth: 1,
-    borderBottomColor: Colors.dark500,
-
+    maxHeight: 250,
   },
   text: {
-    opacity: 0.8,
-    color: Colors.dark300,
     fontSize: 18,
+    color: Colors.dark300,
   },
   button: {
-    height: 50,
-    justifyContent: "space-between",
+    borderRadius: 8,
     backgroundColor: Colors.dark500,
+    minHeight: 48,
+    justifyContent: "space-between",
     flexDirection: "row",
     width: "100%",
     alignItems: "center",
-    paddingHorizontal: 15,
-    borderRadius: 8,
-  },
-  input: {
-    borderRadius: 8,
-    backgroundColor: Colors.dark500,
-    paddingVertical: 12,
-    minHeight: 48,
     paddingHorizontal: 16,
+    paddingVertical: 12,
   },
   label: {
     color: Colors.dark300,
