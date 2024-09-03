@@ -12,6 +12,7 @@ import {
 import React, { useCallback, useRef, useState, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@shared/styles";
+import { Controller, useFormContext } from "react-hook-form";
 
 type OptionItem = {
   value: string;
@@ -23,6 +24,7 @@ interface DropDownProps {
   onChange: (item: OptionItem) => void;
   placeholder: string;
   label?: string;
+  name: string
 }
 
 export default function Dropdown({
@@ -30,14 +32,15 @@ export default function Dropdown({
   onChange,
   placeholder,
   label,
+  name
 }: DropDownProps) {
   const [expanded, setExpanded] = useState(false);
-  const [value, setValue] = useState("");
   const buttonRef = useRef<View>(null);
   const [top, setTop] = useState(0);
   const [width, setWidth] = useState(0);
 
   const toggleExpanded = useCallback(() => {
+
     // Dismiss the keyboard whenever the dropdown is expanded
     if (!expanded) {
       Keyboard.dismiss();
@@ -47,7 +50,6 @@ export default function Dropdown({
 
   const onSelect = useCallback((item: OptionItem) => {
     onChange(item);
-    setValue(item.label);
     setExpanded(false);
   }, []);
 
@@ -61,7 +63,16 @@ export default function Dropdown({
     }
   }, [expanded]);
 
+  const {
+    control,
+    formState: {errors},
+  } = useFormContext()
+
   return (
+    <Controller
+    control={control}
+    name={name}
+    render={({field: {onChange, onBlur, value}}) => 
     <View style={{ gap: 8 }}>
       {label && <Text style={styles.label}>{label}</Text>}
       <View ref={buttonRef} style={{}}>
@@ -97,7 +108,7 @@ export default function Dropdown({
                       <TouchableOpacity
                         activeOpacity={0.8}
                         style={styles.optionItem}
-                        onPress={() => onSelect(item)}
+                        onPress={() => {onSelect(item); onChange(item.label)}}
                       >
                         <Text style={styles.flatText}>{item.label}</Text>
                       </TouchableOpacity>
@@ -113,6 +124,8 @@ export default function Dropdown({
         ) : null}
       </View>
     </View>
+    }
+    />
   );
 }
 

@@ -8,7 +8,7 @@ import FormField from "@shared/components/form/FormField";
 import { useToastStore } from "@shared/store";
 import { defaultStyles, Colors } from "@shared/styles";
 import { router } from "expo-router";
-import { FormProvider, useForm } from "react-hook-form";
+import { FormProvider, useForm, useFormContext } from "react-hook-form";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -20,18 +20,20 @@ import {
 interface PasswordProps {
   onPress?: () => void;
   isReset?: boolean;
+  passwordValid?: boolean;
 }
 
 const PasswordSetupForm: React.FC<PasswordProps> = ({
   onPress = () => {},
   isReset = false,
+  passwordValid = false,
 }) => {
-  const form = useForm<PasswordOnlyRequest>({
-    mode: "onChange",
-    resolver: zodResolver(passwordSchema),
-  });
 
-  const password1 = form.watch("password1");
+  const { formState, watch } = useFormContext();
+
+  const password1 = watch("password1");
+  const password2 = watch("password2");
+  const passwordsMatch = password1 === password2;
 
   const isMinLength = password1?.length >= 6;
   const hasUppercase = password1 && /[A-Z]/.test(password1);
@@ -40,13 +42,12 @@ const PasswordSetupForm: React.FC<PasswordProps> = ({
   const { showToast } = useToastStore();
 
   const handlePassword = () => {
-      showToast(
-        "Success",
-        "Your password has been reset successfully!",
-        "success",
-        2000
-      );
-  
+    showToast(
+      "Success",
+      "Your password has been reset successfully!",
+      "success",
+      2000
+    );
 
     setTimeout(() => {
       onPress();
@@ -67,72 +68,72 @@ const PasswordSetupForm: React.FC<PasswordProps> = ({
           marginHorizontal: 24,
         }}
       >
-        <Text style={defaultStyles.header}>{isReset ? 'Reset Password' : 'Create Password'}</Text>
-        <FormProvider {...form}>
-          <View style={{ paddingVertical: 16, flex: 1, gap: 26 }}>
-            <View style={{ gap: 24 }}>
-              <View style={{ gap: 6 }}>
-                <FormField
-                  type={"password"}
-                  name={"password1"}
-                  placeholder={"enter your password"}
-                  noValidationStyling
-                  showPasswordToggle
-                />
-                <View style={styles.validationContainer}>
-                  <Text
-                    style={[
-                      styles.validationText,
-                      isMinLength && styles.validationTextSuccess,
-                    ]}
-                  >
-                    ✓ Min 6 characters
-                  </Text>
-                  <Text
-                    style={[
-                      styles.validationText,
-                      Boolean(hasUppercase) && styles.validationTextSuccess,
-                    ]}
-                  >
-                    ✓ Uppercase
-                  </Text>
-                  <Text
-                    style={[
-                      styles.validationText,
-                      Boolean(hasLowercase) && styles.validationTextSuccess,
-                    ]}
-                  >
-                    ✓ Lowercase
-                  </Text>
-                </View>
-              </View>
-
-              <View style={{ gap: 6 }}>
-                <FormField
-                  type={"password"}
-                  name={"password2"}
-                  placeholder={"re-enter your password"}
-                  noValidationStyling
-                  showPasswordToggle
-                />
-                {form.formState.errors.password2 && (
-                  <Text style={{ color: "red" }}>
-                    {form.formState.errors.password2.message}
-                  </Text>
-                )}
+        <Text style={defaultStyles.header}>
+          {isReset ? "Reset Password" : "Create Password"}
+        </Text>
+        <View style={{ paddingVertical: 16, flex: 1, gap: 26 }}>
+          <View style={{ gap: 24 }}>
+            <View style={{ gap: 6 }}>
+              <FormField
+                type={"password"}
+                name={"password1"}
+                placeholder={"enter your password"}
+                noValidationStyling
+                showPasswordToggle
+              />
+              <View style={styles.validationContainer}>
+                <Text
+                  style={[
+                    styles.validationText,
+                    isMinLength && styles.validationTextSuccess,
+                  ]}
+                >
+                  ✓ Min 6 characters
+                </Text>
+                <Text
+                  style={[
+                    styles.validationText,
+                    Boolean(hasUppercase) && styles.validationTextSuccess,
+                  ]}
+                >
+                  ✓ Uppercase
+                </Text>
+                <Text
+                  style={[
+                    styles.validationText,
+                    Boolean(hasLowercase) && styles.validationTextSuccess,
+                  ]}
+                >
+                  ✓ Lowercase
+                </Text>
               </View>
             </View>
 
-            <View style={{}}>
-              <Button
-                disabled={!form.formState.isValid}
-                title={"Continue"}
-                color={"dark100"}
-                onPress={isReset ? handlePassword : onPress}
+            <View style={{ gap: 6 }}>
+              <FormField
+                type={"password"}
+                name={"password2"}
+                placeholder={"re-enter your password"}
+                noValidationStyling
+                showPasswordToggle
               />
+              {!passwordsMatch &&
+                password2 !== "" &&
+                password2 !== undefined && (
+                  <Text style={{ color: "red" }}>Passwords do not match </Text>
+                )}
             </View>
           </View>
-        </FormProvider>
+
+          <View style={{}}>
+            <Button
+              disabled={!passwordValid || !passwordsMatch}
+              title={"Continue"}
+              color={"dark100"}
+              onPress={isReset ? handlePassword : onPress}
+            />
+          </View>
+        </View>
       </View>
     </KeyboardAvoidingView>
   );
@@ -142,7 +143,7 @@ const styles = StyleSheet.create({
   validationContainer: {
     flexDirection: "row",
     gap: 14,
-    // paddingVertical: 1,
+
   },
   validationText: {
     color: Colors.dark300,

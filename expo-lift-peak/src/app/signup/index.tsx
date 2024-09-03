@@ -1,56 +1,54 @@
-import {
-    EmailOnlyRequest,
-    emailSchema,
-  } from "@features/auth/utils/emailSchema";
-  import { zodResolver } from "@hookform/resolvers/zod";
-  import Button from "@shared/components/Button";
-  import FormField from "@shared/components/form/FormField";
-  import { Colors, defaultStyles } from "@shared/styles";
-  import { router } from "expo-router";
-  import { FormProvider, useForm } from "react-hook-form";
-  import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
-  
-  const Signup = () => {
-    const form = useForm<EmailOnlyRequest>({
-      mode: "onChange",
-      resolver: zodResolver(emailSchema),
-    });
-  
-    const handleOtp = () => {
-      router.push("/signup/signupOtp")
+import Button from "@shared/components/Button";
+import FormField from "@shared/components/form/FormField";
+import { defaultStyles } from "@shared/styles";
+import { router } from "expo-router";
+import { useFormContext, useWatch } from "react-hook-form";
+import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
+
+const Signup = () => {
+  const { formState, trigger } = useFormContext(); 
+  const emailError = formState.errors.email // Check if there is an error with the email field
+
+  const emailValue = useWatch({
+    name: "email"
+  })
+
+  const handleOtp = async () => {
+    const isValid = await trigger("email"); 
+
+    if (isValid) {
+      router.push("/signup/signupOtp");
     }
-  
-    return (  
-      <KeyboardAvoidingView
-        behavior={Platform.OS === "ios" ? "padding" : "height"}
-        style={[defaultStyles.container]}
-      >
-        <View style={{ marginHorizontal: 24, marginTop: 38 }}>
-          <View style={{ paddingBottom: 40}}>
-            <Text style={defaultStyles.header}>Sign Up</Text>
-          </View>
-          <View>
-            <FormProvider {...form}>
-              <View style={{ gap: 30 }}>
-                <FormField
-                  type="emailAddress"
-                  name="email"
-                  label="Email"
-                  placeholder="enter your email"
-                />
-                <Button
-                  disabled={!form.formState.isValid}
-                  title={"Continue"}
-                  color={"dark100"}
-                  onPress={handleOtp}
-                />
-              </View>
-            </FormProvider>
+  };
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={[defaultStyles.container]}
+    >
+      <View style={{ marginHorizontal: 24, marginTop: 38 }}>
+        <View style={{ paddingBottom: 40 }}>
+          <Text style={defaultStyles.header}>Sign Up</Text>
+        </View>
+        <View>
+          <View style={{ gap: 30 }}>
+            <FormField
+              type="emailAddress"
+              name="email"
+              label="Email"
+              placeholder="enter your email"
+            />
+            <Button
+              disabled={!emailValue || !!emailError} // Disable the button if email is invalid or empty
+              title={"Continue"}
+              color={"dark100"}
+              onPress={handleOtp}
+            />
           </View>
         </View>
-      </KeyboardAvoidingView>
-    );
-  };
-  
-  export default Signup;
-  
+      </View>
+    </KeyboardAvoidingView>
+  );
+};
+
+export default Signup;

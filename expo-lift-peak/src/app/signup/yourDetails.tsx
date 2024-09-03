@@ -5,7 +5,12 @@ import DropDown from "@shared/components/DropDown";
 import FormField from "@shared/components/form/FormField";
 import { defaultStyles } from "@shared/styles";
 import { useRouter } from "expo-router";
-import { FormProvider, useForm } from "react-hook-form";
+import {
+  FormProvider,
+  useForm,
+  useFormContext,
+  useWatch,
+} from "react-hook-form";
 import React, { useRef } from "react";
 import {
   KeyboardAvoidingView,
@@ -18,12 +23,40 @@ import {
 } from "react-native";
 
 const YourDetails = () => {
-  const form = useForm<SignupSchema>({
-    mode: "onChange",
-    resolver: zodResolver(signupSchema),
+  const router = useRouter();
+
+  const { formState, trigger } = useFormContext();
+
+  const usernameError = formState.errors.username;
+  const phoneError = formState.errors.phone;
+  const birthdateError = formState.errors.birthdate;
+  const genderError = formState.errors.gender;
+
+  const usernameValue = useWatch({
+    name: "username",
   });
 
-  const router = useRouter();
+  const phoneValue = useWatch({
+    name: "phone",
+  });
+
+  const birthdateValue = useWatch({
+    name: "birthdate",
+  });
+
+  const genderValue = useWatch({
+    name: "gender",
+  });
+
+  const isDisabled =
+    !!usernameError ||
+    !!phoneError ||
+    !!birthdateError ||
+    !usernameValue ||
+    !phoneValue ||
+    !birthdateValue ||
+    !genderValue ||
+    !!genderError;
 
   const handleDetails = () => {
     router.push("/signup/chooseGym");
@@ -41,41 +74,41 @@ const YourDetails = () => {
               <Text style={defaultStyles.header}>Your Details</Text>
             </View>
 
-            <FormProvider {...form}>
-              <View style={{ flex: 1, gap: 20 }}>
-                <FormField
-                  placeholder="Enter your username"
-                  name="username"
-                  label="Username"
-                />
-                <FormField
-                  placeholder="Enter your phone number"
-                  name="phone"
-                  label="Phone"
-                />
-                <DropDown
-                  data={[
-                    { value: "Male", label: "Male" },
-                    { value: "Female", label: "Female" },
-                    { value: "noOther", label: "No Other" },
-                  ]}
-                  onChange={console.log}
-                  placeholder="Select your gender"
-                  label="Gender"
-                />
-                <FormField
-                  placeholder="Select your birthdate"
-                  name="birthdate"
-                  label="Birthdate"
-                />
-              </View>
-              <Button
-                disabled={!form.formState.isValid}
-                title={"Continue"}
-                color={"dark100"}
-                onPress={form.handleSubmit(handleDetails)}
+            <View style={{ flex: 1, gap: 20 }}>
+              <FormField
+                placeholder="Enter your username"
+                name="username"
+                label="Username"
               />
-            </FormProvider>
+              <FormField
+                placeholder="Enter your phone number"
+                name="phone"
+                label="Phone"
+
+              />
+              <DropDown
+                data={[
+                  { value: "Male", label: "Male" },
+                  { value: "Female", label: "Female" },
+                  { value: "noOther", label: "No Other" },
+                ]}
+                name={"gender"}
+                onChange={console.log}
+                placeholder="Select your gender"
+                label="Gender"
+              />
+              <FormField
+                placeholder="Select your birthdate"
+                name="birthdate"
+                label="Birthdate"
+              />
+            </View>
+            <Button
+              disabled={isDisabled}
+              title={"Continue"}
+              color={"dark100"}
+              onPress={handleDetails}
+            />
           </View>
         </View>
       </TouchableWithoutFeedback>
