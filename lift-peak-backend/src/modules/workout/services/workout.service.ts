@@ -86,6 +86,7 @@ export class WorkoutService {
   async getWorkouts(userId?: number) {
     const workouts = await this.workoutRepository.find({
       relations: ['workoutLog', 'comments', 'likes', 'user', 'mediaContents'],
+      where: { isRoutine: false },
       order: { createdAt: 'DESC' },
     });
 
@@ -130,6 +131,35 @@ export class WorkoutService {
       workoutLog: {
         ...workoutLog,
         exerciseLogs: this.getExerciseLogsInfo(workoutLog),
+      },
+    };
+  }
+
+  async getRoutineToStart(workoutId: number) {
+    const workout = await this.workoutRepository.findOne({
+      where: { id: workoutId },
+      relations: [
+        'workoutLog.exerciseLogs.sets',
+        'workoutLog.exerciseLogs.exercise',
+        'workoutLog.exerciseLogs.exercise.exerciseTargets',
+        'workoutLog.exerciseLogs.exercise.exerciseTargets.target',
+        'workoutLog.exerciseLogs.exercise.exerciseTargets.target.muscles',
+      ],
+    });
+
+    if (!workout) {
+      throw new NotFoundException('Workout not found');
+    }
+
+    const exerciseLogs = this.getExerciseLogsInfo(workout.workoutLog);
+
+    return {
+      ...workout,
+      workoutLog: {
+        id: workout.workoutLog.id,
+        totalDistanceInM: workout.workoutLog.totalDistanceInM,
+        totalVolume: workout.workoutLog.totalVolume,
+        exerciseLogs,
       },
     };
   }
