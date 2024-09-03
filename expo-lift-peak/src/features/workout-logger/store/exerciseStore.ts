@@ -13,6 +13,7 @@ export const useExerciseStore = create<ExerciseStoreState>()(
             exerciseLogs: [],
             isLoading: false,
             error: null,
+            setExerciseLogs: (exerciseLogs: IExerciseLog[]) => set({exerciseLogs}),
             addExerciseLog: (exerciseLog: Omit<IExerciseLog, "id">) => set({exerciseLogs: [...get().exerciseLogs, {...exerciseLog, id: uuidv4()}]}),
             updateExerciseLog: (exerciseLog: IExerciseLog) => set({exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseLog.id ? exerciseLog : log)}),
             removeExerciseLog: (exerciseLogId: number | string) => set({exerciseLogs: get().exerciseLogs.filter(log => log.id !== exerciseLogId)}),

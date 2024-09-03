@@ -9,9 +9,10 @@ interface RoutineCardProps {
     workout: IWorkoutPreview;
     onPress?: (workoutId: number | string) => void;
     startable?: boolean;
+    onPressStart?: (workoutId: number | string) => void;
 }
 
-export const MyRoutineCard = ({workout, onPress, startable}: RoutineCardProps) => {
+export const MyRoutineCard = ({workout, onPress, startable, onPressStart}: RoutineCardProps) => {
 
     return (
         <TouchableOpacity style={styles.container} onPress={() => onPress && onPress(workout.id)}>
@@ -26,7 +27,7 @@ export const MyRoutineCard = ({workout, onPress, startable}: RoutineCardProps) =
             <Text style={defaultStyles.secondaryText}>
                 {workout.exercises.join(", ")}
             </Text>
-            {startable && <Button title={"Start Workout"} color={"success"}/>}
+            {startable && <Button onPress={() => onPressStart && onPressStart(workout.id)} title={"Start Workout"} color={"success"}/>}
         </TouchableOpacity>
     );
 };

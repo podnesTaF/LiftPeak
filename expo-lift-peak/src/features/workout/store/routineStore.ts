@@ -19,6 +19,7 @@ export const useRoutineStore = create<RoutineStoreState>()(
             },
             isLoading: false,
             error: null,
+            setExerciseLogs: (exerciseLogs: IExerciseLog[]) => set({exerciseLogs}),
             initializeWorkout: ({ userId }: { userId: number }) => {
                 const routineId = uuidv4();
                 const routineLogId = uuidv4();

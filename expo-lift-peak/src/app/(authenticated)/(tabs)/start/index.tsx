@@ -2,16 +2,16 @@ import {Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react
 import Button from "@shared/components/Button";
 import {Link, Stack, useRouter} from "expo-router";
 import React from "react";
-import {useDiscardWorkout, useWorkoutStore} from "@features/workout-logger";
+import {useDiscardWorkout, useExerciseStore, useWorkoutStore} from "@features/workout-logger";
 import {Colors, defaultStyles} from "@shared/styles";
 import {useHeaderHeight} from "@react-navigation/elements";
 import {Ionicons} from "@expo/vector-icons";
 import {useQuery} from "@tanstack/react-query";
-import {MyRoutineCard} from "@features/workout";
+import {getWorkoutDetails, MyRoutineCard} from "@features/workout";
 import {useAuthStore} from "@features/auth";
 import {registerBackgroundTask, useTimerStore} from "@features/timer";
 import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
-import {getRoutineList} from "@entities/routine";
+import {getRoutineList, getRoutineToStart} from "@entities/routine";
 import {useRoutineStore} from "@features/workout/store/routineStore";
 
 
@@ -20,7 +20,8 @@ export default function StartWorkout() {
   const router = useRouter();
   const headerHeight = useHeaderHeight();
   const {user} = useAuthStore()
-  const {workout, initializeWorkout, clearWorkout} = useWorkoutStore();
+  const {workout, initializeWorkout, setWorkout} = useWorkoutStore();
+  const {setExerciseLogs} = useExerciseStore();
   const {workout: routine} = useRoutineStore();
   const {initializeWorkout: initRoutine} = useRoutineStore()
   const {
@@ -61,9 +62,17 @@ export default function StartWorkout() {
     }
   }
 
-  const startNewWorkout = () => {
+  const startNewWorkout = async (id?: number) => {
     if(!user) return;
-    initializeWorkout({userId: user.id})
+
+    if(id) {
+      const routine = await getRoutineToStart(id)
+      setWorkout(routine)
+
+      setExerciseLogs(routine.workoutLog!.exerciseLogs!)
+    } else {
+      initializeWorkout({userId: user.id})
+    }
     registerBackgroundTask();
     startTimer();
     router.push("/(authenticated)/workout");
@@ -76,8 +85,6 @@ export default function StartWorkout() {
     }
     router.push("/(authenticated)/constructor");
   }
-
-
 
   return (
       <>
@@ -119,7 +126,7 @@ export default function StartWorkout() {
           </View>
           <View style={{gap: 16, marginVertical: 16}}>
             {data?.map((routine) => (
-                <MyRoutineCard startable={true} workout={routine} key={routine.id} />
+                <MyRoutineCard onPressStart={(id) => startNewWorkout(+id)} startable={true} workout={routine} key={routine.id} />
             ))}
           </View>
         </ScrollView>

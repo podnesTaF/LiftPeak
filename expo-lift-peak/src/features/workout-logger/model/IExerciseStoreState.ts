@@ -6,6 +6,7 @@ export interface ExerciseStoreState {
     isLoading: boolean;
     error: string | null;
 
+    setExerciseLogs: (exerciseLogs: IExerciseLog[]) => void;
     addExerciseLog: (exerciseLog: Omit<IExerciseLog, "id">) => void;
     updateExerciseLog: (exerciseLog: IExerciseLog) => void;
     removeExerciseLog: (exerciseLogId: number | string) => void;

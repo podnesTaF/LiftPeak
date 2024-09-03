@@ -47,7 +47,7 @@ export const useWorkoutStore = create<WorkoutState>()(
             },
            setWorkout: (workout: Omit<IWorkout, "id">) => {
                     const generatedId = uuidv4();
-                    set({workout: {...workout, id: generatedId}});
+                    set({workout: {...workout, id: generatedId}, workoutLog: workout?.workoutLog});
             },
             updateWorkoutField: (updatedField) => {
                 set({workout: {...get().workout as any, ...updatedField}});
