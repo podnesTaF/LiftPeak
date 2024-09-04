@@ -51,6 +51,7 @@
     "react-dom": "18.2.0",
     "react-hook-form": "^7.52.1",
     "react-native": "0.74.3",
+    "react-native-date-picker": "^5.0.7",
     "react-native-draggable-flatlist": "^4.0.1",
     "react-native-element-dropdown": "^2.12.1",
     "react-native-gesture-handler": "^2.18.1",

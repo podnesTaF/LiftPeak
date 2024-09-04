@@ -159,11 +159,12 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 18,
-    color: Colors.dark300,
+    color: Colors.white,
   },
   button: {
     borderRadius: 8,
     backgroundColor: Colors.dark500,
+
     minHeight: 48,
     justifyContent: "space-between",
     flexDirection: "row",

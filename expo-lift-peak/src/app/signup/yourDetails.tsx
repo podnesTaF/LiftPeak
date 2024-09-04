@@ -79,13 +79,9 @@ const YourDetails = () => {
                 placeholder="Enter your username"
                 name="username"
                 label="Username"
+                noValidationStyling
               />
-              <FormField
-                placeholder="Enter your phone number"
-                name="phone"
-                label="Phone"
 
-              />
               <DropDown
                 data={[
                   { value: "Male", label: "Male" },
@@ -101,8 +97,18 @@ const YourDetails = () => {
                 placeholder="Select your birthdate"
                 name="birthdate"
                 label="Birthdate"
+                type="date"
+                noValidationStyling
+              />
+              <FormField
+                placeholder="Enter your phone number"
+                name="phone"
+                label="Phone"
+                type="phone"
+                noValidationStyling
               />
             </View>
+
             <Button
               disabled={isDisabled}
               title={"Continue"}
