@@ -14,7 +14,7 @@ import Animated, {
     useSharedValue,
     withTiming
 } from "react-native-reanimated";
-import {IExerciseLog, ISet} from "@entities/workout-log";
+import {IExerciseLog} from "@entities/workout-log";
 import ExerciseLog from "@features/exercise-logger/ui/ExerciseLog";
 import Accordion from "@shared/components/Accordion";
 import Button from "@shared/components/Button";
@@ -25,6 +25,7 @@ import CustomBottomSheet from "@shared/components/bottomSheet/CustomBottomSheet"
 import RestPicker from "@features/timer/ui/RestPicker";
 import {BottomSheetModal} from "@gorhom/bottom-sheet";
 import {formatTime} from "@shared/utils";
+import {useExerciseStore} from "@features/workout-logger/store";
 
 interface ExerciseItemProps {
     onPress?: (itemId: number | string) => void;
@@ -34,11 +35,13 @@ interface ExerciseItemProps {
 }
 
 export const ExerciseItem = memo(({item, onPress,index, isLast}: ExerciseItemProps) => {
-    const open = useSharedValue(!!isLast);
     const {mode} = useWorkoutContext();
+    const {getCurrentExercise} = useExerciseStore();
+    const {removeExerciseLog, getExerciseSetsStats, addRest} = useWorkout(mode === 'routine')
+    const open = useSharedValue(getCurrentExercise()?.id === item.id);
+
     const [isPressed, setIsPressed] = useState(false);
     const pressTimerRef = useRef<NodeJS.Timeout | null>(null);
-    const {removeExerciseLog, getExerciseSetsStats, addRest} = useWorkout(mode === 'routine')
     const router = useRouter();
     const timePickerRef = useRef<BottomSheetModal>()
     const exerciseStats = useMemo(() => getExerciseSetsStats(item.id), [item.id, getExerciseSetsStats, item.sets]);
@@ -150,7 +153,7 @@ export const ExerciseItem = memo(({item, onPress,index, isLast}: ExerciseItemPro
                                 <Ionicons name={"information-circle-outline"} size={24} color={Colors.white}/>
                             </Button>
                         </View>
-                        <Accordion viewKey={"accordion"} isExpanded={open}>
+                        <Accordion viewKey={"accordion" + item.id} isExpanded={open}>
                             <ExerciseLog exerciseLog={item} />
                         </Accordion>
                     </Animated.View>

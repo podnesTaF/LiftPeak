@@ -14,12 +14,9 @@ import CustomTabs from "@shared/components/tabs/CustomTabs";
 import TabItem from "@shared/components/tabs/TabItem";
 import Button from "@shared/components/Button";
 import {MuscleFilter} from "@features/constructor";
-import BottomSheetSelect from "@shared/components/BottomSheetSelect";
 import CustomBottomSheet from "@shared/components/bottomSheet/CustomBottomSheet";
 import {BottomSheetModal} from "@gorhom/bottom-sheet";
 import {useHeaderHeight} from "@react-navigation/elements";
-import {useSharedValue} from "react-native-reanimated";
-import {Color} from "ansi-fragments/build/fragments/Color";
 
 
 const Exercises = () => {

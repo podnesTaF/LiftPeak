@@ -19,8 +19,8 @@ import {defaultStyles} from "@shared/styles";
 
 
 const WorkoutSave = () => {
-    const {workout, updateWorkoutField, workoutLog, clearWorkout, addMedia, workoutMedia, removeMedia} = useWorkoutStore()
-    const {exerciseLogs, clearExercises} = useExerciseStore()
+    const {workout, updateWorkoutField, workoutLog, addMedia, workoutMedia, removeMedia} = useWorkoutStore()
+    const {exerciseLogs} = useExerciseStore()
     const {elapsedTime} = useTimerStore()
     const {discardWorkout} = useDiscardWorkout();
 
@@ -51,10 +51,9 @@ const WorkoutSave = () => {
 
 
     const handleSave = async () => {
-
         const exerciseLogsData = formatExercises(exerciseLogs);
 
-        const data = formatWorkoutData({workout, workoutLog, workoutMedia, elapsedTime, exerciseLogs: exerciseLogs});
+        const data = formatWorkoutData({workout, workoutLog, workoutMedia, elapsedTime, exerciseLogs: exerciseLogs, routineId: workout?.routineId});
 
         const exerciseLogsValidationResult = CreateExerciseLogDtoArraySchema.safeParse(exerciseLogsData);
 
@@ -78,7 +77,6 @@ const WorkoutSave = () => {
             );
             return;
         }
-
         mutate({createWorkoutDto: validationResult.data,exercises: exerciseLogsValidationResult.data});
     };
 

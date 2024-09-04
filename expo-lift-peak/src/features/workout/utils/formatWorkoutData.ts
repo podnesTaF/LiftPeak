@@ -4,7 +4,7 @@ import {IWorkout} from "@entities/workout";
 export const formatExercises = (exerciseLogs: IExerciseLog[]) => {
     return exerciseLogs.map(log => ({
         workoutLogId: null,
-        exerciseId: log.exerciseId,
+        exerciseId: log.exercise!.id,
         order: log.order || null,
         sets: log.sets?.map(set => ({
             order: set.order || null,
@@ -19,22 +19,23 @@ export const formatExercises = (exerciseLogs: IExerciseLog[]) => {
     }));
 }
 
-export const formatWorkoutData = ({workout, workoutLog, exerciseLogs, workoutMedia, elapsedTime}: {
+export const formatWorkoutData = ({workout, workoutLog, exerciseLogs, workoutMedia, elapsedTime, routineId}: {
     workout?: IWorkout | null,
     workoutLog?: IWorkoutLog | null,
     exerciseLogs?: IExerciseLog[],
     workoutMedia?: { actualUrl: string, thumbnailUrl: string }[],
     elapsedTime?: number,
+    routineId?: number | null,
 }) => {
     return {
         title: workout?.title,
         description: workout?.description,
         isRoutine: workout?.isRoutine || false,
-        routineId: null,
+        routineId: routineId,
         mediaUrls: workoutMedia?.map(media => media.actualUrl),
         createLogDto: {
             durationInS: elapsedTime,
-            startTime: elapsedTime ? workoutLog?.startTime || new Date(Date.now() - elapsedTime) : undefined,
+            startTime: elapsedTime ? workoutLog?.startTime || new Date(Date.now() - elapsedTime).toISOString() : undefined,
             totalVolume: exerciseLogs?.reduce((total, log) => total + (log.sets?.reduce((t, s) => t + (s.weight ? +s.weight : 0), 0) || 0), 0) || 0,
             totalDistanceInM: 0,
         },

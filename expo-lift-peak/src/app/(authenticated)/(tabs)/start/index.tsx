@@ -7,7 +7,7 @@ import {Colors, defaultStyles} from "@shared/styles";
 import {useHeaderHeight} from "@react-navigation/elements";
 import {Ionicons} from "@expo/vector-icons";
 import {useQuery} from "@tanstack/react-query";
-import {getWorkoutDetails, MyRoutineCard} from "@features/workout";
+import {MyRoutineCard} from "@features/workout";
 import {useAuthStore} from "@features/auth";
 import {registerBackgroundTask, useTimerStore} from "@features/timer";
 import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
@@ -67,7 +67,7 @@ export default function StartWorkout() {
 
     if(id) {
       const routine = await getRoutineToStart(id)
-      setWorkout(routine)
+      setWorkout({...routine, isRoutine: false, routineId:id})
 
       setExerciseLogs(routine.workoutLog!.exerciseLogs!)
     } else {
