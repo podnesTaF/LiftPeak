@@ -3,7 +3,7 @@ import {ActiveWorkoutLog, IExerciseLog, ISet, IWorkoutLog} from "@entities/worko
 import {ExerciseStoreState} from "@features/workout-logger";
 
 export interface WorkoutState {
-    workout: IWorkout | null;
+    workout?: IWorkout | null;
     workoutLog: IWorkoutLog | null;
     workoutMedia: {actualUrl: string, thumbnailUrl: string}[];
 
@@ -24,5 +24,5 @@ export interface WorkoutState {
     clearWorkout: () => void;
 }
 
-export interface RoutineStoreState extends Omit<WorkoutState, "workoutMedia" | "addMedia" | "removeMedia">, ExerciseStoreState {
+export interface RoutineStoreState extends Omit<WorkoutState, "workoutMedia" | "addMedia" | "removeMedia">, Omit<ExerciseStoreState, "getCurrentExercise"> {
 }

@@ -44,9 +44,9 @@ const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>((
             handleIndicatorStyle={{
                 backgroundColor: 'white',
             }}
-            index={1}
+            index={0}
             enablePanDownToClose={true}
-            snapPoints={snapPoints || ['60%', "80%"]}
+            snapPoints={snapPoints || [ "80%"]}
         >
             <BottomSheetView style={{paddingVertical: 16, flex: 1}}>
                 {children}

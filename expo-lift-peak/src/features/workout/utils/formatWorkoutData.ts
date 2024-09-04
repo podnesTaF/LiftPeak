@@ -14,13 +14,13 @@ export const formatExercises = (exerciseLogs: IExerciseLog[]) => {
             timeInS: set.timeInS ? +set.timeInS : null,
             reps: set.reps ? +set.reps : null,
             previousSetId: set.previousSetId || null,
-            restInS: set.restInS || null,
+            restInS: set.restInS ? +set.restInS : null,
         })) || [],
     }));
 }
 
 export const formatWorkoutData = ({workout, workoutLog, exerciseLogs, workoutMedia, elapsedTime}: {
-    workout: IWorkout | null,
+    workout?: IWorkout | null,
     workoutLog?: IWorkoutLog | null,
     exerciseLogs?: IExerciseLog[],
     workoutMedia?: { actualUrl: string, thumbnailUrl: string }[],

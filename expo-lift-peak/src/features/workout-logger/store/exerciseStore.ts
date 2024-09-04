@@ -59,6 +59,33 @@ export const useExerciseStore = create<ExerciseStoreState>()(
 
                     return { exerciseLogs: reorderedLogs };
                 });
+            },
+            addRest: (exerciseId, duration) => {
+                set({
+                    exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseId ? {
+                        ...log,
+                        sets: log.sets?.map(set => ({...set, restInS: duration}))
+                    } : log)
+                });
+            },
+            updateSetRest: (exerciseId, setId, duration) => {
+                set({
+                    exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseId ? {
+                        ...log,
+                        sets: log.sets?.map(set => set.id === setId ? {...set, restInS: duration} : set)
+                    } : log)
+                });
+            },
+            getCurrentExercise: () => {
+                const exerciseLogs = get().exerciseLogs;
+
+                const currentExercise = exerciseLogs.find(log => {
+                    const totalSets = log.sets?.length || 0;
+                    const completedSets = log.sets?.filter(set => set.completed).length || 0;
+                    return completedSets < totalSets;
+                });
+
+                return currentExercise;
             }
         }),
         {

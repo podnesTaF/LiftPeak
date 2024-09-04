@@ -98,6 +98,22 @@ export const useRoutineStore = create<RoutineStoreState>()(
 
                     return { exerciseLogs: reorderedLogs };
                 });
+            },
+            addRest: (exerciseId, duration) => {
+                set({
+                    exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseId ? {
+                        ...log,
+                        sets: log.sets?.map(set => ({...set, restInS: duration}))
+                    } : log)
+                });
+            },
+            updateSetRest: (exerciseId, setId, duration) => {
+                set({
+                    exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseId ? {
+                        ...log,
+                        sets: log.sets?.map(set => set.id === setId ? {...set, restInS: duration} : set)
+                    } : log)
+                });
             }
         }),
         {

@@ -45,7 +45,7 @@ const SetsTable = ({exerciseLog, isRoutine}: SetsTableProps) => {
                            isRoutine ? (
                                <ExerciseSetRow
                                    exerciseLogId={exerciseLog.id}
-                                   key={set.id}
+                                   key={index + "_" + set.id}
                                    exerciseLog={exerciseLog}
                                    set={set}
                                    index={index}
@@ -53,7 +53,7 @@ const SetsTable = ({exerciseLog, isRoutine}: SetsTableProps) => {
                                    metric={exerciseLog.exercise?.metric}
                                />
                            ) : (
-                               <ExerciseSwipeableRow exerciseLogId={exerciseLog.id} set={set}>
+                               <ExerciseSwipeableRow  key={index + "_" + set.id} exerciseLogId={exerciseLog.id} set={set}>
                                    <ExerciseSetRow exerciseLogId={exerciseLog.id} set={set} index={index} isRoutine={isRoutine}  metric={exerciseLog.exercise?.metric} />
                                </ExerciseSwipeableRow>
                            )

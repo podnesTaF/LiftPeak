@@ -1,27 +1,19 @@
-import React, {useEffect, useState} from 'react';
-import {Alert, KeyboardAvoidingView, Platform, Pressable, StyleSheet, Text, View} from "react-native";
-import {Colors, defaultStyles} from "@shared/styles";
+import React from 'react';
+import {KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View} from "react-native";
+import {Colors} from "@shared/styles";
 import {
-    ExerciseItem,
-    useDiscardWorkout,
-    useExerciseStore,
-    useWorkoutHeaderAnimation,
     useWorkoutStore
 } from "@features/workout-logger";
-import {useAuthStore} from "@features/auth";
-import Button from "@shared/components/Button";
 import {Link, Stack, useRouter} from "expo-router";
 import { useTimerStore} from "@features/timer";
 import {formatTime} from "@shared/utils";
 import {Ionicons} from "@expo/vector-icons";
 import useTimerInterval from "@features/timer/hooks/useIntervalTimer";
-import Animated, {
-    useAnimatedScrollHandler,
-    useSharedValue
-} from 'react-native-reanimated';
+
 import {TouchableOpacity} from 'react-native-gesture-handler';
 import InputField from "@shared/components/form/InputField";
 import WorkoutLogger from "@features/workout-logger/ui/WorkoutLogger";
+import BottomControl from "@features/workout-logger/ui/BottomControl";
 
 const Index = () => {
     const {
@@ -34,16 +26,8 @@ const Index = () => {
 
 
     const router = useRouter();
-    const scrollY = useSharedValue(0);
-
-    const { clockTitleStyle, headerTitleStyle} = useWorkoutHeaderAnimation(scrollY)
 
     useTimerInterval();
-
-
-    const onScroll = useAnimatedScrollHandler((event) => {
-        scrollY.value = event.contentOffset.y;
-    });
 
     return (
         <>
@@ -58,21 +42,9 @@ const Index = () => {
                 ),
                 headerTitle: () => (
                     <View style={{ position: 'relative', justifyContent: "center", alignItems: "center" }}>
-                        <Animated.Text style={[{ color: "white", fontWeight: "semibold", fontSize: 16}, headerTitleStyle]}>
+                        <Text style={[{ color: "white", fontWeight: "semibold", fontSize: 16}]}>
                             Active Workout
-                        </Animated.Text>
-                        <Animated.View style={[{position: 'absolute', flexDirection: "row", gap: 12, alignItems: "center", zIndex: 20}, clockTitleStyle]}>
-                            <Pressable onPress={() => isRunning ? pauseTimer() : playTimer()} >
-                                {isRunning ? (
-                                    <Ionicons name={"pause-circle"} size={40} color={Colors.lime}/>
-                                ) : (
-                                    <Ionicons name={"play-circle"} size={40} color={Colors.lime}/>
-                                )}
-                            </Pressable>
-                            <Text style={{ color: "white", fontWeight: "semibold", fontSize: 16 }}>
-                                {formatTime(elapsedTime)}
-                            </Text>
-                        </Animated.View>
+                        </Text>
                     </View>
                 ),
                 headerRight: () => (
@@ -88,7 +60,7 @@ const Index = () => {
                 Platform.OS === "ios" ? "padding" : "height"
             }
                                   style={{flex: 1, backgroundColor: Colors.dark900}}>
-                <Animated.ScrollView stickyHeaderIndices={[0]} onScroll={onScroll} contentContainerStyle={{paddingBottom: 70}}>
+                <ScrollView stickyHeaderIndices={[0]} contentContainerStyle={{paddingBottom: 70}}>
                     <View style={styles.snackbarContainer}>
                         <TouchableOpacity>
                             <View style={{flexDirection: "row", gap: 8, alignItems: 'center'}}>
@@ -113,8 +85,9 @@ const Index = () => {
                     </View>
                     <InputField color={'transparent'} placeholder="Workout Title" value={workout?.title || ''} onChange={(text) => updateWorkoutField({title: text})} />
                     <WorkoutLogger />
-                </Animated.ScrollView>
+                </ScrollView>
             </KeyboardAvoidingView>
+            <BottomControl />
         </>
     );
 };

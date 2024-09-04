@@ -6,6 +6,7 @@ import {Ionicons} from "@expo/vector-icons";
 import {Link, useRouter} from "expo-router";
 import Button from "@shared/components/Button";
 import {ExerciseItem} from "@features/workout-logger/ui";
+import CustomBottomSheet from "@shared/components/bottomSheet/CustomBottomSheet";
 
 const WorkoutLogger = ({isRoutine}: {isRoutine?: boolean}) => {
     const {exerciseLogs} = useWorkout(isRoutine);
@@ -30,7 +31,7 @@ const WorkoutLogger = ({isRoutine}: {isRoutine?: boolean}) => {
     return (
        <View style={{paddingVertical: 16, paddingHorizontal: 12, gap: 16, borderTopWidth: StyleSheet.hairlineWidth, borderTopColor: Colors.dark500}}>
            {exerciseLogs.length ? exerciseLogs.sort((a, b) => a.order - b.order).map((item, index) => (
-               <ExerciseItem onPress={openExerciseLog} key={item.id} item={item} index={index} isLast={index === (exerciseLogs.length - 1)} />
+               <ExerciseItem onPress={openExerciseLog} key={index + "_" + item.id} item={item} index={index} isLast={index === (exerciseLogs.length - 1)} />
            )) : (
                <View style={{gap: 16}}>
                    <View style={{flexDirection: "row", gap: 6, alignItems: 'center'}}>
@@ -54,6 +55,7 @@ const WorkoutLogger = ({isRoutine}: {isRoutine?: boolean}) => {
                </Link>
                <Button onPress={discardWorkout} fullWidth title={"Discard Workout"} color={"danger"}/>
            </View>
+
        </View>
     );
 };
