@@ -96,4 +96,8 @@ export class UsersService {
       isFollowing: !!user.followers.find((f) => f.followerId === authedId),
     };
   }
+
+  async update(id: number, data: Partial<User>) {
+    return await this.usersRepository.update(id, data);
+  }
 }
