@@ -6,7 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "@shared/components/Button";
 import FormField from "@shared/components/form/FormField";
 import { defaultStyles, Colors } from "@shared/styles";
-import { router } from "expo-router";
+import {router, useLocalSearchParams} from "expo-router";
 import { FormProvider, useForm } from "react-hook-form";
 import {
   KeyboardAvoidingView,
@@ -16,12 +16,33 @@ import {
   StyleSheet,
   Alert,
 } from "react-native";
+import {useMutation} from "@tanstack/react-query";
+import {resetPassword} from "@features/auth/api/authApi";
+import {useToastStore} from "@shared/store";
+import {useAuthStore} from "@features/auth";
 
 const ResetPassword = () => {
+  const { user, setUser } = useAuthStore();
+  const {jwt} = useLocalSearchParams<{ jwt: string }>()
+
+  const {showToast} = useToastStore()
   const form = useForm<PasswordOnlyRequest>({
     mode: "onChange",
     resolver: zodResolver(passwordSchema),
   });
+
+  const {mutate} = useMutation({
+    mutationFn: async (props: {password:string, jwt:string}) => resetPassword(props),
+    onSuccess: (res) => {
+      setUser(res)
+      showToast("Password reset successfully", `Logged in as ${res.username}`, "success")
+      router.push({pathname: "/(authenticated)/(tabs)/home"})
+    },
+    onError: () => {
+      showToast("Error resetting password", "There an error occurs while resetting the password", "error")
+    }
+  })
+
 
   const password1 = form.watch("password1");
 
@@ -29,16 +50,12 @@ const ResetPassword = () => {
   const hasUppercase = password1 && /[A-Z]/.test(password1);
   const hasLowercase = password1 && /[a-z]/.test(password1);
 
-  const handleResetPassword = () => {
-    Alert.alert("Success", "Your password has been changed.",
-        [
-            {
-                text: "Back to Main Menu",
-                onPress: () => router.replace('/')
-            },
-        ],
-        {cancelable: false}
-    )
+  const handleResetPassword = (dto: PasswordOnlyRequest) => {
+    if(!jwt) {
+     return
+    }
+
+    mutate({password: dto.password2, jwt: jwt})
   }
 
   return (
@@ -108,7 +125,7 @@ const ResetPassword = () => {
                 disabled={!form.formState.isValid}
                 title={"Continue"}
                 color={"dark100"}
-                onPress={handleResetPassword}
+                onPress={form.handleSubmit(handleResetPassword)}
               />
             </View>
           </View>

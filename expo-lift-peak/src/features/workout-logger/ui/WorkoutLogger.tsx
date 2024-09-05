@@ -9,7 +9,7 @@ import {ExerciseItem} from "@features/workout-logger/ui";
 import CustomBottomSheet from "@shared/components/bottomSheet/CustomBottomSheet";
 
 const WorkoutLogger = ({isRoutine}: {isRoutine?: boolean}) => {
-    const {exerciseLogs} = useWorkout(isRoutine);
+    const {exerciseLogs, clearWorkout, clearExercises} = useWorkout(isRoutine);
     const {discardWorkoutWithMedia} = useDiscardWorkout()
     const router = useRouter();
 
@@ -23,7 +23,13 @@ const WorkoutLogger = ({isRoutine}: {isRoutine?: boolean}) => {
     }
 
     const discardWorkout = async () => {
-        await discardWorkoutWithMedia()
+        if(isRoutine) {
+            clearExercises()
+            clearWorkout()
+        } else {
+            await discardWorkoutWithMedia()
+        }
+
         router.replace("/(authenticated)/(tabs)/start");
     };
 
@@ -55,7 +61,6 @@ const WorkoutLogger = ({isRoutine}: {isRoutine?: boolean}) => {
                </Link>
                <Button onPress={discardWorkout} fullWidth title={"Discard Workout"} color={"danger"}/>
            </View>
-
        </View>
     );
 };

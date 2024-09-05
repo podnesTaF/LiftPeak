@@ -6,50 +6,13 @@ import {Colors, defaultStyles} from "@shared/styles";
 import {Ionicons} from "@expo/vector-icons";
 import {usePathname, useRouter} from "expo-router";
 import {IUser} from "@entities/user";
+import {useAuthStore} from "@features/auth";
 
 const ProfileTopHeader = ({user}: {user?: IUser}) => {
     const scrollY = useSharedValue(0);
     const router = useRouter();
     const pathname = usePathname();
-    const textStyle = useAnimatedStyle(() => {
-        const bottom = interpolate(
-            scrollY.value,
-            [150, 200],
-            [16, -20],
-            Extrapolation.CLAMP
-        )
-
-        const opacity = interpolate(
-            scrollY.value,
-            [150, 200],
-            [1,0],
-            Extrapolation.CLAMP
-        )
-
-        return {
-            bottom: bottom,
-            opacity: scrollY.value > 0 ? opacity : 1
-        }
-    })
-
-    const nameStyle = useAnimatedStyle(() => {
-        const bottom = interpolate(
-            scrollY.value,
-            [150, 200],
-            [-20, 16],
-            Extrapolation.CLAMP
-        )
-        const opacity = interpolate(
-            scrollY.value,
-            [150, 200],
-            [0,1],
-            Extrapolation.CLAMP
-        )
-        return {
-            bottom,
-            opacity,
-        }
-    })
+    const {clearAuth} = useAuthStore()
 
     return (
         <View style={[{flexDirection: "row", width: "100%", alignItems: "center", overflow: "hidden", justifyContent: "space-between", paddingHorizontal: 12, paddingBottom: 12, paddingTop: Constants.statusBarHeight, backgroundColor: Colors.dark700}]}>
@@ -64,8 +27,10 @@ const ProfileTopHeader = ({user}: {user?: IUser}) => {
                 </Text>
             </View>
             <View style={{paddingHorizontal: 12}}>
-                <TouchableOpacity onPress={()=> router.back()} >
-                    <Ionicons name={"ellipsis-vertical"} size={30} color={Colors.white}/>
+                <TouchableOpacity onPress={()=> {
+                    clearAuth()
+                }} >
+                    <Ionicons name={"exit-outline"} size={24} color={Colors.white}/>
                 </TouchableOpacity>
             </View>
         </View>
