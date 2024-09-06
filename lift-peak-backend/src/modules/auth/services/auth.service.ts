@@ -63,7 +63,7 @@ export class AuthService {
 
     const msg = {
       to: email,
-      from: 'it.podnes@gmail.com',
+      from: process.env.SEND_GRID_FROM_EMAIL,
       subject: 'Reset password | LiftPeak',
       html: getOtpEmailTemplate({
         otp: otp,

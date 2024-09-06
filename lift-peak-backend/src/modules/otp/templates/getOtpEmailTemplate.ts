@@ -58,8 +58,8 @@ export const getOtpEmailTemplate = ({ otp }: { otp: string }) => {
     <div class="email-container">
       <div class="title-container">
         <img
-          src="https://storage.googleapis.com/abe_cloud_storage/image/large/6f9dc70b-f3a1-4fd9-b5ce-cf0f85cb7f17.png"
-          alt="ace battle mile"
+          src="https://storage.googleapis.com/lift-peak/content%2Flogo-short.png"
+          alt="lift peak"
           width="300"
           height="28"
         />
@@ -81,10 +81,10 @@ export const getOtpEmailTemplate = ({ otp }: { otp: string }) => {
         <div class="footer">
           <img
             class="mb-4"
-            src="https://storage.googleapis.com/abe_cloud_storage/image/large/a585929f-278f-4d35-ac94-5d01bfdf2ae5.png"
+            src="https://storage.googleapis.com/lift-peak/content%2Flogo.png"
             alt="ABM"
             width="100"
-            height="90"
+            height="100"
           />
           <div class="copy-text">
             &copy; 2024 LiftPeak. All rights reserved.
