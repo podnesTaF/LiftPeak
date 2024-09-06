@@ -9,7 +9,7 @@ export const AnimatedScrollProvider = ({scrollY, children }: {scrollY: SharedVal
 
 
     return (
-        <AnimatedScrollContext.Provider value={{ scrollY }}>
+        <AnimatedScrollContext.Provider value={{ scrollY}}>
             {children}
         </AnimatedScrollContext.Provider>
     );

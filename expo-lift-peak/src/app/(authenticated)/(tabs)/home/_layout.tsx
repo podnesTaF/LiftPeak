@@ -1,21 +1,14 @@
 import React from 'react';
-import {Colors} from "@shared/styles";
-import CustomTopTabBar from "@shared/components/navigation/CustomTopTabBar";
-import MaterialTopTabs from "@shared/components/navigation/MaterialTopTabs";
+import {Stack} from "expo-router";
 
 const Layout = () => {
     return (
-               <CustomTopTabBar>
-                   <MaterialTopTabs.Screen name={'followings'} options={{
-                       title: "Followings"
-                   }} />
-                   <MaterialTopTabs.Screen name={'groups'} options={{
-                       title: "Groups"
-                   }} />
-                   <MaterialTopTabs.Screen name={'discover'} options={{
-                       title: "discover"
-                   }} />
-               </CustomTopTabBar>
+        <Stack screenOptions={{headerShown: false}}>
+            <Stack.Screen name={"(tabs)"}/>
+            <Stack.Screen name={"notifications"} />
+            <Stack.Screen name={"profile"} />
+            <Stack.Screen name={"groups/[id]"} />
+        </Stack>
     );
 };
 

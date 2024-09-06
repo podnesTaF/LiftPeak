@@ -59,7 +59,7 @@ export const WorkoutPostBody = ({workout, photosShown, onPress, isViewable}: {wo
 
     return (
         <>
-            <TouchableOpacity onPress={() => router.push({pathname: "/(authenticated)/profile", params: {id: workout.user?.id}})} style={styles.userInfoContainer}>
+            <TouchableOpacity onPress={() => router.push({pathname: "/(authenticated)/(tabs)/home/profile", params: {id: workout.user?.id}})} style={styles.userInfoContainer}>
                 <Avatar size={40} name={workout.user?.profile?.firstName[0] + '' + workout.user?.profile?.lastName[0]} url={workout.user?.profile?.avatarUrl} />
                 <Text style={defaultStyles.secondaryText}>
                     {workout.user?.profile?.firstName} {workout.user?.profile?.lastName}

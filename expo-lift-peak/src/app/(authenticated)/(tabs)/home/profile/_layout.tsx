@@ -22,7 +22,8 @@ const Layout = () => {
 
     return (
         <AnimatedScrollProvider scrollY={scrollY}>
-            <Tabs.Screen options={{
+            <Stack.Screen options={{
+                headerShown: true,
                 headerTransparent: false,
                 header: () => (
                    <ProfileTopHeader user={data} />
@@ -30,7 +31,7 @@ const Layout = () => {
             }} />
             <Stack>
                 <Stack.Screen name={"index"} options={{
-                    headerShown: false
+                    headerShown: false,
                 }} />
             </Stack>
         </AnimatedScrollProvider>

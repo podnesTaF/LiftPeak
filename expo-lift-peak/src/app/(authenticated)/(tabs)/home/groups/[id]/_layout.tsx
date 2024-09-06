@@ -62,7 +62,8 @@ const Layout = () => {
 
     return (
         <AnimatedScrollProvider scrollY={scrollY}>
-            <Tabs.Screen options={{
+            <Stack.Screen options={{
+                headerShown: true,
                 headerTransparent: false,
                 header: () => (
                     <View style={[{flexDirection: "row", width: "100%", alignItems: "center", overflow: "hidden", justifyContent: "space-between", paddingBottom: 12, paddingTop: Constants.statusBarHeight, backgroundColor: Colors.dark700}]}>
