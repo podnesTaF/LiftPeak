@@ -95,6 +95,12 @@ export class NotificationService {
     return await this.notificationRepository.save(notification);
   }
 
+  async getUnseenNotificationsCount(userId: number): Promise<number> {
+    return await this.notificationRepository.count({
+      where: { recipientId: userId, isRead: false },
+    });
+  }
+
   async markAllAsRead(userId: number): Promise<void> {
     await this.notificationRepository.update(
       { recipientId: userId, isRead: false },
