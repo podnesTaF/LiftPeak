@@ -6,6 +6,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { GroupMember } from '../group/entities/group-member.entity';
 import { Group } from '../group/entities/group.entity';
 import { GroupMemberService } from '../group/services/group-member.service';
+import { Otp } from '../otp/entities/otp.entity';
+import { OtpService } from '../otp/otp.service';
 import { Role } from '../role/entities/role.entity';
 import { User } from '../users/entities/user.entity';
 import { UsersService } from '../users/services/users.service';
@@ -33,7 +35,7 @@ import { LocalStrategy } from './strategies/local.strategy';
         };
       },
     }),
-    TypeOrmModule.forFeature([User, Role, Group, GroupMember]),
+    TypeOrmModule.forFeature([User, Role, Group, GroupMember, Otp]),
   ],
   controllers: [AuthController],
   providers: [
@@ -43,6 +45,7 @@ import { LocalStrategy } from './strategies/local.strategy';
     JwtAuthGuard,
     RolesGuard,
     GroupMemberService,
+    OtpService,
     UsersService,
     GroupAdminGuard,
   ],

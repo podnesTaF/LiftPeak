@@ -12,6 +12,7 @@ import { Group } from 'src/modules/group/entities/group.entity';
 import { PostContent } from 'src/modules/group/entities/post-content.entity';
 import { Like } from 'src/modules/like/entities/like.entity';
 import { Media } from 'src/modules/media/entity/media.entity';
+import { Otp } from 'src/modules/otp/entities/otp.entity';
 import { Role } from 'src/modules/role/entities/role.entity';
 import { Target } from 'src/modules/target/entities/target.entity';
 import { Gym } from 'src/modules/users/entities/gym.entity';
@@ -44,6 +45,7 @@ export const config: TypeOrmModuleOptions = {
     Comment,
     Media,
     WorkoutLog,
+    Otp,
     WorkoutMedia,
     RoutineSave,
     Exercise,

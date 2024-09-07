@@ -34,7 +34,7 @@ export const GroupCard = ({group}: GroupCardProps) => {
     })
 
     return (
-        <TouchableOpacity onPress={() => router.replace(`/(authenticated)/(tabs)/groups/${group.id}`)} style={{borderRadius: 8, backgroundColor: Colors.dark700, padding: 12, gap: 12}}>
+        <TouchableOpacity onPress={() => router.push(`/(authenticated)/(tabs)/home/groups/${group.id}`)} style={{borderRadius: 8, backgroundColor: Colors.dark700, padding: 12, gap: 12}}>
             <View style={[defaultStyles.row, {gap: 10}]}>
                 <Avatar size={55} url={group.pictureUrl}>
                     <Ionicons name={"barbell"} color={Colors.dark300} size={32} />

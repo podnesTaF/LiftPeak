@@ -12,9 +12,10 @@ interface InputFieldProps {
     keyboardType?: TextInputProps["keyboardType"];
     color?: string;
     inputStyle?: StyleProp<TextStyle>;
+    activeText?: boolean
 }
 
-const InputField = ({ label, placeholder, type, value, onBlur, onChange, keyboardType, color, inputStyle}: InputFieldProps) => {
+const InputField = ({ label, activeText,placeholder, type, value, onBlur, onChange, keyboardType, color, inputStyle}: InputFieldProps) => {
 
     return (
         <View style={styles.inputContainer}>
@@ -26,7 +27,7 @@ const InputField = ({ label, placeholder, type, value, onBlur, onChange, keyboar
                     keyboardType={keyboardType}
                     onBlur={onBlur}
                     value={value}
-                    style={[styles.input, {backgroundColor: color || Colors.dark500}, inputStyle]}
+                    style={[styles.input, {backgroundColor: color || Colors.dark500, color: activeText ? Colors.white : Colors.dark300}, inputStyle]}
                     secureTextEntry={type === "password"}
                     placeholder={placeholder}
                 />

@@ -1,28 +1,29 @@
 import React from 'react';
-import {Pressable, Text, View} from "react-native";
+import {Text, View} from "react-native";
 import TableHead from "./ExerciseTableHead";
-import ExerciseSetRow from "./ExerciseSetRow";
+import ExerciseSetRow, {ExerciseSwipeableRow} from "./ExerciseSetRow";
 import {Colors, defaultStyles} from "@shared/styles";
 import {Ionicons} from "@expo/vector-icons";
 import {IExerciseLog, SetType} from "@entities/workout-log";
-import {useExerciseStore} from "@features/workout-logger";
 import Button from "@shared/components/Button";
+import {useWorkout} from "@features/workout-logger/hooks";
 
 interface SetsTableProps {
     exerciseLog: IExerciseLog;
+    isRoutine?: boolean;
 }
 
-const SetsTable = ({exerciseLog}: SetsTableProps) => {
-    const {addSet,removeSet} = useExerciseStore()
+const SetsTable = ({exerciseLog, isRoutine}: SetsTableProps) => {
+    const {removeSet, addSet} = useWorkout(isRoutine);
 
     const handleAddSet = (type: SetType) => {
         addSet(exerciseLog.id, {
             exerciseLogId: exerciseLog.id,
             order: exerciseLog.sets?.length ? exerciseLog.sets?.length + 1: 1,
-            reps: 0,
-            weight: 0,
-            timeInS: 0,
-            distanceInM: 0,
+            reps: null,
+            weight: null,
+            timeInS: null,
+            distanceInM: null,
             type: type,
             createdAt: new Date().toISOString(),
             updatedAt: new Date().toISOString(),
@@ -41,13 +42,21 @@ const SetsTable = ({exerciseLog}: SetsTableProps) => {
                    <>
                        <TableHead metric={exerciseLog.exercise?.metric} />
                        {exerciseLog.sets?.map((set, index) => (
-                           <ExerciseSetRow
-                               key={set.id}
-                               exerciseLogId={exerciseLog.id}
-                               set={set}
-                               index={index}
-                               metric={exerciseLog.exercise?.metric}
-                           />
+                           isRoutine ? (
+                               <ExerciseSetRow
+                                   exerciseLogId={exerciseLog.id}
+                                   key={index + "_" + set.id}
+                                   exerciseLog={exerciseLog}
+                                   set={set}
+                                   index={index}
+                                   isRoutine={isRoutine}
+                                   metric={exerciseLog.exercise?.metric}
+                               />
+                           ) : (
+                               <ExerciseSwipeableRow  key={index + "_" + set.id} exerciseLogId={exerciseLog.id} set={set}>
+                                   <ExerciseSetRow exerciseLogId={exerciseLog.id} set={set} index={index} isRoutine={isRoutine}  metric={exerciseLog.exercise?.metric} />
+                               </ExerciseSwipeableRow>
+                           )
                        ))}
                    </>
                ) : (

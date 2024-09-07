@@ -5,10 +5,9 @@ import {defaultStyles} from "@shared/styles";
 import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
 import Animated, {useAnimatedScrollHandler} from "react-native-reanimated";
 import FollowingCircles from "@features/follow/ui/FollowingCircles";
-import {getAllWorkouts, markAsSeen, PostFeed} from "@features/feed";
+import {getAllWorkouts, markAsSeen, PostFeed, WorkoutPost} from "@features/feed";
 import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
 import {queryClient} from "@shared/api";
-import WorkoutPost from "../../../../features/feed/ui/WorkoutPost";
 import {useMutation, useQuery} from "@tanstack/react-query";
 import {PostType} from "@entities/post";
 
@@ -83,7 +82,7 @@ export default function Followings() {
                         onRefresh={onRefresh}
                     />
                 }
-                keyExtractor={(item) => item.id.toString()}
+                keyExtractor={(item) => item.id!.toString()}
                 onViewableItemsChanged={onViewableItemsChanged}
                 viewabilityConfig={{
                     itemVisiblePercentThreshold: 40,

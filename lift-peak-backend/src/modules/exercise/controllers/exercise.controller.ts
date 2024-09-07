@@ -11,6 +11,10 @@ import {
 } from '@nestjs/common';
 import { FileFieldsInterceptor } from '@nestjs/platform-express';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
+import {
+  AuthenticatedUser,
+  GetUser,
+} from 'src/modules/users/decorators/user.decorator';
 import { CreateExerciseDto } from '../dto/create-exercise.dto';
 import { ExerciseService } from '../services/exercise.service';
 
@@ -19,8 +23,22 @@ export class ExerciseController {
   constructor(private readonly exerciseService: ExerciseService) {}
 
   @Get('search')
-  async searchExercises(@Query() query?: { value?: string; id?: number }) {
-    return this.exerciseService.searchExercises(query.value, query?.id);
+  @UseGuards(JwtAuthGuard)
+  async searchExercises(
+    @GetUser() user: AuthenticatedUser,
+    @Query() query?: { value?: string; id?: number; muscles?: string },
+  ) {
+    let muscleIds = [];
+    if (query.muscles) {
+      muscleIds = query.muscles.split(',').map((id) => +id);
+    }
+
+    return this.exerciseService.searchExercises({
+      value: query.value,
+      id: query?.id,
+      userId: user?.id,
+      muscleIds,
+    });
   }
 
   @Post()

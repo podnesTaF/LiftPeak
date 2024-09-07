@@ -63,4 +63,10 @@ export class WorkoutController {
   async getRoutineList() {
     return this.workoutService.getRoutineList();
   }
+
+  @Get('/routine/:id')
+  @UseGuards(JwtAuthGuard)
+  async getRoutine(@Param('id') routineId: number) {
+    return this.workoutService.getRoutineToStart(routineId);
+  }
 }

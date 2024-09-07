@@ -9,7 +9,7 @@ interface TableHeadProps {
     equipment?: ExerciseEquipment;
 }
 
-export const TableHead = ({metric = ExerciseMetric.reps, equipment}: TableHeadProps) => {
+export const TableHead = ({metric = ExerciseMetric.reps, equipment,}: TableHeadProps) => {
     return (
         <View style={styles.row}>
             <View style={{width: "6%"}}>

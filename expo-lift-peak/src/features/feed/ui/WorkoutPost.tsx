@@ -1,4 +1,4 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {memo, useEffect, useRef, useState} from 'react';
 import {
     View,
     StyleSheet,
@@ -29,7 +29,7 @@ interface WorkoutPostProps {
     isViewable?: boolean
 }
 
-export const WorkoutPost = ({workout, isViewable} : WorkoutPostProps) => {
+export const WorkoutPost = memo(({workout, isViewable} : WorkoutPostProps) => {
     const router = useRouter();
 
     return (
@@ -40,7 +40,7 @@ export const WorkoutPost = ({workout, isViewable} : WorkoutPostProps) => {
             </View>
         </>
     );
-};
+});
 
 export const WorkoutPostBody = ({workout, photosShown, onPress, isViewable}: {workout: IWorkout, photosShown?: boolean, onPress?: Function, isViewable?: boolean}) => {
     const screenWidth = Dimensions.get('window').width;
@@ -59,13 +59,13 @@ export const WorkoutPostBody = ({workout, photosShown, onPress, isViewable}: {wo
 
     return (
         <>
-        <TouchableOpacity onPress={() => router.push({pathname: "/(authenticated)/profile", params: {id: workout.user?.id}})} style={styles.userInfoContainer}>
-            <Avatar size={40} name={workout.user?.profile?.firstName[0] + '' + workout.user?.profile?.lastName[0]} url={workout.user?.profile?.avatarUrl} />
-            <Text style={defaultStyles.secondaryText}>
-                {workout.user?.profile?.firstName} {workout.user?.profile?.lastName}
-            </Text>
-        </TouchableOpacity>
-          <View style={{gap: 10}}>
+            <TouchableOpacity onPress={() => router.push({pathname: "/(authenticated)/(tabs)/home/profile", params: {id: workout.user?.id}})} style={styles.userInfoContainer}>
+                <Avatar size={40} name={workout.user?.profile?.firstName[0] + '' + workout.user?.profile?.lastName[0]} url={workout.user?.profile?.avatarUrl} />
+                <Text style={defaultStyles.secondaryText}>
+                    {workout.user?.profile?.firstName} {workout.user?.profile?.lastName}
+                </Text>
+            </TouchableOpacity>
+            <View style={{gap: 10}}>
                 <TouchableOpacity activeOpacity={onPress ? 90 : 100} style={{gap: 10, paddingHorizontal: 12}} onPress={() => onPress && onPress()}>
                     <Text style={defaultStyles.smallTitle}>
                         {workout.title}
@@ -100,7 +100,7 @@ export const WorkoutPostBody = ({workout, photosShown, onPress, isViewable}: {wo
                         itemVisiblePercentThreshold: 60,
                     }}
                 />}
-          </View>
+            </View>
         </>
     )
 }
@@ -118,7 +118,7 @@ export const PostActions = ({item, type}: WorkoutPostFooterProps) => {
     const scale = useSharedValue(1);
 
     const {mutate} = useMutation({
-        mutationFn: () => reactWorkout(+item.id),
+        mutationFn: () => reactWorkout(+item!.id!),
         onSuccess: (data) => {
             scale.value = withTiming(data.like ? 1.5 : 1, { duration: 200 }, () => {
                 scale.value = withTiming(1, { duration: 200 });

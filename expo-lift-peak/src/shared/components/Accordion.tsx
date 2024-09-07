@@ -21,7 +21,7 @@ export default function Accordion({
                            children,
                            viewKey,
                            style,
-                           duration = 200,
+                           duration = 100,
                        }: AccordionProps) {
     const height = useSharedValue(0);
 

@@ -32,4 +32,14 @@ export class AuthController {
   async isLoggedIn(@GetUser() user: AuthenticatedUser) {
     return !!user;
   }
+
+  @Post('request-reset')
+  requestReset(@Body() dto: { email: string }) {
+    return this.authService.resetPasswordRequest(dto.email);
+  }
+
+  @Post('reset-password')
+  resetPassword(@Body() dto: { jwt: string; password: string }) {
+    return this.authService.resetPassword(dto.jwt, dto.password);
+  }
 }

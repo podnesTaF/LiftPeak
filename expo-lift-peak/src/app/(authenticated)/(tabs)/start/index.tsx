@@ -1,7 +1,7 @@
 import {Alert, ScrollView, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
 import Button from "@shared/components/Button";
 import {Link, Stack, useRouter} from "expo-router";
-import React, {useEffect, useLayoutEffect} from "react";
+import React from "react";
 import {useDiscardWorkout, useExerciseStore, useWorkoutStore} from "@features/workout-logger";
 import {Colors, defaultStyles} from "@shared/styles";
 import {useHeaderHeight} from "@react-navigation/elements";
@@ -11,7 +11,8 @@ import {MyRoutineCard} from "@features/workout";
 import {useAuthStore} from "@features/auth";
 import {registerBackgroundTask, useTimerStore} from "@features/timer";
 import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
-import {getRoutineList} from "@entities/routine";
+import {getRoutineList, getRoutineToStart} from "@entities/routine";
+import {useRoutineStore} from "@features/workout/store/routineStore";
 
 
 
@@ -19,15 +20,14 @@ export default function StartWorkout() {
   const router = useRouter();
   const headerHeight = useHeaderHeight();
   const {user} = useAuthStore()
-  const {workout, initializeWorkout, clearWorkout} = useWorkoutStore();
+  const {workout, initializeWorkout, setWorkout} = useWorkoutStore();
+  const {setExerciseLogs} = useExerciseStore();
+  const {workout: routine} = useRoutineStore();
+  const {initializeWorkout: initRoutine} = useRoutineStore()
   const {
     startTimer,
-      clearTimer
   } = useTimerStore();
   const tabBarHeight = useBottomTabBarHeight() + 20;
-  const {
-    clearExercises
-  } = useExerciseStore()
   const {discardWorkoutWithMedia} = useDiscardWorkout();
 
   const {data} = useQuery({
@@ -62,15 +62,29 @@ export default function StartWorkout() {
     }
   }
 
-  const startNewWorkout = () => {
+  const startNewWorkout = async (id?: number) => {
     if(!user) return;
-    initializeWorkout({userId: user.id})
+
+    if(id) {
+      const routine = await getRoutineToStart(id)
+      setWorkout({...routine, isRoutine: false, routineId:id})
+
+      setExerciseLogs(routine.workoutLog!.exerciseLogs!)
+    } else {
+      initializeWorkout({userId: user.id})
+    }
     registerBackgroundTask();
     startTimer();
     router.push("/(authenticated)/workout");
   }
 
-
+  const createRoutine = () => {
+    if(!user) return;
+    if(!routine) {
+      initRoutine({userId: user.id})
+    }
+    router.push("/(authenticated)/constructor");
+  }
 
   return (
       <>
@@ -100,22 +114,19 @@ export default function StartWorkout() {
             <Button title={"Explore Workouts"} onPress={() => router.push("/(authenticated)/explore")} color={"dark500"}>
               <Ionicons name={"search-outline"} size={24} color={Colors.white} />
             </Button>
-            <Button title={"Exercises"} onPress={() => router.push(`/(authenticated)/exercises/${22}`)} color={"dark500"}>
-              <Ionicons name={"search-outline"} size={24} color={Colors.white} />
-            </Button>
           </View>
           <View style={{flexDirection: "row", gap:12, justifyContent: "space-between", alignItems: "center", paddingVertical: 12, width: "100%"}}>
             <View style={{flexDirection: "row", gap: 10, alignItems: 'center'}}>
               <Ionicons name={"bookmark-outline"} size={24} color={Colors.white} />
               <Text style={{color: "white", fontWeight: "600", fontSize: 16}}>2 saved workouts</Text>
             </View>
-            <Button title={"Add New"} color={"success"}>
+            <Button title={"Add New"} onPress={createRoutine} color={"success"}>
               <Ionicons name={"add"} size={24} color={Colors.white} />
             </Button>
           </View>
           <View style={{gap: 16, marginVertical: 16}}>
             {data?.map((routine) => (
-                <MyRoutineCard startable={true} workout={routine} key={routine.id} />
+                <MyRoutineCard onPressStart={(id) => startNewWorkout(+id)} startable={true} workout={routine} key={routine.id} />
             ))}
           </View>
         </ScrollView>

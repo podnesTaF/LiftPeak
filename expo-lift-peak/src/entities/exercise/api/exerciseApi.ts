@@ -1,8 +1,8 @@
 import api from "@shared/api/AxiosInstance";
 import {IExercise} from "@entities/exercise";
 
-export const findExerciseList = async ({search, id}: {search: string, id?: number}) => {
-    const {data} = await api.get<(IExercise & {id: number, targetGroup: string[] })[]>("/exercises/search", {params: {value: search, id}});
+export const findExerciseList = async ({search, id, muscles}: {search: string, id?: number, muscles: string}) => {
+    const {data} = await api.get<(IExercise & {id: number, targetGroup: string[] })[]>("/exercises/search", {params: {value: search, id, muscles}});
     return data;
 }
 

@@ -18,7 +18,7 @@ const useTimerInterval = () => {
         }
 
         return () => clearInterval(interval);
-    }, [isRunning]);
+    }, [isRunning, updateElapsedTime]);
 };
 
 export default useTimerInterval;

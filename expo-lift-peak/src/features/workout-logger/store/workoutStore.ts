@@ -13,7 +13,6 @@ export const useWorkoutStore = create<WorkoutState>()(
         (set, get) => ({
             workout: null,
             workoutLog: null,
-            exerciseLogs: [],
             workoutMedia: [],
             sets: [],
             timer: {
@@ -22,16 +21,17 @@ export const useWorkoutStore = create<WorkoutState>()(
             },
             isLoading: false,
             error: null,
-            initializeWorkout: ({userId}:{userId: number}) => {
+            initializeWorkout: ({userId, isRoutine}:{userId: number, isRoutine?: boolean}) => {
                 const workoutId = uuidv4();
                 const workoutLogId = uuidv4();
                 set({
                     workout: {
                         id: workoutId,
-                        title: "Test Index",
-                        description: "This is a test workout",
+                        title: "",
+                        description: "",
                         userId: userId,
                         createdAt: new Date().toISOString(),
+                        isRoutine: isRoutine,
                         updatedAt: new Date().toISOString()
                     },
                     workoutLog: {
@@ -45,9 +45,10 @@ export const useWorkoutStore = create<WorkoutState>()(
                     }
                 });
             },
-            setWorkout: (workout: Omit<IWorkout, "id">) => {
+           setWorkout: (workout: Omit<IWorkout, "id">) => {
                     const generatedId = uuidv4();
-                    set({workout: {...workout, id: generatedId}});
+                    const workoutLogId = uuidv4();
+                    set({workout: {...workout, id: generatedId}, workoutLog: {id: workoutLogId,...workout?.workoutLog, startTime: new Date().toISOString()}});
             },
             updateWorkoutField: (updatedField) => {
                 set({workout: {...get().workout as any, ...updatedField}});

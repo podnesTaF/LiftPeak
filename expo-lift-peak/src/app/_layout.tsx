@@ -69,13 +69,6 @@ const InitialLayout = () => {
         name={"index"}
         options={{ headerShown: false, title: "" }}
       />
-     <Stack.Screen
-        name="signup"
-        options={{
-          title: ""
-        }}
-      />
-
       <Stack.Screen
         name="login"
         options={{
@@ -88,6 +81,7 @@ const InitialLayout = () => {
           title: "",
         }}
       />
+
       <Stack.Screen
         name="passwordOtp"
         options={{
@@ -100,6 +94,7 @@ const InitialLayout = () => {
           title: "",
         }}
       />
+      <Stack.Screen name="signup" />
       <Stack.Screen
         name="(authenticated)/(tabs)"
         options={{ headerShown: false }}
@@ -141,9 +136,17 @@ const InitialLayout = () => {
         }}
       />
       <Stack.Screen
+        name={"(authenticated)/generator"}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stack.Screen
         name={"(authenticated)/constructor"}
         options={{
           headerShown: false,
+          animation: "fade_from_bottom",
+          animationDuration: 100,
         }}
       />
       <Stack.Screen

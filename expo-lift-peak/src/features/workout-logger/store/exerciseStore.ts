@@ -13,6 +13,7 @@ export const useExerciseStore = create<ExerciseStoreState>()(
             exerciseLogs: [],
             isLoading: false,
             error: null,
+            setExerciseLogs: (exerciseLogs: IExerciseLog[]) => set({exerciseLogs}),
             addExerciseLog: (exerciseLog: Omit<IExerciseLog, "id">) => set({exerciseLogs: [...get().exerciseLogs, {...exerciseLog, id: uuidv4()}]}),
             updateExerciseLog: (exerciseLog: IExerciseLog) => set({exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseLog.id ? exerciseLog : log)}),
             removeExerciseLog: (exerciseLogId: number | string) => set({exerciseLogs: get().exerciseLogs.filter(log => log.id !== exerciseLogId)}),
@@ -58,8 +59,34 @@ export const useExerciseStore = create<ExerciseStoreState>()(
 
                     return { exerciseLogs: reorderedLogs };
                 });
-            }
+            },
+            addRest: (exerciseId, duration) => {
+                set({
+                    exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseId ? {
+                        ...log,
+                        sets: log.sets?.map(set => ({...set, restInS: duration}))
+                    } : log)
+                });
+            },
+            updateSetRest: (exerciseId, setId, duration) => {
+                set({
+                    exerciseLogs: get().exerciseLogs.map(log => log.id === exerciseId ? {
+                        ...log,
+                        sets: log.sets?.map(set => set.id === setId ? {...set, restInS: duration} : set)
+                    } : log)
+                });
+            },
+            getCurrentExercise: () => {
+                const exerciseLogs = get().exerciseLogs;
 
+                const currentExercise = exerciseLogs.find(log => {
+                    const totalSets = log.sets?.length || 0;
+                    const completedSets = log.sets?.filter(set => set.completed).length || 0;
+                    return completedSets < totalSets;
+                });
+
+                return currentExercise;
+            }
         }),
         {
             name: "exercise-storage",
