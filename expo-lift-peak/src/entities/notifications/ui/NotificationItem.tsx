@@ -16,7 +16,7 @@
     const NotificationItem = ({item}: NotificationItemProps) => {
         const router = useRouter();
         return (
-            <TouchableOpacity style={{flexDirection: "row", alignItems: "center", padding: 12, gap: 16, justifyContent: "space-between"}}>
+            <TouchableOpacity style={{flexDirection: "row", alignItems: "center", padding: 12, gap: 16, justifyContent: "space-between", backgroundColor: !item.isRead ? "rgba(51,177,117, 0.3)" : "transparent"}}>
                 <TouchableOpacity
                     onPress={() => router.push({pathname:"/(authenticated)/(tabs)/home/profile", params: {id: item.senderId}})}
                     style={{
@@ -28,7 +28,7 @@
                     <Avatar size={56} url={item.sender.profile?.avatarUrl} name={item.sender.profile?.firstName[0] + "" + item.sender.profile?.lastName[0]}/>
                     <View style={{gap: 8, flexShrink: 1}}>
                         <Text style={[defaultStyles.smallTitle]}>
-                            {item.sender.username} <Text style={{fontWeight: "400"}}>{getActionByType(item.type)}</Text> <Text style={defaultStyles.secondaryText}>
+                            {item.sender.username} <Text style={{fontWeight: "400"}}>{getActionByType(item.type, item.message)}</Text> <Text style={defaultStyles.secondaryText}>
                             {" " + formatDistanceToNow(new Date(item.createdAt), {addSuffix: true}).replace("minute", "min")}
                         </Text>
                         </Text>
@@ -46,10 +46,10 @@
                         }} title={"Following"} />
                     ))
                 }
-                {item.type === "like" && (
+                {(item.type === "like" || item.type === 'comment') && (
                     <TouchableOpacity onPress={() => router.push({pathname: "/(authenticated)/workout-details", params: {workoutId: item.workoutId}})}>
-                        {item.workout?.mediaContents?.[0].mediaUrl ? <Image style={styles.post} source={{
-                            uri: item.workout?.mediaContents?.[0].mediaUrl
+                        {item.workout?.mediaContents?.[0]?.mediaUrl ? <Image style={styles.post} source={{
+                            uri: item.workout?.mediaContents?.[0]?.mediaUrl
                         }} /> : (
                             <View style={styles.post}>
                                 <Ionicons name={"barbell"} color={Colors.dark300} size={30} />
@@ -57,9 +57,9 @@
                         )}
                     </TouchableOpacity>
                 )}
-                {item.type === "group_like" && (
+                {(item.type === "group_like" || item.type === 'group_comment') && (
                     <TouchableOpacity onPress={() => router.push({pathname: "/(authenticated)/workout-details", params: {workoutId: item.postId}})}>
-                        {item.workout?.mediaContents?.[0].mediaUrl ? <Image style={styles.post} source={{
+                        {item.workout?.mediaContents?.[0]?.mediaUrl ? <Image style={styles.post} source={{
                             uri: item.post?.contents?.[0].imageUrl
                         }} /> : (
                             <View style={styles.post}>
@@ -67,6 +67,10 @@
                             </View>
                         )}
                     </TouchableOpacity>
+                )}
+                {!item.isRead && (
+                    <View style={{position: 'absolute', top: -6, right: 12, backgroundColor: Colors.success, paddingHorizontal: 6, paddingVertical: 6, borderRadius: 20}}>
+                    </View>
                 )}
             </TouchableOpacity>
         );

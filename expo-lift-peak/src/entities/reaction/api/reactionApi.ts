@@ -7,6 +7,7 @@ export const getComments = async (relatedEntityId: number | string, type: Commen
 }
 
 export const leaveComment = async(relatedEntityId: number | string, type: CommentType, content: string) => {
+    console.log(type)
     const {data} = await api.post<IComment>(`/comments/leave/${relatedEntityId}`, {
         type,
         content

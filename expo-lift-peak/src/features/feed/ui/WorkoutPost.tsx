@@ -138,7 +138,7 @@ export const PostActions = ({item, type}: WorkoutPostFooterProps) => {
        if(type === CommentType.WORKOUT_POST) {
            showWorkoutComments(item as IWorkout);
        } else {
-              showPostComments(item as IGroupPost);
+           showPostComments(item as IGroupPost);
        }
     }
 

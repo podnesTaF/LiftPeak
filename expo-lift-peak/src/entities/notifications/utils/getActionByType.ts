@@ -1,13 +1,14 @@
 import {NotificationType} from "@entities/notifications";
+import {cutString} from "@shared/utils";
 
-export const getActionByType = (type: NotificationType) => {
+export const getActionByType = (type: NotificationType, message?: string) => {
     switch (type) {
         case NotificationType.follow:
             return "started following you";
         case NotificationType.like:
             return "liked your workout";
         case NotificationType.comment:
-            return "commented on your workout";
+            return "commented on your workout" + (message ? `: "${cutString(message, 10)}"` : "");
         case NotificationType.routine:
             return "saved your workout";
         case NotificationType.challenge:

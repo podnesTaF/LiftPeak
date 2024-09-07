@@ -10,11 +10,24 @@ import Avatar from "@shared/components/Avatar";
 import {Ionicons} from "@expo/vector-icons";
 import {AnimatedScrollProvider} from "@shared/components/AnimatedScrollContext";
 import {useAuthStore} from "@features/auth";
+import {useQuery} from "@tanstack/react-query";
+import {getUnseenCount, useNotificationStore} from "@entities/notifications";
 
 const Layout = () => {
     const {user} = useAuthStore();
+    const {unreadCount, updateUnreadCount} = useNotificationStore()
 
     const scrollY = useSharedValue(0);
+
+    const {data} = useQuery({
+        queryKey: ['newNotifications'],
+        queryFn: async () => {
+            const count = await getUnseenCount();
+            updateUnreadCount(count);
+            return count;
+        },
+        enabled: !!user?.id
+    })
 
     const animatedHeaderStyle = useAnimatedStyle(() => {
         const opacity = interpolate(scrollY.value, [0, 100], [0, 1]);
@@ -76,6 +89,13 @@ const Layout = () => {
                                 </Link>
                                 <TouchableOpacity onPress={() => router.push("/(authenticated)/(tabs)/home/notifications")}>
                                     <Ionicons name="notifications" size={32} color={Colors.dark300} />
+                                    {unreadCount !== undefined && unreadCount > 0 && (
+                                        <View style={{position: 'absolute', top: -4, right: 0, backgroundColor: Colors.success, paddingHorizontal: 4, paddingVertical: 2, borderRadius: 20}}>
+                                            <Text style={{color: "white", fontWeight: "500", fontSize: 10}}>
+                                                {unreadCount}
+                                            </Text>
+                                        </View>
+                                    )}
                                 </TouchableOpacity>
                             </View>
                             <Animated.View style={[{

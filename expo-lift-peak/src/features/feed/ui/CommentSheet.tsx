@@ -57,7 +57,7 @@ const CommentSheet = forwardRef<BottomSheetModal, {}>(({}:CommentSheetProps, ref
     const renderFooter = useCallback((props: BottomSheetFooterProps) => (
         <BottomSheetFooter {...props}>
             <BlurView style={{paddingHorizontal: 12, paddingBottom: 32, paddingVertical: 6, borderTopWidth: StyleSheet.hairlineWidth, borderColor: Colors.dark500 }} intensity={50} tint={"dark"}>
-                <CommentInput type={type} relatedEntityId={workout?.id as number} refetch={refetch} />
+                <CommentInput type={type} relatedEntityId={(workout?.id as number || post?.id as number)} refetch={refetch} />
             </BlurView>
         </BottomSheetFooter>
     ), [workout])
@@ -128,7 +128,7 @@ const CommentSheet = forwardRef<BottomSheetModal, {}>(({}:CommentSheetProps, ref
 });
 
 interface CommentInputProps {
-    relatedEntityId?: number,
+    relatedEntityId: number,
     type: CommentType,
     refetch: any
 }
@@ -136,10 +136,9 @@ interface CommentInputProps {
 const CommentInput = ({relatedEntityId,type,refetch}: CommentInputProps) => {
     const {showToast} = useToastStore()
     const [comment, setComment] = useState<string>("");
-
     const {mutate, isPending} = useMutation({
         mutationFn: async (comment: string) => {
-            await leaveComment(relatedEntityId as number,type,  comment);
+            await leaveComment(relatedEntityId, type,  comment);
         },
         onSuccess: () => {
             showToast("Comment sent!", "Your comment has been sent successfully.", "success", 2000)
@@ -150,6 +149,7 @@ const CommentInput = ({relatedEntityId,type,refetch}: CommentInputProps) => {
             showToast("Error", "An error occurred while sending your comment.", "error")
         },
     })
+
     const handleTextChange = (text: string) => {
         setComment(text);
     };
