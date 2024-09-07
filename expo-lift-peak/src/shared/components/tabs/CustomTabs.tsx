@@ -5,7 +5,7 @@ import TabItem, { TabItemProps } from './TabItem';
 
 interface CustomTabsProps {
     initialTab?: string;
-    children: ReactElement<TabItemProps>[];  // Ensures children are of type TabItem
+    children: ReactElement<TabItemProps>;  // Ensures children are of type TabItem
 }
 
 const CustomTabs = ({ initialTab, children}: CustomTabsProps) => {

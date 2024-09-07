@@ -56,34 +56,36 @@ const Index = () => {
                 ),
                 headerShadowVisible: false
             }}/>
-            <KeyboardAvoidingView behavior={
+            <KeyboardAvoidingView keyboardVerticalOffset={100} behavior={
                 Platform.OS === "ios" ? "padding" : "height"
-            }
-                                  style={{flex: 1, backgroundColor: Colors.dark900}}>
+            } style={{flex: 1, backgroundColor: Colors.dark900}}
+            >
                 <ScrollView stickyHeaderIndices={[0]} contentContainerStyle={{paddingBottom: 70}}>
-                    <View style={styles.snackbarContainer}>
-                        <TouchableOpacity>
-                            <View style={{flexDirection: "row", gap: 8, alignItems: 'center'}}>
-                                <Ionicons name={"time"} color={Colors.success} size={32} />
-                                <View style={{gap:10, alignItems: 'flex-end', flexDirection: "row"}}>
-                                    <Text numberOfLines={1} style={{color: Colors.success, fontSize: 16, fontWeight: "semibold"}}>{formatTime(elapsedTime)}</Text>
-                                </View>
-                            </View>
-                        </TouchableOpacity>
-                        <View style={{flexDirection: "row", alignItems: "center", gap: 12}}>
-                            <Text style={{color: Colors.dark100, fontWeight: "600"}}>
-                                16 sets · 34000kg
-                            </Text>
-                            <TouchableOpacity onPress={() => isRunning ? pauseTimer() : playTimer()}>
-                                {isRunning ? (
-                                    <Ionicons name={"pause-circle-outline"} color={Colors.success} size={40}/>
-                                ) : (
-                                    <Ionicons name={"play-circle-outline"} color={Colors.success} size={40}/>
-                                )}
-                            </TouchableOpacity>
+                    <View>
+                        <View style={styles.snackbarContainer}>
+                           <TouchableOpacity style={{flexDirection: 'row', gap: 12, alignItems: "center"}}>
+                               <Ionicons name={"time"} color={Colors.success} size={32} />
+                               <View style={{gap:10, alignItems: 'flex-end', flexDirection: "row"}}>
+                                   <Text numberOfLines={1} style={{color: Colors.success, fontSize: 16, fontWeight: "semibold"}}>{formatTime(elapsedTime)}</Text>
+                               </View>
+                           </TouchableOpacity>
+                           <View style={{flexDirection: "row", gap: 12, alignItems: "center"}}>
+                               <Text style={{color: Colors.dark100, fontWeight: "600"}}>
+                                   16 sets · 34000kg
+                               </Text>
+                               <TouchableOpacity onPress={() => isRunning ? pauseTimer() : playTimer()}>
+                                   {isRunning ? (
+                                       <Ionicons name={"pause-circle-outline"} color={Colors.success} size={40}/>
+                                   ) : (
+                                       <Ionicons name={"play-circle-outline"} color={Colors.success} size={40}/>
+                                   )}
+                               </TouchableOpacity>
+                           </View>
                         </View>
                     </View>
-                    <InputField color={'transparent'} placeholder="Workout Title" value={workout?.title || ''} onChange={(text) => updateWorkoutField({title: text})} />
+                    <InputField inputStyle={{
+                        paddingTop: 20
+                    }} color={'transparent'} placeholder="Workout Title" value={workout?.title || ''} onChange={(text) => updateWorkoutField({title: text})} />
                     <WorkoutLogger />
                 </ScrollView>
             </KeyboardAvoidingView>
@@ -94,16 +96,12 @@ const Index = () => {
 
 const styles = StyleSheet.create({
     snackbarContainer: {
-        backgroundColor: Colors.dark700,
         flexDirection: "row",
-        flexWrap: "nowrap",
-        gap: 12,
-        justifyContent: "space-between",
+        backgroundColor: Colors.dark700,
+        gap: 20,
         alignItems: "center",
+        justifyContent: "space-between",
         padding: 12,
-        marginBottom: 20,
-        borderBottomColor: Colors.dark700,
-        borderBottomWidth: StyleSheet.hairlineWidth
     }
 })
 

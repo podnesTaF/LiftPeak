@@ -61,11 +61,11 @@ const BottomControl = () => {
 
 
     return (
-        <View style={{paddingTop: 12, backgroundColor: Colors.dark700, paddingBottom: 20, paddingHorizontal: 12}}>
-            {exerciseLog?.exercise?.name &&<Text style={[defaultStyles.smallTitle, {fontSize: 14}]}>
+        <View style={{paddingTop: 12, backgroundColor: Colors.dark700, paddingBottom: 20, paddingHorizontal: 12, justifyContent: "space-between", alignItems: "center", gap: 12}}>
+            {exerciseLog?.exercise?.name && <Text style={[defaultStyles.smallTitle, {fontSize: 14}]}>
                 {exerciseLog.exercise.name}
             </Text>}
-            <View style={{ flexDirection: "row", justifyContent: "space-between", gap: 12, alignItems: 'center'}}>
+            <View style={{ flexDirection: "row", justifyContent: "space-between", width: "100%", paddingHorizontal: 12, gap: 12, alignItems: 'center'}}>
                 {stats && <Text style={{color: Colors.success, fontWeight: "600"}}>
                     {stats.setsDone} / {stats.totalSets} Sets
                 </Text>}
@@ -85,7 +85,9 @@ const BottomControl = () => {
                 ) : currentSet ? (
                     <Button color={"white"} onPress={completeSet} title={"Complete Set"} />
                 ) : (
-                    <Button color={"white"} onPress={() => router.push("/(authenticated)/workout/workout-save")} title={"Complete Workout"} />
+                    <View style={{flex: 1, alignItems: 'center'}}>
+                        <Button color={"white"} onPress={() => router.push("/(authenticated)/workout/workout-save")} title={"Complete Workout"} />
+                    </View>
                 )}
             </View>
         </View>
