@@ -1,4 +1,3 @@
-import { SignupSchema, signupSchema } from "@features/auth/utils/signUpSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "@shared/components/Button";
 import DropDown from "@shared/components/DropDown";
@@ -59,7 +58,7 @@ const YourDetails = () => {
     !!genderError;
 
   const handleDetails = () => {
-    router.push("/signup/chooseGym");
+    router.push("/(signup)/(profile)/choose-gym");
   };
 
   return (

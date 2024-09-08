@@ -151,7 +151,7 @@ const FormField: React.FC<FormFieldProps> = ({
                 ) : (
                   <TextInput
                     placeholderTextColor={Colors.dark300}
-                    // textContentType={type}
+                    textContentType="oneTimeCode"
                     autoCapitalize="none"
                     onChangeText={onChange}
                     onBlur={onBlur}

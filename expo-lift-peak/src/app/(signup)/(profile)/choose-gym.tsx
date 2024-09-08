@@ -13,7 +13,6 @@ import {
   Pressable,
   ActivityIndicator,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { useFormContext } from "react-hook-form";
 import FormField from "@shared/components/form/FormField";
 
@@ -23,7 +22,7 @@ interface Gym {
   formatted_address: string;
 }
 
-const GooglePlacesAPIKey = "AIzaSyB7Ygwv8KtiMMq0h7bPAWTAmNatjA83GEU";
+const GooglePlacesAPIKey = process.env.GOOGLE_PLACES_API_KEY;
 
 const ChooseGym = () => {
   const [searchResults, setSearchResults] = useState<Gym[]>([]);

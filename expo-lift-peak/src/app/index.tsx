@@ -13,8 +13,9 @@ const LoginCtaPage = () => {
     const router = useRouter();
 
     const handleSignUp = () => {
-        router.push("/signup")
+        router.push("/(signup)/(user)")
     }
+    
 
 
     return (
@@ -58,7 +59,7 @@ const LoginCtaPage = () => {
                     <Text style={{color:"white", fontSize: 16}}>
                         Already have an account?
                     </Text>
-                    <Link href={"/login"} asChild>
+                    <Link href={"/(signin)"} asChild>
                         <TouchableOpacity>
                             <Text style={{color: Colors.lime, fontSize: 16}}>
                                 Log in

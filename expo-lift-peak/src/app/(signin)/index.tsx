@@ -10,24 +10,19 @@ import { useMutation } from "@tanstack/react-query";
 import { FormProvider, useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useFocusEffect, useRouter } from "expo-router";
-import { loginSchema, LoginUserRequest, useAuthStore } from "@features/auth";
-import { IUser } from "@entities/user";
-import api from "@shared/api/AxiosInstance";
+import { loginSchema, LoginRequest, useAuthStore } from "@features/auth";
 import { Colors, defaultStyles } from "@shared/styles";
 import FormField from "@shared/components/form/FormField";
 import Button from "@shared/components/Button";
+import { useToastStore } from "@shared/store";
+import { login } from "@features/auth/api/authApi";
 
-async function login(email: string, password: string) {
-  const { data } = await api.post<IUser & { expiresAt: number }>(
-    "/auth/login",
-    { email, password }
-  );
-  return data;
-}
+
 
 const Login = () => {
   const { user, setUser } = useAuthStore();
   const router = useRouter();
+  const {showToast} = useToastStore()
   const mutation = useMutation({
     mutationFn: async (data: { email: string; password: string }) => {
       const user = await login(data.email, data.password);
@@ -36,17 +31,19 @@ const Login = () => {
     },
     onError: (error) => {
       console.log(error);
+      showToast("Login Failed", "The email or password you entered is incorrect. Please try again.", "error");
     },
   });
 
-  const form = useForm<LoginUserRequest>({
+  const form = useForm<LoginRequest>({
     mode: "onChange",
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = async (data: LoginUserRequest) => {
+  const onSubmit = async (data: LoginRequest) => {
     mutation.mutate(data);
   };
+
 
   useFocusEffect(
     React.useCallback(() => {
@@ -60,7 +57,7 @@ const Login = () => {
       style={[defaultStyles.container]}
     >
       <View style={{ flex: 1, gap: 16, paddingBottom: 40, marginTop: 38, marginHorizontal: 24 }}>
-        <Text style={defaultStyles.header}>Login</Text>
+        <Text style={defaultStyles.header}>Log in</Text>
         <FormProvider {...form}>
           <View style={{ paddingVertical: 16, flex: 1, gap: 26 }}>
             <View style={{ gap: 20 }}>
@@ -80,7 +77,7 @@ const Login = () => {
                 showPasswordToggle
               />
             </View>
-            <Link href={"/forgotPassword"} asChild>
+            <Link href={"forgot-password"} asChild>
               <TouchableOpacity>
                 <Text style={{ color: Colors.lime, fontSize: 16 }}>
                   Forgot password?

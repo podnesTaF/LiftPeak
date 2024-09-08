@@ -69,32 +69,19 @@ const InitialLayout = () => {
         name={"index"}
         options={{ headerShown: false, title: "" }}
       />
-      <Stack.Screen
-        name="login"
-        options={{
-          title: "",
-        }}
-      />
-      <Stack.Screen
-        name="forgotPassword"
-        options={{
-          title: "",
-        }}
-      />
 
+      <Stack.Screen 
+        name="(signin)"
+        options={{
+          title: ""
+        }}
+      />
       <Stack.Screen
-        name="passwordOtp"
+        name="(signup)"
         options={{
           title: "",
         }}
       />
-      <Stack.Screen
-        name="resetPassword"
-        options={{
-          title: "",
-        }}
-      />
-      <Stack.Screen name="signup" />
       <Stack.Screen
         name="(authenticated)/(tabs)"
         options={{ headerShown: false }}

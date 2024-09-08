@@ -1,6 +1,7 @@
 import api from "@shared/api/AxiosInstance";
-import {EmailOnlyRequest} from "@features/auth/utils/emailSchema";
+import {EmailOnlyRequest} from "@features/auth/utils/email.schema";
 import {IUser} from "@entities/user";
+import { UserRequest } from "../utils/user.schema";
 
 export const isLoggedIn = async (): Promise<boolean> => {
     try{
@@ -26,3 +27,15 @@ export const resetPassword = async (dto: {password: string, jwt: string}): Promi
     const {data} = await api.post<IUser & { expiresAt: number }>("/auth/reset-password", dto);
     return data;
 }
+
+
+export const login = async (email: string, password: string): Promise<IUser & { expiresAt: number }> => {
+    const { data } = await api.post<IUser & { expiresAt: number }>("/auth/login", { email, password });
+    return data;
+  };
+
+export const register = async (email: string, password: string, username: string): Promise<IUser & { expiresAt: number }> => {
+    const { data } = await api.post<IUser & { expiresAt: number }>("/auth/register", {email, password, username});
+    return data;
+  };
+

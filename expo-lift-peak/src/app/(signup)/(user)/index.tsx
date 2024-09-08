@@ -6,8 +6,9 @@ import { useFormContext, useWatch } from "react-hook-form";
 import { KeyboardAvoidingView, Platform, Text, View } from "react-native";
 
 const Signup = () => {
-  const { formState, trigger } = useFormContext(); 
-  const emailError = formState.errors.email // Check if there is an error with the email field
+  const { formState, trigger} = useFormContext(); 
+  const emailError = formState.errors.email;
+
 
   const emailValue = useWatch({
     name: "email"
@@ -17,7 +18,7 @@ const Signup = () => {
     const isValid = await trigger("email"); 
 
     if (isValid) {
-      router.push("/signup/signupOtp");
+      router.push({pathname: "/(signup)/(user)/otp", params: {email: emailValue}});
     }
   };
 
@@ -39,7 +40,7 @@ const Signup = () => {
               placeholder="enter your email"
             />
             <Button
-              disabled={!emailValue || !!emailError} // Disable the button if email is invalid or empty
+              disabled={!emailValue || !!emailError} 
               title={"Continue"}
               color={"dark100"}
               onPress={handleOtp}
