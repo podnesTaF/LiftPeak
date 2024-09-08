@@ -11,6 +11,7 @@ interface TimerState {
     clearTimer: () => void;
     startTimer: (elapsedTime?: number, startTime?: number) => void;
     updateElapsedTime: (elapsedTime: number) => void;
+    updateStartTime: (elapsedTime: number) => void;
     pauseTimer: () => void;
     playTimer: () => void;
 }
@@ -33,6 +34,12 @@ export const useTimerStore = create<TimerState>()(
             },
             updateElapsedTime: (elapsedTime) => {
                 set({ elapsedTime });
+            },
+            updateStartTime: (elapsedTime) => {
+                const startTime = Date.now() - (elapsedTime * 1000)
+                set({
+                    startTime
+                })
             },
             pauseTimer: () => {
                 set({ isRunning: false });

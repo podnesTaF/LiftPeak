@@ -9,6 +9,8 @@ import Animated from "react-native-reanimated";
 import SwipeableRow from "@shared/components/SwipeableRow";
 import {useWorkout} from "@features/workout-logger/hooks";
 import {useWorkoutContext} from "@features/workout/store/workoutContext";
+import {formatDistance, formatTimeInput} from '../utils/inputFormatters'
+import TimePicker from "@shared/TimePicker";
 
 interface ExerciseSetRowProps {
     exerciseLogId: number | string;
@@ -25,7 +27,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
     const [values, setValues] = useState({
         reps: set.reps?.toString() || "",
         weight: set.weight?.toString()  || "",
-        time: set.timeInS?.toString()  || "",
+        timeIsS: set.timeInS?.toString()  || "",
         distanceInM: set.distanceInM?.toString() || "",
     });
 
@@ -45,7 +47,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
             setValues({
                 reps: previousSet.reps?.toString() || values.reps,
                 weight: previousSet.weight?.toString() || values.weight,
-                time: previousSet.timeInS?.toString() || values.time,
+                timeIsS: previousSet.timeInS?.toString() || values.timeIsS,
                 distanceInM: previousSet.distanceInM?.toString() || values.distanceInM,
             });
         }
@@ -78,8 +80,11 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                     keyboardType={"numeric"}
                                     value={values.reps}
                                     onChange={(text) => onChangeInput("reps", text)}
-                                    placeholder={"reps"}
+                                    placeholder={"Reps"}
                                 />
+                            </View>
+                            <View style={{backgroundColor: Colors.dark500, padding: 12, paddingHorizontal: 4, borderRadius: 10 }}>
+                                <TimePicker exerciseLog={exerciseLog} initValue={+values.timeIsS} onChange={(text) => onChangeInput("timeInS", text)}/>
                             </View>
                             <View style={styles.inputContainer}>
                                 <InputField
@@ -87,7 +92,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                     keyboardType={"numeric"}
                                     value={values.weight}
                                     onChange={(text) => onChangeInput("weight", text)}
-                                    placeholder={"kg"}
+                                    placeholder={"Kg"}
                                 />
                             </View>
                         </>
@@ -100,22 +105,19 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                     10km in 59:00
                                 </Text>
                             </View>
-                            <View style={styles.inputContainer}>
-                                <InputField
-                                    inputStyle={styles.input}
-                                    placeholder={"Dist"}
-                                    keyboardType={"numeric"}
-                                    value={values.distanceInM}
-                                    onChange={(text) => onChangeInput("distanceInM", text)}
-                                />
+                            <View style={{backgroundColor: Colors.dark500, padding: 12, paddingHorizontal: 4, borderRadius: 10 }}>
+                                <TimePicker exerciseLog={exerciseLog} initValue={+values.timeIsS} onChange={(text) => onChangeInput("timeInS", text)}/>
                             </View>
                             <View style={styles.inputContainer}>
                                 <InputField
                                     inputStyle={styles.input}
-                                    placeholder={"Time"}
-                                    keyboardType={"numeric"}
-                                    value={values.time}
-                                    onChange={(text) => onChangeInput("time", text)}
+                                    placeholder="km.mm"
+                                    keyboardType={"number-pad"}
+                                    mask={'99,99'}
+                                    onChange={(formatted) => {
+                                        onChangeInput("distanceInM", formatDistance(formatted));
+                                    }}
+                                    value={values.distanceInM}
                                 />
                             </View>
                         </>
@@ -125,7 +127,7 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                             <InputField
                                 inputStyle={styles.input}
                                 keyboardType={"numeric"}
-                                value={values.time}
+                                value={values.timeIsS}
                                 onChange={(text) => onChangeInput("timeInS", text)}
                             />
                         </View>
@@ -172,10 +174,10 @@ const styles = StyleSheet.create({
         width: "94%"
     },
     inputContainer: {
-        width: "29%",
+        width: "30%",
         alignItems: "center"
     },
-    input: {textAlign: "center", backgroundColor: Colors.dark500, fontWeight: "600"},
+    input: {textAlign: "center", backgroundColor: Colors.dark500, fontWeight: "500", fontSize: 14, textTransform: "uppercase"},
     inactiveInputText: {color: Colors.dark300}
 });
 export default ExerciseSetRow;

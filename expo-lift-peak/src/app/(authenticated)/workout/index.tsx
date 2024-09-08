@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View} from "react-native";
 import {Colors} from "@shared/styles";
 import {
@@ -6,7 +6,7 @@ import {
 } from "@features/workout-logger";
 import {Link, Stack, useRouter} from "expo-router";
 import { useTimerStore} from "@features/timer";
-import {formatTime} from "@shared/utils";
+import {formatTime, getTimeObjFromSeconds} from "@shared/utils";
 import {Ionicons} from "@expo/vector-icons";
 import useTimerInterval from "@features/timer/hooks/useIntervalTimer";
 
@@ -14,6 +14,8 @@ import {TouchableOpacity} from 'react-native-gesture-handler';
 import InputField from "@shared/components/form/InputField";
 import WorkoutLogger from "@features/workout-logger/ui/WorkoutLogger";
 import BottomControl from "@features/workout-logger/ui/BottomControl";
+import {TimePickerModal} from "@shared/TimePicker";
+import {BottomSheetModal} from "@gorhom/bottom-sheet";
 
 const Index = () => {
     const {
@@ -21,13 +23,26 @@ const Index = () => {
         pauseTimer,
         elapsedTime,
         playTimer,
+        updateElapsedTime,
+        updateStartTime
     } = useTimerStore();
     const {workout, updateWorkoutField} = useWorkoutStore()
-
-
+    const timePickerRef = useRef<BottomSheetModal>()
+    const [selectedTime, setSelectedTime] = useState(getTimeObjFromSeconds(elapsedTime));
     const router = useRouter();
 
     useTimerInterval();
+
+    const handleChange = (newTime: any) => {
+        setSelectedTime(newTime)
+        const time = +newTime.hours * 3600 + +newTime.minutes * 60 + +newTime.seconds
+        updateElapsedTime(time)
+        updateStartTime(time)
+    }
+
+    useEffect(() => {
+        setSelectedTime(getTimeObjFromSeconds(elapsedTime))
+    }, [elapsedTime]);
 
     return (
         <>
@@ -63,7 +78,7 @@ const Index = () => {
                 <ScrollView stickyHeaderIndices={[0]} contentContainerStyle={{paddingBottom: 70}}>
                     <View>
                         <View style={styles.snackbarContainer}>
-                           <TouchableOpacity style={{flexDirection: 'row', gap: 12, alignItems: "center"}}>
+                           <TouchableOpacity onPress={() => timePickerRef.current?.present()} style={{flexDirection: 'row', gap: 12, alignItems: "center"}}>
                                <Ionicons name={"time"} color={Colors.success} size={32} />
                                <View style={{gap:10, alignItems: 'flex-end', flexDirection: "row"}}>
                                    <Text numberOfLines={1} style={{color: Colors.success, fontSize: 16, fontWeight: "semibold"}}>{formatTime(elapsedTime)}</Text>
@@ -90,6 +105,7 @@ const Index = () => {
                 </ScrollView>
             </KeyboardAvoidingView>
             <BottomControl />
+            <TimePickerModal handleClose={() => timePickerRef.current?.dismiss()} ref={timePickerRef as any} selectedTime={selectedTime} onChange={handleChange} />
         </>
     );
 };

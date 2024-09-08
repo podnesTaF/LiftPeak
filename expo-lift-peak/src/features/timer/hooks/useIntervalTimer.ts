@@ -12,6 +12,7 @@ const useTimerInterval = () => {
                 const timerState = useTimerStore.getState();
                 if (timerState.startTime) {
                     const newElapsedTime = Math.floor((Date.now() - timerState.startTime) / 1000);
+
                     updateElapsedTime(newElapsedTime);
                 }
             }, 1000);

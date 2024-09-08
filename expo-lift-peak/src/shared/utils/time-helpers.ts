@@ -10,3 +10,12 @@ export const formatTime = (seconds?: number) => {
     const secs = `${duration.seconds || 0}s`;
     return `${hours}${minutes}${secs}`;
 };
+
+export const getTimeObjFromSeconds = (seconds: number) => {
+    const duration = intervalToDuration({ start: 0, end: seconds * 1000 });
+    return {
+        hours: duration.hours || 0,
+        minutes: duration.minutes || 0,
+        seconds: duration.seconds || 0
+    }
+}
