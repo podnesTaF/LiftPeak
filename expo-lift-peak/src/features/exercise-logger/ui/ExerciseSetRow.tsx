@@ -9,7 +9,7 @@ import Animated from "react-native-reanimated";
 import SwipeableRow from "@shared/components/SwipeableRow";
 import {useWorkout} from "@features/workout-logger/hooks";
 import {useWorkoutContext} from "@features/workout/store/workoutContext";
-import {formatDistance, formatTimeInput} from '../utils/inputFormatters'
+import {formatDistanceToInput, formatDistanceToM, formatTimeInput} from '../utils/inputFormatters'
 import TimePicker from "@shared/TimePicker";
 
 interface ExerciseSetRowProps {
@@ -83,9 +83,6 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                                     placeholder={"Reps"}
                                 />
                             </View>
-                            <View style={{backgroundColor: Colors.dark500, padding: 12, paddingHorizontal: 4, borderRadius: 10 }}>
-                                <TimePicker exerciseLog={exerciseLog} initValue={+values.timeIsS} onChange={(text) => onChangeInput("timeInS", text)}/>
-                            </View>
                             <View style={styles.inputContainer}>
                                 <InputField
                                     inputStyle={styles.input}
@@ -111,13 +108,14 @@ export const ExerciseSetRow = ({exerciseLogId,set, metric = ExerciseMetric.reps,
                             <View style={styles.inputContainer}>
                                 <InputField
                                     inputStyle={styles.input}
-                                    placeholder="km.mm"
+                                    placeholder="km,mm"
                                     keyboardType={"number-pad"}
                                     mask={'99,99'}
                                     onChange={(formatted) => {
-                                        onChangeInput("distanceInM", formatDistance(formatted));
+                                        const cleanedFormatted = formatted.replace(/[^0-9,]/g, '');
+                                        onChangeInput("distanceInM", formatDistanceToM(cleanedFormatted));
                                     }}
-                                    value={values.distanceInM}
+                                    value={formatDistanceToInput(values.distanceInM)}
                                 />
                             </View>
                         </>

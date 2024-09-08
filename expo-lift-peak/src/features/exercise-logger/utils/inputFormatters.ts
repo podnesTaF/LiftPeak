@@ -1,12 +1,21 @@
 
-export const formatDistance = (text: string) => {
-    const cleanedText = text.replace(/[^0-9]/g, '');
+export const formatDistanceToM = (text: string) => {
+    const [km, m] = text.split(",");
+    console.log("distance",km, m);
 
+    const cleanedText = text.replace(/[^0-9]/g, ''); // Remove non-numeric characters
     if (cleanedText === '') return '';
 
-    const num = parseFloat(cleanedText) / 100;
+    // Parse cleanedText into kilometers and decimal
+    const num = parseFloat(cleanedText) / 100; // Treat input as km.mm (e.g., 10,00 is 10 km)
+    return (num * 1000).toString(); // Convert kilometers to meters (e.g., 10.00 km -> 10000 meters)
+};
 
-    return num.toFixed(2);
+export const formatDistanceToInput = (distanceInM: string) => {
+    if (distanceInM === '') return '';
+
+    const num = parseFloat(distanceInM) / 1000;
+    return num.toFixed(2).replace('.', ',');
 };
 
 export const formatTimeInput = (text: string) => {

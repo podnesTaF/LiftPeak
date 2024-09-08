@@ -25,9 +25,7 @@ const TimePicker = ({ exerciseLog, initValue, onChange}: TimePickerProps) => {
     const handleChange = (newTime: any) => {
         setSelectedTime(newTime)
 
-        const time = `${newTime.hours}h ${newTime.minutes}m ${newTime.seconds}`
-
-        onChange(time)
+        onChange(newTime.hours * 3600 + newTime.minutes * 60 + newTime.seconds)
     }
 
 
