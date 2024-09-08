@@ -91,12 +91,6 @@ export const ExerciseItem = memo(({item, onPress,index, isLast}: ExerciseItemPro
         setIsPressed(false);
     };
 
-    const handlePress = () => {
-        if (isPressed && onPress) {
-            onPress(item.id);
-        }
-    };
-
 
     return (
             <>

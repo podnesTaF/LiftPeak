@@ -7,7 +7,7 @@ import {getWorkoutDetails} from "@features/workout";
 import {WorkoutPostBody} from "@features/feed";
 
 const WorkoutStats = () => {
-    const {exerciseId: id} = useLocalSearchParams<{ exerciseId: string }>()
+    const {workoutId: id} = useLocalSearchParams<{ workoutId: string }>()
 
     const {data: workout} = useQuery({
         queryKey: ["workout", id],

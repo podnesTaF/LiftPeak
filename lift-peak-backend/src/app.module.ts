@@ -20,6 +20,7 @@ import { TargetModule } from './modules/target/target.module';
 import { UsersModule } from './modules/users/users.module';
 import { WorkoutLogModule } from './modules/workout-log/workout-log.module';
 import { WorkoutModule } from './modules/workout/workout.module';
+import { NotificationModule } from './modules/notification/notification.module';
 
 @Module({
   imports: [
@@ -44,6 +45,7 @@ import { WorkoutModule } from './modules/workout/workout.module';
     LikeModule,
     FeedModule,
     OtpModule,
+    NotificationModule,
   ],
   controllers: [],
 })

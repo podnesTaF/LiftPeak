@@ -1,12 +1,12 @@
 import React from 'react';
 import {Text, View} from "react-native";
 import Avatar from "@shared/components/Avatar";
-import {IWorkoutComment} from "@entities/workout";
 import {Colors, defaultStyles} from "@shared/styles";
 import {formatDistanceToNow} from "date-fns";
+import {IComment} from "@entities/reaction";
 
 interface CommentProps {
-    comment: IWorkoutComment
+    comment: IComment
 }
 
 const Comment = ({comment}: CommentProps) => {

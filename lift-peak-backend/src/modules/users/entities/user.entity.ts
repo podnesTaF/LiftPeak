@@ -3,6 +3,7 @@ import { PostSeen } from 'src/modules/feed/entity/post-seen.entity';
 import { GroupPost } from 'src/modules/group/entities/group-post.entity';
 import { Group } from 'src/modules/group/entities/group.entity';
 import { Like } from 'src/modules/like/entities/like.entity';
+import { Notification } from 'src/modules/notification/entities/notification.entity';
 import { Role } from 'src/modules/role/entities/role.entity';
 import { RoutineSave } from 'src/modules/workout/entities/routine-save.entity';
 import { Workout } from 'src/modules/workout/entities/workout.entity';
@@ -87,4 +88,10 @@ export class User extends AbstractEntity {
 
   @OneToMany(() => PostSeen, (postSeen) => postSeen.user)
   seenPosts: PostSeen[];
+
+  @OneToMany(() => Notification, (not) => not.sender)
+  sentNotifications: Notification[];
+
+  @OneToMany(() => Notification, (not) => not.recipient)
+  receivedNotifications: Notification[];
 }

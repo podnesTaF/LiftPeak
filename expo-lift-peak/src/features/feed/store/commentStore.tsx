@@ -19,7 +19,7 @@ export const useCommentStore = create<CommentState>((set) => ({
     shown: false,
     type: CommentType.WORKOUT_POST,
     showWorkoutComments: (workout: IWorkout) => {
-        set({ workout, shown: true, type: CommentType.WORKOUT_POST });
+        set({ workout, shown: true});
     },
     showPostComments: (post: IGroupPost) => {
         set({ post, shown: true, type: CommentType.GROUP_POST });

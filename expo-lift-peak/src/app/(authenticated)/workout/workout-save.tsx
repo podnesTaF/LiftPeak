@@ -21,7 +21,7 @@ import {defaultStyles} from "@shared/styles";
 const WorkoutSave = () => {
     const {workout, updateWorkoutField, workoutLog, addMedia, workoutMedia, removeMedia} = useWorkoutStore()
     const {exerciseLogs} = useExerciseStore()
-    const {elapsedTime} = useTimerStore()
+    const {elapsedTime, startTime} = useTimerStore()
     const {discardWorkout} = useDiscardWorkout();
 
     const { showToast } = useToastStore();
@@ -49,12 +49,9 @@ const WorkoutSave = () => {
         }
     })
 
-
     const handleSave = async () => {
         const exerciseLogsData = formatExercises(exerciseLogs);
-
-        const data = formatWorkoutData({workout, workoutLog, workoutMedia, elapsedTime, exerciseLogs: exerciseLogs, routineId: workout?.routineId});
-
+        const data = formatWorkoutData({workout, workoutLog, workoutMedia,startTime,  elapsedTime, exerciseLogs: exerciseLogs, routineId: workout?.routineId});
         const exerciseLogsValidationResult = CreateExerciseLogDtoArraySchema.safeParse(exerciseLogsData);
 
         if (!exerciseLogsValidationResult.success) {
