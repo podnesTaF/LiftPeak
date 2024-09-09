@@ -15,6 +15,7 @@ import {
 } from "react-native";
 import { useFormContext } from "react-hook-form";
 import FormField from "@shared/components/form/FormField";
+import { router } from "expo-router";
 
 interface Gym {
   name: string;
@@ -56,6 +57,9 @@ const ChooseGym = () => {
     }
   };
 
+
+        // router.push("/(authenticated)/(tabs)/home");
+
   useEffect(() => {
     const fetchGyms = async () => {
       const results = await getSearchResults(gymInput || "");
@@ -68,6 +72,11 @@ const ChooseGym = () => {
       setSearchResults([]);
     }
   }, [gymInput]);
+
+  if(selectedGym){
+    router.push("/(authenticated)/(tabs)/home");
+
+  }
 
   return (
     <KeyboardAvoidingView

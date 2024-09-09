@@ -14,10 +14,14 @@ const Layout = () => {
         <Stack
           screenOptions={{
             headerShown: false,
+            
           }}
         >
-          <Stack.Screen name="choose-gym" />
-          <Stack.Screen name="your-details" />
+          <Stack.Screen name="your-details" options={{presentation: 'modal',
+            headerBackTitle: '' 
+          }}/>
+          <Stack.Screen name="choose-gym" options={{presentation: 'modal'}} />
+
         </Stack>
         
       </FormProvider>

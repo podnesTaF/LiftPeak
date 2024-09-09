@@ -1,5 +1,7 @@
-import { z } from 'zod';
+import { z } from "zod";
+import { checkIfUserExists } from "@features/auth/api/authApi";
 
+// Asynchronous validation for username availability
 export const userSchema = z
   .object({
     email: z.string().email({ message: "Invalid email address" }),
@@ -12,12 +14,13 @@ export const userSchema = z
       .regex(/[a-z]/, {
         message: "Password must contain at least one lowercase letter",
       }),
-    passwordConfirmation: z.string(),
-    username: z.string(),
-  })
-  .refine((data) => data.password === data.passwordConfirmation, {
-    path: ["passwordConfirmation"], 
-    message: "Passwords do not match",
+    username: z
+      .string()
+      .min(3, { message: "Username must be at least 3 characters" })
+      .refine(async (username) => {
+        const isAvailable = await checkIfUserExists(username, "username");
+        return !isAvailable;
+      }, { message: "Username is already taken" }),
   });
 
 export type UserRequest = z.infer<typeof userSchema>;

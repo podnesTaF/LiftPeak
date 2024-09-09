@@ -74,13 +74,6 @@ const YourDetails = () => {
             </View>
 
             <View style={{ flex: 1, gap: 20 }}>
-              <FormField
-                placeholder="Enter your username"
-                name="username"
-                label="Username"
-                noValidationStyling
-              />
-
               <DropDown
                 data={[
                   { value: "Male", label: "Male" },

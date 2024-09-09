@@ -39,3 +39,13 @@ export const register = async (email: string, password: string, username: string
     return data;
   };
 
+export const checkIfUserExists = async (value: string, field: 'email' | 'username'): Promise<boolean | null> => {
+
+    try {
+        const {data} = await api.get<boolean>(`/users/exists/${value}?field=${field}`)
+        return data;
+    } catch(error){
+        console.log('Error checking if user exists:', error);
+        return null;
+    }
+}
