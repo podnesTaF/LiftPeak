@@ -11,6 +11,8 @@ import {
     BottomSheetView
 } from "@gorhom/bottom-sheet";
 import Button from "@shared/components/Button";
+import {cutString} from "@shared/utils";
+import {Color} from "ansi-fragments/build/fragments/Color";
 
 interface Option {
     label: React.ReactNode;
@@ -27,7 +29,9 @@ interface IBottomSheetSelectProps {
     multiple?: boolean;
     disabled?: boolean;
     children?: React.ReactNode;
+    last?: boolean;
     snapPoints?: (string | number)[];
+    allAvailable?: boolean;
 }
 
 interface IBottomSheetItemProps {
@@ -44,19 +48,19 @@ const OptionItem = ({option, selectedValues, handleCheckboxChange}: IBottomSheet
     >
         <View style={{flexDirection: "row", gap: 12, alignItems: "center"}}>
             {option.icon}
-            <Text style={{color: 'white', fontSize: 16, fontWeight: "500"}}>{option.label}</Text>
+            <Text style={{color: 'white', fontSize: 16, fontWeight: "500", textTransform: 'capitalize'}}>{option.label}</Text>
         </View>
         <Checkbox
             value={selectedValues.includes(option.value)}
             onValueChange={() => handleCheckboxChange(option.value)}
-            color={Colors.lime}
-            style={{ marginRight: 8 }}
+            color={Colors.success}
+            style={{ marginRight: 8 , borderRadius: 100, width: 24, height: 24}}
         />
     </TouchableOpacity>
 );
 
 // BottomSheetSelect Component
-const BottomSheetSelect = ({label, placeholder, value, options, onChange, multiple, disabled, snapPoints, children}: IBottomSheetSelectProps)  => {
+const BottomSheetSelect = ({label, placeholder, value, options, onChange, multiple, disabled, allAvailable, snapPoints, children, last}: IBottomSheetSelectProps)  => {
     const bottomSheetRef = useRef<BottomSheetModal>(null);
     const [selectedValues, setSelectedValues] = useState<(string | number)[]>(value || []);
     const handleClosePress = () => bottomSheetRef.current?.close();
@@ -84,7 +88,16 @@ const BottomSheetSelect = ({label, placeholder, value, options, onChange, multip
             const newSelectedValues = selectedValues.includes(optionValue)
                 ? selectedValues.filter(val => val !== optionValue)
                 : [...selectedValues, optionValue];
+
+            if(optionValue === 'all'){
+                setSelectedValues(options?.map(option => option.value) || []);
+                onChange(options?.map(option => option.value) || []);
+
+                return
+            }
+
             setSelectedValues(newSelectedValues);
+
             onChange(newSelectedValues);
         } else {
             setSelectedValues([optionValue]);
@@ -95,7 +108,7 @@ const BottomSheetSelect = ({label, placeholder, value, options, onChange, multip
 
     return (
         <>
-            <MockSelect label={label} value={value} placeholder={placeholder} onPress={handlePresentPress} />
+            <MockSelect label={label} last={last} value={value} placeholder={placeholder} onPress={handlePresentPress} />
             <BottomSheetModal
                 footerComponent={renderFooter}
                 backgroundStyle={{
@@ -112,16 +125,25 @@ const BottomSheetSelect = ({label, placeholder, value, options, onChange, multip
             >
                 <BottomSheetView style={{paddingVertical: 16, flex: 1}}>
                     {options && options.length > 0 ? (
-                        <ScrollView contentContainerStyle={{paddingHorizontal: 16}}>
-                            {options.map((option, index) => (
-                                <OptionItem
-                                    key={index}
-                                    option={option}
-                                    selectedValues={selectedValues}
-                                    handleCheckboxChange={handleCheckboxChange}
-                                />
-                            ))}
-                        </ScrollView>
+                        <>
+                            {allAvailable && (
+                                <TouchableOpacity style={{marginBottom: 12, marginHorizontal: 16}} onPress={() => handleCheckboxChange("all")}>
+                                    <Text style={defaultStyles.secondaryText}>
+                                        Select All
+                                    </Text>
+                                </TouchableOpacity>
+                            )}
+                            <ScrollView contentContainerStyle={{paddingHorizontal: 16}}>
+                                {options.map((option, index) => (
+                                    <OptionItem
+                                        key={index}
+                                        option={option}
+                                        selectedValues={selectedValues}
+                                        handleCheckboxChange={handleCheckboxChange}
+                                    />
+                                ))}
+                            </ScrollView>
+                        </>
                     ) : (
                         children
                     )}
@@ -136,21 +158,22 @@ interface ISelectProps {
     placeholder?: string;
     onPress: () => void;
     label?: string;
+    last?: boolean;
 }
 
-export const MockSelect = ({ label, value, placeholder, onPress}: ISelectProps) => {
+export const MockSelect = ({ label, value, placeholder, onPress, last}: ISelectProps) => {
     return (
-        <View style={{width: "100%", gap: 12}}>
+        <View style={[defaultStyles.row, {paddingVertical: 16, borderBottomColor: Colors.dark500, borderBottomWidth: last ? 0 : StyleSheet.hairlineWidth}]}>
             {label && (
-                <Text style={defaultStyles.secondaryText}>
+                <Text style={[defaultStyles.smallTitle, {fontSize: 15, textTransform: "capitalize"}]}>
                     {label}
                 </Text>
             )}
             <TouchableOpacity onPress={onPress} style={styles.inputContainer}>
-                <Text style={defaultStyles.secondaryText}>
-                    {value.length ? value.join(", ") : placeholder ? placeholder : "Select"}
+                <Text style={[defaultStyles.secondaryText, {textTransform: "capitalize"}]}>
+                    {cutString((value.length ? value.join(", ") : placeholder ? placeholder : "Select"), 20)}
                 </Text>
-                <Ionicons name={"chevron-down"} size={24} color={Colors.dark300}/>
+                <Ionicons name={"chevron-forward"} size={24} color={Colors.dark300}/>
             </TouchableOpacity>
         </View>
     );
@@ -161,10 +184,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
-        padding: 12,
-        paddingRight: 16,
-        borderRadius: 12,
-        backgroundColor: Colors.dark500,
+        gap:6,
     },
     optionContainer: {
         flexDirection: "row",

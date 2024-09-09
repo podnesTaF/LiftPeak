@@ -6,7 +6,7 @@ import {Picker} from '@react-native-picker/picker';
 import {formatTime} from "@shared/utils";
 
 interface RestPickerProps {
-    exerciseLog: IExerciseLog;
+    exerciseLog?: IExerciseLog;
     selectedTime: number,
     setSelectedTime: Function;
 }
@@ -23,7 +23,7 @@ const RestPicker = ({exerciseLog, setSelectedTime, selectedTime}: RestPickerProp
             gap: 12
         }}>
             <Text style={defaultStyles.smallTitle}>
-                Rest Time for {exerciseLog.exercise?.name}
+                Rest Time {exerciseLog?.exercise?.name ? "for " + exerciseLog?.exercise?.name : ""}
             </Text>
             <Picker
                 style={{

@@ -4,7 +4,6 @@ import {Image} from "react-native";
 import {SvgUri} from "react-native-svg";
 
 export const getEquipmentOptions = (equipments?: IEquipment[]) => {
-    console.log("equipments", equipments)
     return equipments?.map(e => ({
         label: e.name,
         value: e.id,

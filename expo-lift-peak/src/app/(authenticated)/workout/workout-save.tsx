@@ -45,7 +45,7 @@ const WorkoutSave = () => {
                 4000
             );
             discardWorkout();
-            router.push({pathname: "/(authenticated)/(tabs)/start"});
+            router.replace({pathname: "/(authenticated)/(tabs)/start"});
         }
     })
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import {Text, TouchableOpacity, View} from "react-native";
+import {Text, TouchableOpacity, View, StyleSheet} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
 import BottomSheetSelect from "@shared/components/BottomSheetSelect";
 import {getEquipmentOptions, levelOptions, MuscleFilter} from "@features/constructor";
@@ -8,13 +8,18 @@ import Button from "@shared/components/Button";
 import {Ionicons} from "@expo/vector-icons";
 import {useQuery} from "@tanstack/react-query";
 import {getEquipment} from "@entities/exercise";
+import RestPicker from "@features/timer/ui/RestPicker";
+import {TimePickerItem} from "@shared/TimePicker";
+import {formatTime, getSecondsFromTimeObj, getTimeObjFromSeconds} from "@shared/utils";
 
 const WorkoutConstructorPage = () => {
     const router = useRouter();
     const [equipments, setEquipments] = React.useState<(string | number)[]>([]);
     const [level, setLevel] = React.useState<(string | number)[]>([]);
-    const [selectedMuscles, setSelectedMuscles] = React.useState<{id: number, name: string}[]>([]);
-
+    const [selectedMuscles, setSelectedMuscles] = React.useState<{ id: number, name: string }[]>([]);
+    const [time, setTime] = React.useState<number>();
+    const [avgRestTime, setAvgRestTime] = React.useState<number>();
+    
     const {data} = useQuery({
         queryKey: ['equipment'],
         queryFn: getEquipment,
@@ -35,36 +40,46 @@ const WorkoutConstructorPage = () => {
     }
 
 
-
     return (
         <>
             <Stack.Screen options={{
-                headerTitle: "Exercises",
+                headerTitle: "Generate Workout",
                 headerTintColor: Colors.white,
                 headerLeft: ({tintColor}) => (
                     <TouchableOpacity onPress={router.back}>
-                        <Ionicons name={"chevron-back"} color={tintColor} size={30} />
+                        <Ionicons name={"chevron-back"} color={tintColor} size={30}/>
                     </TouchableOpacity>
                 ),
                 headerStyle: {
                     backgroundColor: Colors.dark700
                 },
-                headerRight: () => (
-                        <Button onPress={onSubmitSelection} color={"transparent"} title={"Save"} />
-                )
             }}/>
-            <View style={[defaultStyles.container, {padding: 16}]}>
-                <Text style={defaultStyles.smallTitle}>
-                    Fill in Workout Specifics
-                </Text>
-                <View style={{gap: 12, marginVertical: 20}}>
-                    <BottomSheetSelect value={selectedMuscles.map(m => m.name)} multiple label={"Target Muscles"} placeholder={"Select Muscles"} snapPoints={["50%", "90%"]}>
-                        <MuscleFilter selectedMuscles={selectedMuscles} setSelectedMuscles={setSelectedMuscles} />
+            <View style={[defaultStyles.container, {paddingTop: 12}]}>
+                <View style={styles.container}>
+                    <BottomSheetSelect value={selectedMuscles.map(m => m.name)} multiple label={"Target Muscles"}
+                                       placeholder={"Select Muscles"} snapPoints={["50%", "90%"]}>
+                        <MuscleFilter selectedMuscles={selectedMuscles} setSelectedMuscles={setSelectedMuscles}/>
                     </BottomSheetSelect>
-                    <BottomSheetSelect multiple label={"Available Equipment"} placeholder={"Select Equipment"} value={equipments} onChange={onChangeEquipment} options={
+                    <BottomSheetSelect allAvailable multiple label={"Equipment"} placeholder={"Select Equipment"} value={equipments}
+                                       onChange={onChangeEquipment} options={
                         getEquipmentOptions(data)
-                    } />
-                    <BottomSheetSelect label={"Difficulty Level"} placeholder={"Select Difficulty"} value={level} onChange={onChangeLevel} options={levelOptions} />
+                    }/>
+                    <BottomSheetSelect label={"Difficulty"} placeholder={"Select Difficulty"} value={level}
+                                       onChange={onChangeLevel} options={levelOptions} last={true}/>
+                    <BottomSheetSelect value={time ? [formatTime(time)] : []} label={"Time to Workout"} placeholder={"Pick Time"}
+                                       snapPoints={["50%", "50%"]}>
+                        <TimePickerItem selectedTime={getTimeObjFromSeconds(time || 0)}
+                                        onChange={(value) => {
+                                            setTime(getSecondsFromTimeObj(value))
+                                        }}/>
+                    </BottomSheetSelect>
+                    <BottomSheetSelect value={avgRestTime ? [formatTime(avgRestTime)] : []} label={"Average Rest Time"} placeholder={"Pick Time"}
+                                       snapPoints={["50%", "50%"]}>
+                        <RestPicker selectedTime={avgRestTime || 0} setSelectedTime={setAvgRestTime}/>
+                    </BottomSheetSelect>
+                </View>
+                <View style={{margin: 12}}>
+                    <Button color={"success"} title={"Generate Workout"} onPress={() => router.push({pathname: "/(authenticated)/workout/generate"})}/>
                 </View>
             </View>
         </>
@@ -72,3 +87,14 @@ const WorkoutConstructorPage = () => {
 };
 
 export default WorkoutConstructorPage;
+
+
+export const styles = StyleSheet.create({
+    container: {
+        marginHorizontal: 12,
+        paddingHorizontal: 12,
+        borderRadius: 10,
+        backgroundColor: Colors.dark700,
+        marginVertical: 20
+    }
+})

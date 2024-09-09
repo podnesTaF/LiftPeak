@@ -54,6 +54,18 @@ interface TimePickerModalProps {
 
 export const TimePickerModal = forwardRef<BottomSheetModal, TimePickerModalProps>(({handleClose, selectedTime, onChange}, ref) => {
 
+    return (
+        <CustomBottomSheet ref={ref as any} snapPoints={['50%']} handleClose={handleClose}>
+            <TimePickerItem selectedTime={selectedTime} onChange={onChange} />
+        </CustomBottomSheet>
+    )
+}
+)
+
+export default TimePicker;
+
+
+export const TimePickerItem = ({selectedTime, onChange}: Omit<TimePickerModalProps, "handleClose">) => {
     const handleTimeChange = (type: string, value: number) => {
         const newTime = {
             ...selectedTime,
@@ -64,59 +76,54 @@ export const TimePickerModal = forwardRef<BottomSheetModal, TimePickerModalProps
     };
 
     return (
-        <CustomBottomSheet ref={ref as any} snapPoints={['50%']} handleClose={handleClose}>
-            <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
-                {/* Hours Picker */}
-                <Picker
-                    style={{
-                        flex: 1,
-                        width: "100%",
-                        color: "white"
-                    }}
-                    selectedValue={selectedTime.hours}
-                    onValueChange={(itemValue) =>
-                        handleTimeChange("hours", itemValue)
-                    }>
-                    {hours.map((hour, index) => (
-                        <Picker.Item color={"white"} key={index + "_" + hour} label={`${hour} h`} value={hour} />
-                    ))}
-                </Picker>
+        <View style={{ flexDirection: 'row', justifyContent: 'space-between', width: '100%' }}>
+            {/* Hours Picker */}
+            <Picker
+                style={{
+                    flex: 1,
+                    width: "100%",
+                    color: "white"
+                }}
+                selectedValue={selectedTime.hours}
+                onValueChange={(itemValue) =>
+                    handleTimeChange("hours", itemValue)
+                }>
+                {hours.map((hour, index) => (
+                    <Picker.Item color={"white"} key={index + "_" + hour} label={`${hour} h`} value={hour} />
+                ))}
+            </Picker>
 
-                {/* Minutes Picker */}
-                <Picker
-                    style={{
-                        flex: 1,
-                        width: "100%",
-                        color: "white"
-                    }}
-                    selectedValue={selectedTime.minutes}
-                    onValueChange={(itemValue) =>
-                        handleTimeChange("minutes", itemValue)
-                    }>
-                    {minutes.map((minute, index) => (
-                        <Picker.Item color={"white"} key={index + "_" + minute} label={`${minute} m`} value={minute} />
-                    ))}
-                </Picker>
+            {/* Minutes Picker */}
+            <Picker
+                style={{
+                    flex: 1,
+                    width: "100%",
+                    color: "white"
+                }}
+                selectedValue={selectedTime.minutes}
+                onValueChange={(itemValue) =>
+                    handleTimeChange("minutes", itemValue)
+                }>
+                {minutes.map((minute, index) => (
+                    <Picker.Item color={"white"} key={index + "_" + minute} label={`${minute} m`} value={minute} />
+                ))}
+            </Picker>
 
-                {/* Seconds Picker */}
-                <Picker
-                    style={{
-                        flex: 1,
-                        width: "100%",
-                        color: "white"
-                    }}
-                    selectedValue={selectedTime.seconds}
-                    onValueChange={(itemValue) =>
-                        handleTimeChange("seconds", itemValue)
-                    }>
-                    {seconds.map((second, index) => (
-                        <Picker.Item color={"white"} key={index + "_" + second} label={`${second} s`} value={second} />
-                    ))}
-                </Picker>
-            </View>
-        </CustomBottomSheet>
+            {/* Seconds Picker */}
+            <Picker
+                style={{
+                    flex: 1,
+                    width: "100%",
+                    color: "white"
+                }}
+                selectedValue={selectedTime.seconds}
+                onValueChange={(itemValue) =>
+                    handleTimeChange("seconds", itemValue)
+                }>
+                {seconds.map((second, index) => (
+                    <Picker.Item color={"white"} key={index + "_" + second} label={`${second} s`} value={second} />
+                ))}
+            </Picker>
+        </View>
     )
 }
-)
-
-export default TimePicker;

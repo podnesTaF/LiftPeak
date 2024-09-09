@@ -30,7 +30,7 @@ const WorkoutLogger = ({isRoutine}: {isRoutine?: boolean}) => {
             await discardWorkoutWithMedia()
         }
 
-        router.replace("/(authenticated)/(tabs)/start");
+        router.back();
     };
 
 
