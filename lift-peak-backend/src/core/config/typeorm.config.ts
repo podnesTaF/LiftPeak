@@ -1,6 +1,7 @@
 import { TypeOrmModuleOptions } from '@nestjs/typeorm';
 import { config as evnconfig } from 'dotenv';
 import { Comment } from 'src/modules/comment/entities/comment.entity';
+import { Equipment } from 'src/modules/equipment/entities/equipment.entity';
 import { ExerciseMedia } from 'src/modules/exercise/entity/exercise-media.entity';
 import { ExerciseTarget } from 'src/modules/exercise/entity/exercise-target.entity';
 import { Exercise } from 'src/modules/exercise/entity/exercise.entity';
@@ -65,6 +66,7 @@ export const config: TypeOrmModuleOptions = {
     GroupPost,
     PostContent,
     PostSeen,
+    Equipment,
     Notification,
   ],
   synchronize: true,

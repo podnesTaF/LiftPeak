@@ -2,7 +2,6 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import {
   Exercise,
-  ExerciseEquipment,
   ExerciseMetric,
   ExerciseType,
 } from 'src/modules/exercise/entity/exercise.entity';
@@ -55,7 +54,7 @@ export class SetService {
       case ExerciseType.STRENGTH:
         if (
           exercise.metric === ExerciseMetric.reps &&
-          exercise.equipment === ExerciseEquipment.BODYWEIGHT
+          exercise.equipment.name?.toLowerCase() === 'bodyweight'
         ) {
           set.reps = dto.reps;
         } else if (exercise.metric === ExerciseMetric.reps) {

@@ -1,6 +1,11 @@
-import { IsArray, IsEnum, IsOptional, IsString } from 'class-validator';
 import {
-  ExerciseEquipment,
+  IsArray,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import {
   ExerciseLevel,
   ExerciseMetric,
   ExerciseType,
@@ -25,8 +30,8 @@ export class CreateExerciseDto {
   @IsEnum(ExerciseLevel)
   level: ExerciseLevel;
 
-  @IsEnum(ExerciseEquipment)
-  equipment: ExerciseEquipment;
+  @IsNumber()
+  equipmentId: number;
 
   @IsEnum(ExerciseMetric)
   metric: ExerciseMetric;
