@@ -13,5 +13,5 @@ export interface IUser {
     followingsCount?: number;
     followersCount?: number;
     isFollowing?: boolean;
-    gyms: IGym[]
+    gyms?: IGym[]
 }

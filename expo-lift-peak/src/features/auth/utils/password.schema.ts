@@ -19,4 +19,4 @@ export const passwordSchema = z
     message: "Passwords do not match",
   });
 
-export type PasswordOnlyRequest = z.infer<typeof passwordSchema>;
+export type PasswordRequest = z.infer<typeof passwordSchema>;

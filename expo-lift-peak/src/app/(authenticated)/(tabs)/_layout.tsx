@@ -1,34 +1,49 @@
-import React from 'react';
-import {Tabs} from 'expo-router';
-import {Ionicons} from "@expo/vector-icons";
+import React, { useEffect } from "react";
+import { Tabs, useLocalSearchParams } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
 import CustomTabBar from "@shared/components/navigation/CustomTabBar";
+import { useToastStore } from "@shared/store";
 
 function TabBarIcon(props: {
-    name: React.ComponentProps<typeof Ionicons>['name'];
-    color: string;
+  name: React.ComponentProps<typeof Ionicons>["name"];
+  color: string;
 }) {
-    return <Ionicons name={props.name} size={24} color={props.color} />;
+  return <Ionicons name={props.name} size={24} color={props.color} />;
 }
 
 export default function TabLayout() {
+ 
 
-
-    return (
-            <Tabs
-                tabBar={props => <CustomTabBar {...props} />}>
-                <Tabs.Screen name={"home"} options={{
-                    headerShown: false,
-                    tabBarIcon: (props) => <TabBarIcon name="newspaper" color={props.color} />,
-                }}/>
-                <Tabs.Screen name={"start"} options={{
-                    title: "Start",
-                    headerShown: false,
-                    tabBarIcon: (props) => <Ionicons size={36} name="add" color={props.color} />
-                }} />
-                <Tabs.Screen name={"personal-profile"} options={{
-                    title: "Profile",
-                    tabBarIcon: (props) => <Ionicons size={36} name="person-outline" color={props.color} />,
-                }} />
-            </Tabs>
-    );
+  return (
+    <Tabs tabBar={(props) => <CustomTabBar {...props} />}>
+      <Tabs.Screen
+        name={"home"}
+        options={{
+          headerShown: false,
+          tabBarIcon: (props) => (
+            <TabBarIcon name="newspaper" color={props.color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name={"start"}
+        options={{
+          title: "Start",
+          headerShown: false,
+          tabBarIcon: (props) => (
+            <Ionicons size={36} name="add" color={props.color} />
+          ),
+        }}
+      />
+      <Tabs.Screen
+        name={"personal-profile"}
+        options={{
+          title: "Profile",
+          tabBarIcon: (props) => (
+            <Ionicons size={36} name="person-outline" color={props.color} />
+          ),
+        }}
+      />
+    </Tabs>
+  );
 }

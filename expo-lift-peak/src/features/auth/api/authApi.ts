@@ -1,6 +1,7 @@
 import api from "@shared/api/AxiosInstance";
-import {EmailOnlyRequest} from "@features/auth/utils/emailSchema";
+import {EmailOnlyRequest} from "@features/auth/utils/email.schema";
 import {IUser} from "@entities/user";
+import { UserRequest } from "../utils/user.schema";
 
 export const isLoggedIn = async (): Promise<boolean> => {
     try{
@@ -25,4 +26,26 @@ export const validateOtp = async (dto: {email: string, otp: string})=>  {
 export const resetPassword = async (dto: {password: string, jwt: string}): Promise<IUser & { expiresAt: number }> => {
     const {data} = await api.post<IUser & { expiresAt: number }>("/auth/reset-password", dto);
     return data;
+}
+
+
+export const login = async (email: string, password: string): Promise<IUser & { expiresAt: number }> => {
+    const { data } = await api.post<IUser & { expiresAt: number }>("/auth/login", { email, password });
+    return data;
+  };
+
+export const register = async (email: string, password: string, username: string): Promise<IUser & { expiresAt: number }> => {
+    const { data } = await api.post<IUser & { expiresAt: number }>("/auth/register", {email, password, username});
+    return data;
+  };
+
+export const checkIfUserExists = async (value: string, field: 'email' | 'username'): Promise<boolean | null> => {
+
+    try {
+        const {data} = await api.get<boolean>(`/users/exists/${value}?field=${field}`)
+        return data;
+    } catch(error){
+        console.log('Error checking if user exists:', error);
+        return null;
+    }
 }

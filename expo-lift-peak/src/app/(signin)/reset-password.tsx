@@ -1,7 +1,3 @@
-import {
-  PasswordOnlyRequest,
-  passwordSchema,
-} from "@features/auth/utils/passwordSchema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "@shared/components/Button";
 import FormField from "@shared/components/form/FormField";
@@ -14,19 +10,20 @@ import {
   Text,
   View,
   StyleSheet,
-  Alert,
 } from "react-native";
 import {useMutation} from "@tanstack/react-query";
 import {resetPassword} from "@features/auth/api/authApi";
 import {useToastStore} from "@shared/store";
 import {useAuthStore} from "@features/auth";
+import { PasswordRequest, passwordSchema } from "@features/auth/utils/password.schema";
+
 
 const ResetPassword = () => {
   const { user, setUser } = useAuthStore();
   const {jwt} = useLocalSearchParams<{ jwt: string }>()
 
   const {showToast} = useToastStore()
-  const form = useForm<PasswordOnlyRequest>({
+  const form = useForm<PasswordRequest>({
     mode: "onChange",
     resolver: zodResolver(passwordSchema),
   });
@@ -44,13 +41,7 @@ const ResetPassword = () => {
   })
 
 
-  const password1 = form.watch("password1");
-
-  const isMinLength = password1?.length >= 6;
-  const hasUppercase = password1 && /[A-Z]/.test(password1);
-  const hasLowercase = password1 && /[a-z]/.test(password1);
-
-  const handleResetPassword = (dto: PasswordOnlyRequest) => {
+  const handleResetPassword = (dto: PasswordRequest) => {
     if(!jwt) {
      return
     }
@@ -63,7 +54,7 @@ const ResetPassword = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={[defaultStyles.container]}
     >
-      <View style={{ flex: 1, gap: 46, paddingBottom: 40, marginTop: 38 }}>
+      <View style={{ flex: 1, gap: 46, paddingBottom: 40, marginTop: 38, marginHorizontal: 24 }}>
         <Text style={defaultStyles.header}>Reset Password</Text>
         <FormProvider {...form}>
           <View style={{ paddingVertical: 16, flex: 1, gap: 26 }}>
@@ -80,7 +71,7 @@ const ResetPassword = () => {
                   <Text
                     style={[
                       styles.validationText,
-                      isMinLength && styles.validationTextSuccess,
+                      // isMinLength && styles.validationTextSuccess,
                     ]}
                   >
                     ✓ Min 6 characters
@@ -88,7 +79,7 @@ const ResetPassword = () => {
                   <Text
                     style={[
                       styles.validationText,
-                      Boolean(hasUppercase) && styles.validationTextSuccess,
+                      // Boolean(hasUppercase) && styles.validationTextSuccess,
                     ]}
                   >
                     ✓ Uppercase
@@ -96,7 +87,7 @@ const ResetPassword = () => {
                   <Text
                     style={[
                       styles.validationText,
-                      Boolean(hasLowercase) && styles.validationTextSuccess,
+                      // Boolean(hasLowercase) && styles.validationTextSuccess,
                     ]}
                   >
                     ✓ Lowercase
@@ -139,7 +130,6 @@ const styles = StyleSheet.create({
   validationContainer: {
     flexDirection: "row",
     gap: 14,
-    // paddingVertical: 1,
   },
   validationText: {
     color: Colors.dark300,
