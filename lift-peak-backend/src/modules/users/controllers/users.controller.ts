@@ -1,7 +1,16 @@
-import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AuthenticatedUser, GetUser } from '../decorators/user.decorator';
 import { AddGymDto } from '../dto/create-gym.dto';
+import { User } from '../entities/user.entity';
 import { UserGymService } from '../services/gym.service';
 import { UsersService } from '../services/users.service';
 
@@ -16,6 +25,14 @@ export class UsersController {
   @Get('/general')
   async profile(@GetUser() user: AuthenticatedUser) {
     return this.usersService.findOneWithFollowings(user.id);
+  }
+
+  @Get('/exists/:value')
+  async checkIfUserExists(
+    @Param('value') value: any,
+    @Query('field') field?: keyof User,
+  ) {
+    return this.usersService.isDuplicateField(value, field);
   }
 
   @UseGuards(JwtAuthGuard)
