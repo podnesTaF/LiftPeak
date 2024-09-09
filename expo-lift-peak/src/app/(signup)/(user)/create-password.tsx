@@ -37,12 +37,9 @@ const CreatePassword = () => {
     }) => {
       const user = await register(data.email, data.password, data.username);
       setUser(user);
-      router.push("/(signup)/(profile)/your-details");
+      router.replace("/(signup)/(profile)/your-details");
     },
-    onSuccess: (data) => {
-      showToast("User created successfully", "Success", "success");
-    },
-    onError: (error) => {
+    onError: () => {
       showToast(
         "Registration Failed",
         "Please check your input and try again.",
@@ -77,7 +74,7 @@ const CreatePassword = () => {
               />
 
               {formState.errors.username && username.length >= 3 && (
-                <Text style={{ color: Colors.danger}}>
+                <Text style={{ color: Colors.danger }}>
                   {formState.errors.username?.message}
                 </Text>
               )}

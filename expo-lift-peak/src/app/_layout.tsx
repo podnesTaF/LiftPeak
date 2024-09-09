@@ -70,16 +70,16 @@ const InitialLayout = () => {
         options={{ headerShown: false, title: "" }}
       />
 
-      <Stack.Screen 
+      <Stack.Screen
         name="(signin)"
         options={{
-          title: ""
+          headerShown: false,
         }}
       />
       <Stack.Screen
         name="(signup)"
         options={{
-          title: "",
+          headerShown: false,
         }}
       />
       <Stack.Screen
