@@ -2,6 +2,7 @@ import {Instruction} from "@entities/exercise/model/Instruction";
 import {IExerciseTarget} from "@entities/exercise/model/ITarget";
 import {IExerciseLog, ISet} from "@entities/workout-log";
 import {IExerciseMedia} from "@entities/media";
+import {IEquipment} from "@entities/exercise";
 
 export interface IExercise {
     id: number;
@@ -9,7 +10,7 @@ export interface IExercise {
     previewUrl: string;
     type: ExerciseType;
     level: ExerciseLevel;
-    equipment: ExerciseEquipment;
+    equipment: IEquipment;
     metric: ExerciseMetric;
     instructions: Instruction[];
     exerciseTargets: IExerciseTarget[];
@@ -39,14 +40,13 @@ export enum ExerciseLevel {
 }
 
 export enum ExerciseEquipment {
-    BODYWEIGHT = 'BODYWEIGHT',
-    DUMBBELL = 'DUMBBELL',
-    BARBELL = 'BARBELL',
-    KETTLEBELL = 'KETTLEBELL',
-    CABLE = 'CABLE',
-    MACHINE = 'MACHINE',
-    BAND = 'BAND',
-    BALL = 'BALL',
+    BODYWEIGHT = 'bodyweight',
+    DUMBBELLS = 'bumbbells',
+    BARBELL = 'barbell',
+    KETTLEBELL = 'kettlebell',
+    MACHINE = 'machine',
+    BAND = 'resistance band',
+    BALL = 'ball',
 }
 
 export enum ExerciseMetric {

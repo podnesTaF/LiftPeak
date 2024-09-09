@@ -2,11 +2,11 @@ import React from 'react';
 import {Image, StyleSheet, Text, View} from "react-native";
 import {Ionicons, MaterialIcons} from "@expo/vector-icons";
 import {Colors} from "@shared/styles";
-import {ExerciseEquipment, ExerciseMetric} from "@entities/exercise";
+import {ExerciseEquipment, ExerciseMetric, IEquipment} from "@entities/exercise";
 
 interface TableHeadProps {
     metric?: ExerciseMetric;
-    equipment?: ExerciseEquipment;
+    equipment?: IEquipment;
 }
 
 export const TableHead = ({metric = ExerciseMetric.reps, equipment,}: TableHeadProps) => {
@@ -24,7 +24,7 @@ export const TableHead = ({metric = ExerciseMetric.reps, equipment,}: TableHeadP
                         <View style={styles.textContainer}>
                             <Text style={styles.text}>Reps</Text>
                         </View>
-                        {equipment !== ExerciseEquipment.BODYWEIGHT && (
+                        {equipment?.name !== ExerciseEquipment.BODYWEIGHT && (
                             <>
                                 <View style={styles.textContainer}>
                                     <Image source={require("@assets/images/icons/ic-tonnage-lifted.png")} style={{width: 24, height: 24}} />
@@ -48,7 +48,7 @@ export const TableHead = ({metric = ExerciseMetric.reps, equipment,}: TableHeadP
                 )}
                 {metric === 'time' && (
                     <>
-                        {equipment !== ExerciseEquipment.BODYWEIGHT && (
+                        {equipment?.name !== ExerciseEquipment.BODYWEIGHT && (
                             <View style={styles.textContainer}>
                                 <Text style={styles.text}>Weight</Text>
                             </View>

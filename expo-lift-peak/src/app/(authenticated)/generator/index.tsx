@@ -2,10 +2,12 @@ import React from 'react';
 import {Text, TouchableOpacity, View} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
 import BottomSheetSelect from "@shared/components/BottomSheetSelect";
-import {equipmentOptions, levelOptions, MuscleFilter} from "@features/constructor";
+import {getEquipmentOptions, levelOptions, MuscleFilter} from "@features/constructor";
 import {Stack, useRouter} from "expo-router";
 import Button from "@shared/components/Button";
 import {Ionicons} from "@expo/vector-icons";
+import {useQuery} from "@tanstack/react-query";
+import {getEquipment} from "@entities/exercise";
 
 const WorkoutConstructorPage = () => {
     const router = useRouter();
@@ -13,8 +15,13 @@ const WorkoutConstructorPage = () => {
     const [level, setLevel] = React.useState<(string | number)[]>([]);
     const [selectedMuscles, setSelectedMuscles] = React.useState<{id: number, name: string}[]>([]);
 
+    const {data} = useQuery({
+        queryKey: ['equipment'],
+        queryFn: getEquipment,
+    })
+
     const onChangeEquipment = (newValues: (string | number)[]) => {
-        setEquipments(newValues)
+        setEquipments(newValues.map(v => data?.find(e => e.id === +v)?.name || v))
     }
 
     const onChangeLevel = (newValue: (string | number)[]) => {
@@ -54,7 +61,9 @@ const WorkoutConstructorPage = () => {
                     <BottomSheetSelect value={selectedMuscles.map(m => m.name)} multiple label={"Target Muscles"} placeholder={"Select Muscles"} snapPoints={["50%", "90%"]}>
                         <MuscleFilter selectedMuscles={selectedMuscles} setSelectedMuscles={setSelectedMuscles} />
                     </BottomSheetSelect>
-                    <BottomSheetSelect multiple label={"Available Equipment"} placeholder={"Select Equipment"} value={equipments} onChange={onChangeEquipment} options={equipmentOptions} />
+                    <BottomSheetSelect multiple label={"Available Equipment"} placeholder={"Select Equipment"} value={equipments} onChange={onChangeEquipment} options={
+                        getEquipmentOptions(data)
+                    } />
                     <BottomSheetSelect label={"Difficulty Level"} placeholder={"Select Difficulty"} value={level} onChange={onChangeLevel} options={levelOptions} />
                 </View>
             </View>
