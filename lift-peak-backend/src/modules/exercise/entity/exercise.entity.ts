@@ -1,6 +1,7 @@
+import { Equipment } from 'src/modules/equipment/entities/equipment.entity';
 import { ExerciseLog } from 'src/modules/workout-log/entities/exercise-log.entity';
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
-import { Column, Entity, OneToMany } from 'typeorm';
+import { Column, Entity, ManyToOne, OneToMany } from 'typeorm';
 import { ExerciseMedia } from './exercise-media.entity';
 import { ExerciseTarget } from './exercise-target.entity';
 import { Instruction } from './instruction.entity';
@@ -14,17 +15,6 @@ export enum ExerciseLevel {
   BEGINNER = 'BEGINNER',
   INTERMEDIATE = 'INTERMEDIATE',
   ADVANCED = 'ADVANCED',
-}
-
-export enum ExerciseEquipment {
-  BODYWEIGHT = 'BODYWEIGHT',
-  DUMBBELL = 'DUMBBELL',
-  BARBELL = 'BARBELL',
-  KETTLEBELL = 'KETTLEBELL',
-  CABLE = 'CABLE',
-  MACHINE = 'MACHINE',
-  BAND = 'BAND',
-  BALL = 'BALL',
 }
 
 export enum ExerciseMetric {
@@ -50,8 +40,13 @@ export class Exercise extends AbstractEntity {
   @Column()
   level: ExerciseLevel;
 
-  @Column()
-  equipment: ExerciseEquipment;
+  @Column({ nullable: true })
+  equipmentId: number;
+  @ManyToOne(() => Equipment, (e) => e.exercises, {
+    eager: true,
+    nullable: true,
+  })
+  equipment: Equipment;
 
   @Column({ default: ExerciseMetric.reps })
   metric: ExerciseMetric;

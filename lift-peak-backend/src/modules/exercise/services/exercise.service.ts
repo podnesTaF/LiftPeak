@@ -1,7 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import ffmpeg from 'fluent-ffmpeg';
 import sharp from 'sharp';
+import { Equipment } from 'src/modules/equipment/entities/equipment.entity';
 import { FileService } from 'src/modules/file/file.service';
 import { MediaType } from 'src/modules/media/entity/media.entity';
 import { Target } from 'src/modules/target/entities/target.entity';
@@ -29,6 +30,8 @@ export class ExerciseService {
     private readonly fileService: FileService,
     @InjectRepository(ExerciseTarget)
     private readonly exerciseTargetRepository: Repository<ExerciseTarget>,
+    @InjectRepository(Equipment)
+    private readonly equipmentRepository: Repository<Equipment>,
     private dataSource: DataSource,
   ) {}
 
@@ -37,12 +40,20 @@ export class ExerciseService {
     await queryRunner.connect();
     await queryRunner.startTransaction();
 
+    const equipment = await this.equipmentRepository.findOne({
+      where: { id: dto.equipmentId },
+    });
+
+    if (!equipment) {
+      throw new BadRequestException('Equipment not found');
+    }
+
     try {
       const exercise = new Exercise();
       exercise.name = dto.name;
       exercise.type = dto.type;
-      exercise.equipment = dto.equipment;
       exercise.level = dto.level;
+      exercise.equipment = equipment;
       exercise.metric = dto.metric;
 
       const savedExercise = await queryRunner.manager.save(Exercise, exercise);

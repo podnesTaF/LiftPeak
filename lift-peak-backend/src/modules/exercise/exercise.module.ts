@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { Equipment } from '../equipment/entities/equipment.entity';
 import { FileService } from '../file/file.service';
 import { ExerciseLog } from '../workout-log/entities/exercise-log.entity';
 import { ExerciseController } from './controllers/exercise.controller';
@@ -19,6 +20,7 @@ import { InstructionService } from './services/instruction.service';
       Instruction,
       ExerciseLog,
       ExerciseTarget,
+      Equipment,
     ]),
   ],
   controllers: [ExerciseController, InstructionController],

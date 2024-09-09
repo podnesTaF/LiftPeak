@@ -19,3 +19,7 @@ export const getTimeObjFromSeconds = (seconds: number) => {
         seconds: duration.seconds || 0
     }
 }
+
+export const getSecondsFromTimeObj = (time: {hours: number, minutes: number, seconds: number}) => {
+    return +time.hours * 3600 + +time.minutes * 60 + +time.seconds;
+}
