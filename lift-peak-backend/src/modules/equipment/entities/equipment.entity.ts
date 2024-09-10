@@ -10,6 +10,7 @@ export enum ExerciseEquipment {
   MACHINE = 'machine',
   BAND = 'resistance band',
   BALL = 'ball',
+  TRAPBAR = 'trap bar',
 }
 
 @Entity()

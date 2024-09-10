@@ -8,6 +8,7 @@ import { config as typeOrmConfig } from './core/config/typeorm.config';
 import { HttpRequestLogger } from './core/loggers/http-request.logger';
 import { AuthModule } from './modules/auth/auth.module';
 import { CommentModule } from './modules/comment/comment.module';
+import { ConstructorModule } from './modules/constructor/constructor.module';
 import { EquipmentModule } from './modules/equipment/equipment.module';
 import { ExerciseModule } from './modules/exercise/exercise.module';
 import { FeedModule } from './modules/feed/feed.module';
@@ -47,6 +48,7 @@ import { WorkoutModule } from './modules/workout/workout.module';
     FeedModule,
     OtpModule,
     NotificationModule,
+    ConstructorModule,
     EquipmentModule,
   ],
   controllers: [],

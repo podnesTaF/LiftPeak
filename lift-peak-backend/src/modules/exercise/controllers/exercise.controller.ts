@@ -47,6 +47,16 @@ export class ExerciseController {
     return this.exerciseService.createExercise(dto);
   }
 
+  @Post('/many')
+  @UseGuards(JwtAuthGuard)
+  async createManyExercises(@Body() dto: CreateExerciseDto[]) {
+    const res = [];
+    for (let i = 0; i < dto.length; i++) {
+      res.push(await this.exerciseService.createExercise(dto[i]));
+    }
+    return res;
+  }
+
   @Post('/:id/media')
   @UseGuards(JwtAuthGuard)
   @UseInterceptors(

@@ -21,6 +21,11 @@ export class TargetController {
     return this.targetService.getAll();
   }
 
+  @Get('/short')
+  async getByShort() {
+    return this.targetService.getShort();
+  }
+
   @Get('/body')
   async getBody() {
     return this.targetService.getBody();

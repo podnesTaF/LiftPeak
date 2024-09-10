@@ -73,4 +73,10 @@ export class TargetService {
       where: [{ paths: Not(IsNull()) }],
     });
   }
+
+  async getShort() {
+    return this.targetRepository.find({
+      select: ['id', 'name', 'formalName'],
+    });
+  }
 }
