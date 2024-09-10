@@ -6,11 +6,13 @@ import {getEquipmentOptions, levelOptions, MuscleFilter} from "@features/constru
 import {Stack, useRouter} from "expo-router";
 import Button from "@shared/components/Button";
 import {Ionicons} from "@expo/vector-icons";
-import {useQuery} from "@tanstack/react-query";
-import {getEquipment} from "@entities/exercise";
+import {useMutation, useQuery} from "@tanstack/react-query";
+import {ExerciseLevel, ExerciseType, getEquipment} from "@entities/exercise";
 import RestPicker from "@features/timer/ui/RestPicker";
 import {TimePickerItem} from "@shared/TimePicker";
 import {formatTime, getSecondsFromTimeObj, getTimeObjFromSeconds} from "@shared/utils";
+import {GenerateDto} from "@features/constructor/model/GenerateDto";
+import {generateWorkout} from "@features/constructor/api/constructorApi";
 
 const WorkoutConstructorPage = () => {
     const router = useRouter();
@@ -25,6 +27,11 @@ const WorkoutConstructorPage = () => {
         queryFn: getEquipment,
     })
 
+    const {mutate} = useMutation({
+        mutationKey: ['generateWorkout'],
+        mutationFn: (data: GenerateDto) => generateWorkout(data),
+    })
+
     const onChangeEquipment = (newValues: (string | number)[]) => {
         setEquipments(newValues.map(v => data?.find(e => e.id === +v)?.name || v))
     }
@@ -34,9 +41,14 @@ const WorkoutConstructorPage = () => {
     }
 
     const onSubmitSelection = () => {
-        console.log("available equipments", equipments);
-        console.log("level", level)
-        console.log("muscles", selectedMuscles);
+        mutate({
+            type: ExerciseType.STRENGTH,
+            level: level[0] as string as ExerciseLevel,
+            targetIds: selectedMuscles.map(m => m.id),
+            equipmentIds: equipments.map(e => data?.find(d => d.name === e)?.id || e) as number[],
+            workoutTimeInSec: time || 0,
+            restBetweenSetsInSec: avgRestTime || 0
+        })
     }
 
 
@@ -79,7 +91,7 @@ const WorkoutConstructorPage = () => {
                     </BottomSheetSelect>
                 </View>
                 <View style={{margin: 12}}>
-                    <Button color={"success"} title={"Generate Workout"} onPress={() => router.push({pathname: "/(authenticated)/workout/generate"})}/>
+                    <Button  color={"success"} title={"Generate Workout"} onPress={onSubmitSelection}/>
                 </View>
             </View>
         </>
