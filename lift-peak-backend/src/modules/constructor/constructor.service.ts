@@ -8,6 +8,7 @@ import {
   ExerciseType,
 } from '../exercise/entity/exercise.entity';
 import { GenerateWorkoutDto } from './dto/generate-workout.dto';
+import { WorkoutGenerator } from './workout-generator';
 
 @Injectable()
 export class ConstructorService {
@@ -19,28 +20,28 @@ export class ConstructorService {
   ) {}
 
   async generateWorkout(dto: GenerateWorkoutDto) {
-    // Apply filters
+    // Step 1: Apply Filters based on targets, equipment, and type
     let exercises = await this.filterExercisesByTarget(dto.targetIds);
-    7;
-
     exercises = await this.filterExercisesByEquipment(
       exercises,
       dto.equipmentIds,
     );
-    exercises = await this.filterExercisesByLevel(exercises, dto.level);
     exercises = await this.filterExercisesByType(exercises, dto.type);
+    exercises = await this.filterExercisesByLevel(exercises, dto.level);
 
-    // Calculate sets and reps
-    const workoutPlan = this.calculateSetsAndReps(
+    const workoutGenerator = new WorkoutGenerator();
+
+    // Step 3: Use WorkoutGenerator to calculate sets and rest times
+    const workoutPlan = workoutGenerator.calculateSetsAndRestTimes(
       exercises,
       dto.workoutTimeInSec,
-      dto.restBetweenSetsInSec,
+      dto.restBetweenSetsInSec || 90,
     );
 
     return workoutPlan;
   }
 
-  // Filter exercises based on selected targets
+  // Step 1: Filter exercises based on selected targets
   async filterExercisesByTarget(targetIds: number[]): Promise<Exercise[]> {
     return this.exerciseRepository
       .createQueryBuilder('exercise')
@@ -50,7 +51,7 @@ export class ConstructorService {
       .getMany();
   }
 
-  // Filter exercises based on selected equipment
+  // Step 2: Filter exercises based on selected equipment
   async filterExercisesByEquipment(
     exercises: Exercise[],
     equipmentIds: number[],
@@ -62,24 +63,7 @@ export class ConstructorService {
     );
   }
 
-  // Filter exercises by difficulty level
-  async filterExercisesByLevel(
-    exercises: Exercise[],
-    level: ExerciseLevel,
-  ): Promise<Exercise[]> {
-    if (level === ExerciseLevel.BEGINNER) {
-      return exercises.filter((exercise) => exercise.level === level);
-    } else if (level === ExerciseLevel.INTERMEDIATE) {
-      return exercises.filter(
-        (exercise) =>
-          exercise.level === level || exercise.level === ExerciseLevel.BEGINNER,
-      );
-    } else {
-      return exercises;
-    }
-  }
-
-  // Filter exercises by type (strength, cardio, etc.)
+  // Step 3: Filter exercises by type (strength, cardio, etc.)
   async filterExercisesByType(
     exercises: Exercise[],
     type: ExerciseType,
@@ -87,83 +71,22 @@ export class ConstructorService {
     return exercises.filter((exercise) => exercise.type === type);
   }
 
-  // Calculate sets and reps
-  private calculateSetsAndReps(
+  // Step 4: Filter exercises by level
+  async filterExercisesByLevel(
     exercises: Exercise[],
-    workoutTimeInSec: number,
-    restBetweenSetsInSec: number,
-  ): { exercise: Exercise; sets: number; reps: number }[] {
-    const totalWorkoutTime = workoutTimeInSec;
-    const setTime = 60;
-    const restTime = restBetweenSetsInSec || 120;
-    const totalTimePerExercise = setTime + restTime;
-
-    // Calculate maximum sets based on total time
-    const maxTotalSets = Math.floor(totalWorkoutTime / totalTimePerExercise);
-
-    // Assume primary exercises should get more sets
-    const primaryExercises = exercises.slice(
-      0,
-      Math.ceil(exercises.length * 0.6),
-    );
-    const secondaryExercises = exercises.slice(
-      Math.ceil(exercises.length * 0.4),
-    );
-
-    const primarySetCount = Math.floor((maxTotalSets * 2) / 3);
-    const secondarySetCount = maxTotalSets - primarySetCount;
-
-    const primarySets = Math.floor(primarySetCount / primaryExercises.length);
-    const secondarySets = secondaryExercises.length
-      ? Math.floor(secondarySetCount / secondaryExercises.length)
-      : 0;
-
-    // Assign sets and reps
-    const workoutPlan = [];
-
-    for (const exercise of primaryExercises) {
-      workoutPlan.push({
-        exercise,
-        sets: primarySets,
-        reps: this.getRepsForExercise(exercise, 'primary', exercise.level),
-      });
-    }
-
-    for (const exercise of secondaryExercises) {
-      workoutPlan.push({
-        exercise,
-        sets: secondarySets,
-        reps: this.getRepsForExercise(exercise, 'secondary', exercise.level),
-      });
-    }
-
-    return workoutPlan;
-  }
-
-  private getRepsForExercise(
-    exercise: Exercise,
-    priority: 'primary' | 'secondary',
     level: ExerciseLevel,
-  ): number {
-    const baseReps = {
-      Beginner: 12,
-      Intermediate: 10,
-      Advanced: 8,
-    }[level];
-
-    const priorityModifier = priority === 'primary' ? 1 : 0.8;
-
-    let reps = Math.round(baseReps * priorityModifier);
-
-    if (exercise.type === ExerciseType.CARDIO) {
-      reps = Math.max(reps * 2, 20); // Higher reps for cardio exercises
-    } else if (
-      exercise.type === ExerciseType.STRENGTH &&
-      priority === 'primary'
-    ) {
-      reps = Math.max(reps - 2, 6); // Fewer reps for primary strength exercises
+  ): Promise<Exercise[]> {
+    if (level === ExerciseLevel.BEGINNER) {
+      return exercises.filter((exercise) => exercise.level === level);
     }
-
-    return reps;
+    if (level === ExerciseLevel.INTERMEDIATE) {
+      return exercises.filter(
+        (exercise) =>
+          exercise.level === level || exercise.level === ExerciseLevel.BEGINNER,
+      );
+    }
+    if (level === ExerciseLevel.ADVANCED) {
+      return exercises;
+    }
   }
 }
