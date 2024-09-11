@@ -10,6 +10,7 @@ import {useAuthStore} from "@features/auth";
 import {Ionicons} from "@expo/vector-icons";
 import Animated, {Extrapolation, interpolate, useAnimatedStyle} from "react-native-reanimated";
 import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
+import { router } from 'expo-router';
 
 interface ProfileHeaderProps{
     user?: IUser;
@@ -76,7 +77,7 @@ export const ProfileHeader = ({user}: ProfileHeaderProps) => {
                }}>
                    {user.id === authenticatedUser?.id ? (
                        <View style={[defaultStyles.row, {gap: 12}]}>
-                           <Button style={{flex: 1}} color={"dark500"} title={"Settings"}>
+                           <Button onPress={() => router.push('/(authenticated)/(tabs)/personal-profile/settings')} style={{flex: 1}} color={"dark500"} title={"Settings"}>
                                <Ionicons name={"settings-outline"} size={24} color={Colors.white} />
                            </Button>
                            <Button style={{flex: 1}} color={"white"} title={"Edit Profile"}>

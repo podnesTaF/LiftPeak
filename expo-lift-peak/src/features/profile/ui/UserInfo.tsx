@@ -42,7 +42,7 @@ export const UserInfo = ({user}: UserInfoProps) => {
                 <View style={[styles.sectionRow,  {borderBottomWidth: 1, borderBottomColor: Colors.dark300, paddingBottom: 12}]}>
                     <Ionicons name={"home-outline"} size={24} color={"white"}/>
                     <Text style={{color: "white", fontWeight: "500"}}>
-                        Gyms: {user?.gyms.map(gym => gym.name).join(", ")}
+                        Gyms: {user?.gyms?.map(gym => gym.name).join(", ")}
                     </Text>
                 </View>
                 <TouchableOpacity>

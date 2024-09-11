@@ -1,8 +1,7 @@
-import React, { useEffect } from "react";
-import { Tabs, useLocalSearchParams } from "expo-router";
+import React, { useState, useEffect } from "react";
+import { Tabs, useSegments } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import CustomTabBar from "@shared/components/navigation/CustomTabBar";
-import { useToastStore } from "@shared/store";
 
 function TabBarIcon(props: {
   name: React.ComponentProps<typeof Ionicons>["name"];
@@ -12,8 +11,6 @@ function TabBarIcon(props: {
 }
 
 export default function TabLayout() {
- 
-
   return (
     <Tabs tabBar={(props) => <CustomTabBar {...props} />}>
       <Tabs.Screen
