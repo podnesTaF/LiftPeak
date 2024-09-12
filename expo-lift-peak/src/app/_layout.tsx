@@ -36,25 +36,52 @@ export const unstable_settings = {
 
 const InitialLayout = () => {
   const [loaded, error] = useFonts({
-    SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
+    SpaceMono: require('../../assets/fonts/SpaceMono-Regular.ttf'),
     ...FontAwesome.font,
-  });
+});
 
-  const { token, isTokenValid, clearAuth } = useAuthStore();
+const {token,isTokenValid, clearAuth} = useAuthStore();
 
-  const router = useRouter();
-  const segments = useSegments();
+const router = useRouter();
+const segments = useSegments();
 
-  // Expo Router uses Error Boundaries to catch errors in the navigation tree.
-  useEffect(() => {
+// Expo Router uses Error Boundaries to catch errors in the navigation tree.
+useEffect(() => {
     if (error) throw error;
-  }, [error]);
+}, [error]);
 
-  useEffect(() => {
+useEffect(() => {
     if (loaded) {
-      SplashScreen.hideAsync();
+        SplashScreen.hideAsync();
     }
-  }, [loaded]);
+}, [loaded]);
+
+useEffect(() => {
+    if (!loaded) {
+        return;
+    }
+    if (!isTokenValid()) {
+        clearAuth();
+        router.replace("/login");
+    }
+}, [loaded, token]);
+
+useEffect(() => {
+    if (!loaded) {
+        return;
+    }
+    const inAuthGroup = segments[0] === "(authenticated)";
+
+    if (token && !inAuthGroup) {
+        router.replace("/(authenticated)/(tabs)/home");
+    } else if (!token) {
+        router.replace("/");
+    }
+}, [token, loaded]);
+
+if (!loaded) {
+    return <Text>Loading...</Text>;
+}
 
   return (
     <Stack

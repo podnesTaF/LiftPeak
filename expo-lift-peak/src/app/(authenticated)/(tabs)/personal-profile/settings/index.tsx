@@ -1,47 +1,24 @@
-import {
-  View,
-  Text,
-  ScrollView,
-  StyleSheet,
-  FlatList,
-  TouchableOpacity,
-  Pressable,
-} from "react-native";
+import { View, ScrollView, StyleSheet, TouchableOpacity, Text } from "react-native";
 import React from "react";
-import { Colors, defaultStyles } from "@shared/styles";
 import { Ionicons } from "@expo/vector-icons";
-import Button from "@shared/components/Button";
+import { Colors, defaultStyles } from "@shared/styles";
 import { router } from "expo-router";
+import SettingsSection from "@shared/components/SettingsSection";
 
-const accountSettings = [
+const settingsSections = [
   {
+    id: "account",
     header: "Account",
     names: [
-      {
-        name: "Profile",
-        route: "profile",
-      },
-      {
-        name: "General",
-        route: "general",
-      },
-      {
-        name: "Security",
-        route: "security",
-      },
+      { id: "1", name: "Profile", route: "profile" },
+      { id: "2", name: "General", route: "general" },
+      { id: "3", name: "Security", route: "security" },
     ],
   },
-];
-
-const workoutSettings = [
   {
+    id: "workout",
     header: "Workout",
-    names: [
-      {
-        name: "Units",
-        route: "units",
-      },
-    ],
+    names: [{ id: "4", name: "Units", route: "units" }],
   },
 ];
 
@@ -50,64 +27,23 @@ const Settings = () => {
     <View style={defaultStyles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
         <View style={styles.content}>
-          <View style={{ marginTop: 20 }}>
-            <Text style={styles.headerText}>{accountSettings[0].header}</Text>
-            <View style={styles.block}>
-              <FlatList
-                data={accountSettings[0].names}
-                scrollEnabled={false}
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
-                renderItem={({ item }) => (
-                  <Pressable
-                    style={({ pressed }) => [
-                      styles.item,
-                      pressed && { backgroundColor: Colors.dark500 }, 
-                    ]}
-                    onPress={() => (router.push(`/(authenticated)/(tabs)/personal-profile/settings/account/${item.route}`))}
-                  >
-                    <Text style={styles.text}>{item.name}</Text>
-                    <Ionicons
-                      name={"chevron-forward"}
-                      size={24}
-                      color={Colors.dark300}
-                    />
-                  </Pressable>
-                )}
-              />
-            </View>
-          </View>
-
-          <View style={{ marginTop: 20 }}>
-            <Text style={styles.headerText}>{workoutSettings[0].header}</Text>
-            <View style={styles.block}>
-              <FlatList
-                data={workoutSettings[0].names}
-                scrollEnabled={false}
-                ItemSeparatorComponent={() => <View style={styles.separator} />}
-                renderItem={({ item }) => (
-                  <Pressable
-                    style={({ pressed }) => [
-                      styles.item,
-                      pressed && { backgroundColor: Colors.dark500 }, 
-                    ]}
-                    onPress={() => (router.push(`/(authenticated)/(tabs)/personal-profile/settings/workout/${item.route}`))}
-                  >
-                    <Text style={styles.text}>{item.name}</Text>
-                    <Ionicons
-                      name={"chevron-forward"}
-                      size={24}
-                      color={Colors.dark300}
-                    />
-                  </Pressable>
-                )}
-              />
-            </View>
-          </View>
+          {settingsSections.map((section) => (
+            <SettingsSection
+              key={section.id}
+              header={section.header}
+              data={section.names}
+              parentId={section.id} 
+            />
+          ))}
         </View>
 
-        <View style={styles.button}>
-          <Button color={"danger"} title={"Logout"} />
-        </View>
+        <TouchableOpacity
+          style={[defaultStyles.horizontalContainer, styles.button]}
+          onPress={() => router.push("/logout")}
+        >
+          <Ionicons name={"log-out-outline"} size={26} color={Colors.white} />
+          <Text style={defaultStyles.smallTitle}>Logout</Text>
+        </TouchableOpacity>
       </ScrollView>
     </View>
   );
@@ -124,31 +60,10 @@ const styles = StyleSheet.create({
   content: {
     flexGrow: 1,
   },
-  block: {
-    backgroundColor: Colors.dark700,
-  },
-  separator: {
-    height: 1,
-    backgroundColor: Colors.dark900,
-  },
-  item: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
-    padding: 20,
-  },
-  text: {
-    color: Colors.white,
-    fontSize: 18,
-    fontWeight: "400",
-  },
-  headerText: {
-    fontSize: 17,
-    color: Colors.dark300,
-    paddingLeft: 12,
-    paddingVertical: 5,
-  },
   button: {
-    paddingHorizontal: 20,
+    marginHorizontal: 20,
+    backgroundColor: Colors.danger,
+    padding: 12,
+    borderRadius: 10,
   },
 });
