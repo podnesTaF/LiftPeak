@@ -12,7 +12,7 @@ const ExerciseHistory = () => {
 
     const {data: exercisePreviews} = useQuery({
         queryKey: ['exercisePreview', exerciseId],
-        queryFn: async () => findExerciseList({id: +exerciseId!, search: ''}),
+        queryFn: async () => findExerciseList({id: +exerciseId!, search: '', muscles: ""}),
         enabled: !!exerciseId
     })
 

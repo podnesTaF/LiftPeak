@@ -12,7 +12,7 @@ export const getEquipmentOptions = (equipments?: IEquipment[]) => {
 }
 
 export const levelOptions: {label: React.ReactNode, value: string | number}[] = [
-    {label: "Beginner", value: "beginner"},
-    {label: "Intermediate", value: "intermediate"},
-    {label: "Advanced", value: "advanced"},
+    {label: "Beginner", value: "BEGINNER"},
+    {label: "Intermediate", value: "INTERMEDIATE"},
+    {label: "Advanced", value: "ADVANCED"},
 ]

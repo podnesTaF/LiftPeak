@@ -11,7 +11,7 @@ const AnimatedG = Animated.createAnimatedComponent(G);
 interface MuscleGroupProps {
     muscle: ITarget;
     paths: string[];
-    setSelectedMuscles: (muscles: {id: number, name: string}[]) => void;
+    setSelectedMuscles?: (muscles: {id: number, name: string}[]) => void;
     selectedMuscles: {id: number, name: string}[];
 }
 
@@ -23,6 +23,7 @@ const MuscleGroup = ({muscle, selectedMuscles, setSelectedMuscles, paths}: Muscl
     }));
 
     const handlePress = () => {
+        if(!setSelectedMuscles) return;
         if (selectedMuscles.find(m => m.id === muscle.id)) {
             setSelectedMuscles(selectedMuscles.filter(m => m.id !== muscle.id));
         } else {
