@@ -8,6 +8,7 @@ import {useTimerStore} from "@features/timer";
 import {useRouter} from "expo-router";
 import {formatTime} from "@shared/utils";
 import useTimerInterval from "@features/timer/hooks/useIntervalTimer";
+import {BlurView} from "expo-blur";
 
 export const ActiveWorkoutPopup = () => {
     const {workout} = useWorkoutStore();
@@ -27,8 +28,8 @@ export const ActiveWorkoutPopup = () => {
     }
 
     return (
-       <>
-           <View style={[styles.container, {width: width - 40}]}>
+       <View>
+           <BlurView intensity={50} tint={"dark"} style={[styles.container, {width: width - 40}]}>
                <View style={styles.row}>
                    <Text style={{color: Colors.success, fontWeight: "600", fontSize: 16}}>
                        {formatTime(elapsedTime)}
@@ -63,14 +64,14 @@ export const ActiveWorkoutPopup = () => {
                        </Text>
                    </TouchableOpacity>
                </View>
-           </View>
-       </>
+           </BlurView>
+       </View>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        backgroundColor: Colors.dark500,
+        // backgroundColor: Colors.dark500,
         borderTopStartRadius: 40,
         borderTopEndRadius: 40,
         padding: 16,

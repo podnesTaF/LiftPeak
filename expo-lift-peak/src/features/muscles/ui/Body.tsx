@@ -9,22 +9,23 @@ import {useQuery} from "@tanstack/react-query";
 import {getMusclesWithVectors} from "@features/muscles/api/MuscleApi";
 import {filterMusclesByLook} from "@features/muscles/utils";
 
+export const views = ["front", "back"] as const;
+
 interface BodyProps {
     look: "front" | "back";
-    setSelectedMuscles: (muscles: {id: number, name: string}[]) => void;
+    setSelectedMuscles?: (muscles: {id: number, name: string}[]) => void;
     selectedMuscles: {id: number, name: string}[];
+    width?: number;
+    height?: number;
 }
 
-export const Body = ({look, selectedMuscles, setSelectedMuscles}: BodyProps) => {
-    const {height, width} = Dimensions.get('window');
+export const Body = ({look, selectedMuscles, setSelectedMuscles, height, width}: BodyProps) => {
+    const {height: screenHeight, width: screenWidth} = Dimensions.get('window');
 
     const {data} = useQuery({
         queryKey: ["muscles"],
         queryFn: getMusclesWithVectors
     })
-
-    const aspectRatio = 500 / 350;
-
 
     return (
         <ReactNativeZoomableView maxZoom={2}
@@ -33,9 +34,9 @@ export const Body = ({look, selectedMuscles, setSelectedMuscles}: BodyProps) => 
                                  bindToBorders={true}
                                  style={[{alignItems: "center", justifyContent: "center"}]}>
             <Svg
-                width={width * 0.68}
-                height={height * 0.60}
-                preserveAspectRatio="xMidYMid meet"
+                width={width || (screenWidth * 0.68)}
+                height={height ||(screenHeight * 0.60)}
+                viewBox={height && width ? `0 0 ${width * 1.7} ${height * 1.6}` : undefined}
             >
                 <Path
                     d={bodyShape[look]?.path}

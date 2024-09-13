@@ -19,16 +19,20 @@ interface ProfileHeaderProps{
 export const ProfileHeader = ({user}: ProfileHeaderProps) => {
     const {user: authenticatedUser} = useAuthStore()
     const [isFollowing, setIsFollowing] = useState<boolean>(!!user?.isFollowing)
+    // Get the scroll position (scrollY) from the custom scroll context to animate elements based on scrolling
     const {scrollY} = useAnimatedScroll();
 
+    // Define the animated styles that will change as the user scrolls
     const containerStyle = useAnimatedStyle(() => {
+        // translateY handles vertical movement based on scroll position (from 0 to -80 pixels)
         const translateY = interpolate(scrollY.value, [350, 430], [0, -80], Extrapolation.CLAMP);
 
+        // Return the styles to be applied. This includes the translateY transformation and opacity changes.
         return {
-            transform: [{translateY}],
-            opacity: interpolate(scrollY.value, [200, 430], [1, 0], Extrapolation.CLAMP)
+            transform: [{translateY}], // Move the component up by -80 pixels between scrollY of 350 and 430
+            opacity: interpolate(scrollY.value, [200, 430], [1, 0], Extrapolation.CLAMP) // Fade out between scrollY of 200 (fully visible) and 430 (fully invisible)
         }
-    })
+    });
 
     if(!user) {
         return null

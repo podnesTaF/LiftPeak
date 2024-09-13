@@ -21,8 +21,12 @@ const Layout = () => {
       <Stack.Screen name="general" options={{
         title: 'General'
       }}/>
-      <Stack.Screen name="profile" />
-      <Stack.Screen name="security" />
+      <Stack.Screen name="profile" options={{
+        title: 'Profile'
+      }}/>
+      <Stack.Screen name="security" options={{
+        title: 'Security'
+      }}/>
     </Stack>
   );
 };

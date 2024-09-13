@@ -8,6 +8,7 @@ import TabBarItem from "@shared/components/navigation/TabBarItem";
 import {ActiveWorkoutPopup, useWorkoutStore} from "@features/workout-logger";
 import {useAuthStore} from "@features/auth";
 import {useLocalSearchParams} from "expo-router";
+import {BlurView} from "expo-blur";
 
 const CustomTabBar = ({state, descriptors,navigation}: BottomTabBarProps) => {
     const {workout} = useWorkoutStore();
@@ -16,7 +17,7 @@ const CustomTabBar = ({state, descriptors,navigation}: BottomTabBarProps) => {
     return (
         <>
             <ActiveWorkoutPopup />
-            <View style={[styles.container, workout && styles.activeWorkout]}>
+            <BlurView intensity={50} tint={"dark"} style={[styles.container, workout && styles.activeWorkout]}>
                 {state.routes.map((route, index) => {
                     const { options } = descriptors[route.key];
 
@@ -65,7 +66,7 @@ const CustomTabBar = ({state, descriptors,navigation}: BottomTabBarProps) => {
                         />
                     );
                 })}
-            </View>
+            </BlurView>
         </>
     );
 };

@@ -4,6 +4,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Colors, defaultStyles } from "@shared/styles";
 import { router } from "expo-router";
 import SettingsSection from "@shared/components/SettingsSection";
+import { useAuthStore } from "@features/auth";
 
 const settingsSections = [
   {
@@ -23,6 +24,11 @@ const settingsSections = [
 ];
 
 const Settings = () => {
+
+
+  const {clearAuth} = useAuthStore()
+
+
   return (
     <View style={defaultStyles.container}>
       <ScrollView contentContainerStyle={styles.scrollContent}>
@@ -39,7 +45,7 @@ const Settings = () => {
 
         <TouchableOpacity
           style={[defaultStyles.horizontalContainer, styles.button]}
-          onPress={() => router.push("/logout")}
+          onPress={() => clearAuth()}
         >
           <Ionicons name={"log-out-outline"} size={26} color={Colors.white} />
           <Text style={defaultStyles.smallTitle}>Logout</Text>
