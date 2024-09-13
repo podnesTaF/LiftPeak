@@ -10,6 +10,7 @@ import {useBottomTabBarHeight} from "@react-navigation/bottom-tabs";
 import {queryClient} from "@shared/api";
 import {useMutation, useQuery} from "@tanstack/react-query";
 import {PostType} from "@entities/post";
+import {useHeaderHeight} from "@react-navigation/elements";
 
 
 export default function Followings() {
@@ -18,6 +19,7 @@ export default function Followings() {
     const [visibleItems, setVisibleItems] = useState<number[]>([]);
     const timers = useRef<{ [key: string]: NodeJS.Timeout }>({}).current;
     const tabBarHeight = useBottomTabBarHeight() + 20;
+    const headerHeight = useHeaderHeight()
 
     const {data: workouts} = useQuery({
         queryKey: ["workouts"],
@@ -69,12 +71,12 @@ export default function Followings() {
         <>
             <Animated.FlatList
                 onScroll={scrollHandler}
-                style={[defaultStyles.container]}
+                style={[defaultStyles.container, {paddingTop: headerHeight + 50}]}
                 contentContainerStyle={{paddingBottom: tabBarHeight}}
                 data={workouts}
                 ListHeaderComponent={<FollowingCircles/>}
                 renderItem={({item}) => (
-                    <WorkoutPost  workout={item} isViewable={!!visibleItems.find((id) => id  === item.id )} />
+                    <WorkoutPost workout={item} isViewable={!!visibleItems.find((id) => id  === item.id )} />
                 )}
                 refreshControl={
                     <RefreshControl

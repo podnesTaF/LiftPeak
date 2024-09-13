@@ -14,10 +14,11 @@ const CustomTabBar = ({state, descriptors,navigation}: BottomTabBarProps) => {
     const {workout} = useWorkoutStore();
     const {user} = useAuthStore();
     const {id} = useLocalSearchParams<{id?: string}>();
+
     return (
         <>
             <ActiveWorkoutPopup />
-            <BlurView intensity={50} tint={"dark"} style={[styles.container, workout && styles.activeWorkout]}>
+            <BlurView intensity={100} tint={"dark"} style={[styles.container]}>
                 {state.routes.map((route, index) => {
                     const { options } = descriptors[route.key];
 
@@ -74,13 +75,12 @@ const CustomTabBar = ({state, descriptors,navigation}: BottomTabBarProps) => {
 const styles = StyleSheet.create({
     container: {
         position: "absolute",
-        bottom: 20,
+        bottom: 0,
+        width: "100%",
         flexDirection: "row",
         justifyContent: "space-between",
         alignItems: "center",
         borderRadius: 40,
-        marginHorizontal: 20,
-        backgroundColor: Colors.dark900,
         paddingVertical: 12,
         shadowColor: Colors.dark900,
         shadowOffset: {
