@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useCallback, useRef, useState} from 'react';
 import {View, StyleSheet, Text, TouchableOpacity, Dimensions} from "react-native";
 import {Colors} from "@shared/styles";
 import {Ionicons} from "@expo/vector-icons";
@@ -9,15 +9,46 @@ import {useRouter} from "expo-router";
 import {formatTime} from "@shared/utils";
 import useTimerInterval from "@features/timer/hooks/useIntervalTimer";
 import {BlurView} from "expo-blur";
+import BottomSheet, {BottomSheetView} from "@gorhom/bottom-sheet";
+import BottomSheetBackgroundContainer
+    from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackgroundContainer";
+import BottomSheetBackground from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetBackground";
+import Handle from "@shared/components/bottomSheet/CustomIndicator";
+import Animated, {Extrapolation, interpolate, useAnimatedStyle, useSharedValue} from "react-native-reanimated";
+
 
 export const ActiveWorkoutPopup = () => {
     const {workout} = useWorkoutStore();
     const {elapsedTime, pauseTimer, playTimer, isRunning} = useTimerStore();
+    const [isIndex1, setIsIndex1] = useState(false);
     const  {discardAlert} = useDiscardWorkout();
     const router = useRouter();
-    const width = Dimensions.get("window").width;
-
+    const [currentIndex, setCurrentIndex] = useState(0);
+    const bottomSheetRef = useRef<BottomSheet>(null);
     useTimerInterval();
+
+    const handleSheetChanges = useCallback((index: number) => {
+        if ((index - currentIndex) > 1) {
+            const correctedIndex = index > currentIndex ? currentIndex + 1 : currentIndex - 1;
+            bottomSheetRef.current?.snapToIndex(correctedIndex);
+            return
+        } else {
+            setCurrentIndex(index);
+        }
+        if (index === 1) {
+            setIsIndex1(true);
+        } else {
+            setIsIndex1(false);
+        }
+        if(index === 2) {
+            router.push("/(authenticated)/workout")
+            bottomSheetRef.current?.snapToIndex(0)
+        }
+    }, [currentIndex]);
+
+    const handleComponent = useCallback((props: any) => (
+        <Handle {...props} isIndex1={isIndex1} />
+    ), [isIndex1])
 
     if(!workout) {
         return null
@@ -27,9 +58,37 @@ export const ActiveWorkoutPopup = () => {
         router.push("/(authenticated)/workout")
     }
 
+    const animatedSheetIndex = useSharedValue(0);
+    const draggingAnimatedStyle = useAnimatedStyle(() => {
+        const opacity = interpolate(
+            animatedSheetIndex.value,
+            [0, 1],
+            [0, 1],  // Visible after index 0
+            Extrapolation.CLAMP
+        );
+        const translateY = interpolate(
+            animatedSheetIndex.value,
+            [0, 1],
+            [50, 0],  // Slide up
+            Extrapolation.CLAMP
+        );
+        return {
+            opacity,
+            transform: [{ translateY }]
+        };
+    });
+
     return (
-       <View>
-           <BlurView intensity={50} tint={"dark"} style={[styles.container, {width: width - 40}]}>
+       <BottomSheet backgroundStyle={{
+           backgroundColor: "transparent"
+       }}
+                    animatedIndex={animatedSheetIndex}
+                    handleComponent={handleComponent}
+                    ref={bottomSheetRef}
+                    snapPoints={["14%","22%", "30%"]}
+                    onChange={handleSheetChanges}>
+           <BottomSheetView style={[styles.container]}>
+               <Animated.View style={[styles.content, draggingAnimatedStyle]}>
                <View style={styles.row}>
                    <Text style={{color: Colors.success, fontWeight: "600", fontSize: 16}}>
                        {formatTime(elapsedTime)}
@@ -49,14 +108,6 @@ export const ActiveWorkoutPopup = () => {
                            </Text>
                        </TouchableOpacity>
                    )}
-               </View>
-               <View style={styles.row}>
-                   <TouchableOpacity onPress={navigateToWorkout} style={[styles.actionContainer]}>
-                       <Ionicons name={"return-up-back"} size={24} color={Colors.white} />
-                       <Text style={{color: Colors.white, fontWeight: "600", fontSize: 16}}>
-                           Workout
-                       </Text>
-                   </TouchableOpacity>
                    <TouchableOpacity onPress={discardAlert} style={[styles.actionContainer]}>
                        <Ionicons name={"close-outline"} size={24} color={Colors.danger} />
                        <Text style={{color: Colors.danger, fontWeight: "600", fontSize: 16}}>
@@ -64,21 +115,24 @@ export const ActiveWorkoutPopup = () => {
                        </Text>
                    </TouchableOpacity>
                </View>
-           </BlurView>
-       </View>
+               </Animated.View>
+           </BottomSheetView>
+       </BottomSheet>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
-        // backgroundColor: Colors.dark500,
-        borderTopStartRadius: 40,
-        borderTopEndRadius: 40,
-        padding: 16,
-        marginHorizontal: 20,
+        flex: 1,
         gap: 16,
-        position: "absolute",
-        bottom: 85,
+    },
+    content: {
+        flex: 1,
+        borderTopStartRadius: 20,
+        borderTopEndRadius: 20,
+        padding: 16,
+        width: "100%",
+        backgroundColor: "rgba(43,44,52,0.7)",
     },
     row: {
         flexDirection: "row",
