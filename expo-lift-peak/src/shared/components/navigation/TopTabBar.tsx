@@ -80,8 +80,8 @@ const styles = StyleSheet.create({
     },
     scrollStyle: {
         gap: 8,
-        paddingVertical: 6,
-        paddingHorizontal: 6,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
         alignItems: 'center'
     },
     itemContainer: {

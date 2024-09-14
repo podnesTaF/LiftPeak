@@ -5,17 +5,24 @@ import {defaultStyles} from "@shared/styles";
 import {GroupCard, searchGroups} from "@entities/group";
 import {useQuery} from "@tanstack/react-query";
 import {useHeaderHeight} from "@react-navigation/elements";
+import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
+import Animated, {useAnimatedScrollHandler} from "react-native-reanimated";
 
 const Groups = () => {
+    const {scrollY} = useAnimatedScroll();
     const {data} = useQuery({
         queryKey: ["groups"],
         queryFn: () => searchGroups("")
     })
     const headerHeight = useHeaderHeight()
+    const scrollHandler = useAnimatedScrollHandler(event => {
+        scrollY.value = event.contentOffset.y;
+    });
 
     return (
         <View style={[defaultStyles.container]}>
-            <FlatList
+            <Animated.FlatList
+                onScroll={scrollHandler}
                 contentContainerStyle={{paddingTop: headerHeight + 50}}
                 ListHeaderComponent={
                     <FollowingCircles type={"groups"} />
