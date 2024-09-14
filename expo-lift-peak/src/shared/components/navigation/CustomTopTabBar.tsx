@@ -19,8 +19,10 @@ const CustomTopTabBar = ({screenOptions,absolute,paddingTop, children}: CustomTo
                     marginTop: paddingTop,
                     position:absolute ? "absolute" : "relative",
                     justifyContent: 'flex-start',
-                    backgroundColor: absolute ? "rgba(15,16,20, 0.7)" : Colors.dark700,
+                    backgroundColor: absolute ? "rgba(15,16,20, 0.9)" : Colors.dark700,
                 },
+                animationEnabled: false,
+                swipeEnabled: false,
                 tabBarItemStyle: {
                     width: "auto",
                 },

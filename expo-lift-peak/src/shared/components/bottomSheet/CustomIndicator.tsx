@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { StyleProp, StyleSheet, ViewStyle } from "react-native";
+import {StyleProp, StyleSheet, TouchableOpacity, ViewStyle} from "react-native";
 import { BottomSheetHandleProps } from "@gorhom/bottom-sheet";
 import Animated, {
     Extrapolate, Extrapolation,
@@ -8,6 +8,7 @@ import Animated, {
     useDerivedValue,
 } from "react-native-reanimated";
 import { toRad } from "react-native-redash";
+import {useRouter} from "expo-router";
 
 // @ts-ignore
 export const transformOrigin = ({ x, y }, ...transformations) => {
@@ -24,9 +25,12 @@ export const transformOrigin = ({ x, y }, ...transformations) => {
 interface HandleProps extends BottomSheetHandleProps {
     style?: StyleProp<ViewStyle>;
     isIndex1: boolean;
+    snapToIndex: (index: number) => void;
 }
 
-const Handle: React.FC<HandleProps> = ({ style, animatedIndex,isIndex1 }) => {
+const Handle: React.FC<HandleProps> = ({ style, animatedIndex,isIndex1,snapToIndex}) => {
+    const router = useRouter()
+
     const indicatorTransformOriginY = useDerivedValue(() =>
         interpolate(animatedIndex.value, [0, 1], [0, 1], Extrapolation.CLAMP)
     );
@@ -138,12 +142,14 @@ const Handle: React.FC<HandleProps> = ({ style, animatedIndex,isIndex1 }) => {
             style={[containerStyle, containerAnimatedStyle]}
             renderToHardwareTextureAndroid={true}
         >
-            <Animated.View
-                style={[leftIndicatorStyle, leftIndicatorAnimatedStyle]}
-            />
-            <Animated.View
-                style={[rightIndicatorStyle, rightIndicatorAnimatedStyle]}
-            />
+           <TouchableOpacity onPress={() => snapToIndex(1)} style={styles.indicatorContainer}>
+               <Animated.View
+                   style={[leftIndicatorStyle, leftIndicatorAnimatedStyle]}
+               />
+               <Animated.View
+                   style={[rightIndicatorStyle, rightIndicatorAnimatedStyle]}
+               />
+           </TouchableOpacity>
             {/* "Swipe to open" text */}
             {isIndex1 && (
                 <Animated.Text style={[styles.swipeText, swipeTextAnimatedStyle]}>
@@ -163,6 +169,15 @@ const styles = StyleSheet.create({
         justifyContent: "center",
         backgroundColor: "transparent",
         paddingVertical: 16,
+    },
+    indicatorContainer: {
+        position: "absolute",
+        left: 0,
+        right: 0,
+        top: 0,
+        bottom: 0,
+        justifyContent: "center",
+        alignItems: "center",
     },
     indicator: {
         position: "absolute",
