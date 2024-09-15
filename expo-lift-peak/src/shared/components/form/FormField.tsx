@@ -18,18 +18,15 @@ import DateTimePicker, {
 } from "@react-native-community/datetimepicker";
 import Button from "../Button";
 
-
-
-
-
 interface FormFieldProps {
   name: string;
   label?: string;
   placeholder?: string;
-  type?: "emailAddress" | "password" | "name" | "phone" | "date";
+  type?: "emailAddress" | "password" | "name" | "phone" | "date" | "textarea";
   noValidationStyling?: boolean;
   showPasswordToggle?: boolean;
-  autofocus?: boolean
+  autofocus?: boolean;
+  numberOfLines?: number;
 }
 
 const FormField: React.FC<FormFieldProps> = ({
@@ -39,7 +36,8 @@ const FormField: React.FC<FormFieldProps> = ({
   type = "name",
   noValidationStyling = false,
   showPasswordToggle = false,
-  autofocus = false
+  autofocus = false,
+  numberOfLines = 1,
 }) => {
   const {
     control,
@@ -49,8 +47,6 @@ const FormField: React.FC<FormFieldProps> = ({
   const [secureTextEntry, setSecureTextEntry] = useState(type === "password");
   const [showPicker, setShowPicker] = useState(false);
 
-
-
   const togglePasswordVisibility = () => {
     setSecureTextEntry((prev) => !prev);
   };
@@ -58,7 +54,6 @@ const FormField: React.FC<FormFieldProps> = ({
   const toggleDatepicker = () => {
     setShowPicker(!showPicker);
   };
-
 
   const hasError = !!errors[name];
 
@@ -139,17 +134,21 @@ const FormField: React.FC<FormFieldProps> = ({
                         style={styles.datePicker}
                       />
                     )}
-                      {showPicker && Platform.OS === 'ios' &&
-                    (
-                    <View style={styles.datePickerButtons}>
-                      <Button onPress={toggleDatepicker} color="dark500" title="Confirm birthdate"/>
-                    </View>
-                    
-                    )
-                  }
+                    {showPicker && Platform.OS === "ios" && (
+                      <View style={styles.datePickerButtons}>
+                        <Button
+                          onPress={toggleDatepicker}
+                          color="dark500"
+                          title="Confirm birthdate"
+                        />
+                      </View>
+                    )}
                   </>
                 ) : (
                   <TextInput
+                    multiline={type === "textarea"}
+                    maxLength={type === "textarea" ? 200 : 50}
+                    numberOfLines={numberOfLines}
                     placeholderTextColor={Colors.dark300}
                     textContentType="oneTimeCode"
                     autoCapitalize="none"
@@ -159,6 +158,9 @@ const FormField: React.FC<FormFieldProps> = ({
                     autoFocus={autofocus}
                     style={[
                       styles.input,
+                      {
+                        height: type === "textarea" ? 100 : 48
+                      },
                       hasError &&
                         value &&
                         !noValidationStyling &&
@@ -283,9 +285,8 @@ const styles = StyleSheet.create({
     marginTop: -10,
   },
   datePickerButtons: {
-    
-    paddingTop: 10
-  }
+    paddingTop: 10,
+  },
 });
 
 export default FormField;
