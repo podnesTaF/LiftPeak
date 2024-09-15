@@ -35,6 +35,7 @@ export const unstable_settings = {
 // SplashScreen.preventAutoHideAsync();
 
 const InitialLayout = () => {
+
     const [loaded, error] = useFonts({
         SpaceMono: require("../../assets/fonts/SpaceMono-Regular.ttf"),
         ...FontAwesome.font,
