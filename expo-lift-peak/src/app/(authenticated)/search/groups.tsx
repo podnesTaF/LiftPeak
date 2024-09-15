@@ -5,6 +5,7 @@ import InputField from "@shared/components/form/InputField";
 import {useQuery} from "@tanstack/react-query";
 import {GroupCard, searchGroups} from "@entities/group";
 import SearchBar from "@shared/components/form/SearchBar";
+import CreateGroupPlaceholder from "@features/group/ui/CreateGroupPlaceholder";
 
 const GroupSearch = () => {
     const [value, setValue] = useState("");
@@ -25,7 +26,9 @@ const GroupSearch = () => {
             <View style={{paddingVertical: 12, paddingHorizontal: 12}}>
                 <SearchBar clicked={clicked} searchPhrase={value} setSearchPhrase={setValue} setClicked={setClicked} />
             </View>
-            <FlatList key={"f"} data={data} numColumns={2} columnWrapperStyle={{
+            <FlatList
+                ListHeaderComponent={ <CreateGroupPlaceholder />}
+                key={"f"} data={data} numColumns={2} columnWrapperStyle={{
                 gap: 12,
                 paddingHorizontal: 12,
                 paddingVertical: 6
