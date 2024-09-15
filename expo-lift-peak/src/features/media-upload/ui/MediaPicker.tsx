@@ -11,7 +11,7 @@ import { useMutation } from "@tanstack/react-query";
 import { deleteMedia, uploadMedia } from "@features/media-upload/api/mediaApi";
 import { useToastStore } from "@shared/store";
 import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import ImagePickerComponent from "@shared/components/ImagePickerComponent";
+import ImagePickerComponent, {MediaOptions} from "@shared/components/ImagePickerComponent";
 import { Colors } from "@shared/styles";
 import { Ionicons } from "@expo/vector-icons";
 import * as VideoThumbnails from "expo-video-thumbnails";
@@ -20,12 +20,13 @@ interface MediaPickerProps {
   uploadedFiles: { actualUrl: string; thumbnailUrl: string }[];
   addMedia: (props: { actualUrl: string; thumbnailUrl: string }) => void;
   removeMedia: (url: string) => void;
+  single?: boolean;
 }
 
 export const MediaPicker = ({
   uploadedFiles,
   addMedia,
-  removeMedia,
+  removeMedia, single
 }: MediaPickerProps) => {
   const [localLoadingFileUrl, setLocalLoadingFileUrl] = React.useState<
     string | null
@@ -97,7 +98,15 @@ export const MediaPicker = ({
       snapToAlignment={"start"}
       snapToInterval={100}
     >
-      {!isPending ? (
+      {(single && uploadedFiles.length > 0) ? (
+          <TouchableOpacity onPress={openImagePicker} style={[styles.container]}>
+            <Image
+                source={{ uri: uploadedFiles[0].thumbnailUrl }}
+                style={{ width: "100%", height: "100%", borderRadius: 16 }}
+            />
+          </TouchableOpacity>
+      ):(
+          !isPending ? (
         <TouchableOpacity onPress={openImagePicker} style={[styles.container]}>
           <Ionicons name={"camera"} size={32} color={Colors.white} />
         </TouchableOpacity>
@@ -119,8 +128,8 @@ export const MediaPicker = ({
             style={{ position: "absolute" }}
           />
         </View>
-      )}
-      {uploadedFiles.map((media, index) => (
+      ))}
+      {!single && uploadedFiles.map((media, index) => (
         <View
           key={media.actualUrl + "_" + index}
           style={{
@@ -167,28 +176,11 @@ export const MediaPicker = ({
           )}
         </View>
       ))}
-
       <ImagePickerComponent
         closeModal={closeModal}
         ref={bottomSheetRef}
         onPick={uploadFile}
-        buttons={[
-          {
-            title: "Choose Photo or Video from Gallery",
-            actionType: "pickMediaFromGallery",
-            icon: "images-outline",
-          },
-          {
-            title: "Take a Photo",
-            actionType: "takePhoto",
-            icon: "camera-outline",
-          },
-          {
-            title: "Record a Video",
-            actionType: "recordVideo",
-            icon: "videocam-outline",
-          },
-        ]}
+        actions={[MediaOptions.IMAGE_AND_VIDEO, MediaOptions.TAKE_PHOTO, MediaOptions.FILM]}
       />
     </ScrollView>
   );
