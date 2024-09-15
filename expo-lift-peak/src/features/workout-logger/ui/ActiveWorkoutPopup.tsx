@@ -47,18 +47,11 @@ export const ActiveWorkoutPopup = () => {
     }, [currentIndex]);
 
     const handleComponent = useCallback((props: any) => (
-        <Handle {...props} isIndex1={isIndex1} />
+        <Handle {...props} isIndex1={isIndex1} snapToIndex={(index) => bottomSheetRef.current?.snapToIndex(index)} />
     ), [isIndex1])
 
-    if(!workout) {
-        return null
-    }
-
-    const navigateToWorkout = () => {
-        router.push("/(authenticated)/workout")
-    }
-
     const animatedSheetIndex = useSharedValue(0);
+
     const draggingAnimatedStyle = useAnimatedStyle(() => {
         const opacity = interpolate(
             animatedSheetIndex.value,
@@ -78,6 +71,10 @@ export const ActiveWorkoutPopup = () => {
         };
     });
 
+    if(!workout) {
+        return null
+    }
+
     return (
        <BottomSheet backgroundStyle={{
            backgroundColor: "transparent"
@@ -85,7 +82,7 @@ export const ActiveWorkoutPopup = () => {
                     animatedIndex={animatedSheetIndex}
                     handleComponent={handleComponent}
                     ref={bottomSheetRef}
-                    snapPoints={["14%","22%", "30%"]}
+                    snapPoints={["14%","22%", "22.1%"]}
                     onChange={handleSheetChanges}>
            <BottomSheetView style={[styles.container]}>
                <Animated.View style={[styles.content, draggingAnimatedStyle]}>

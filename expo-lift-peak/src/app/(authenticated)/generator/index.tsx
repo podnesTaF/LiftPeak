@@ -58,9 +58,6 @@ const WorkoutConstructorPage = () => {
             workoutTimeInSec: +time || 0,
             restBetweenSetsInSec: +avgRestTime || 0
         }
-
-        console.log(settings)
-
         addSettings(settings)
         mutate(settings)
     }
