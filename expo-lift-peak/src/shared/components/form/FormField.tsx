@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Modal,
   Platform,
-  Pressable,
+  Pressable, StyleProp, TextStyle,
 } from "react-native";
 import { Colors } from "@shared/styles";
 import { Ionicons } from "@expo/vector-icons";
@@ -29,7 +29,8 @@ interface FormFieldProps {
   type?: "emailAddress" | "password" | "name" | "phone" | "date";
   noValidationStyling?: boolean;
   showPasswordToggle?: boolean;
-  autofocus?: boolean
+  autofocus?: boolean;
+  style?: StyleProp<TextStyle>
 }
 
 const FormField: React.FC<FormFieldProps> = ({
@@ -39,7 +40,8 @@ const FormField: React.FC<FormFieldProps> = ({
   type = "name",
   noValidationStyling = false,
   showPasswordToggle = false,
-  autofocus = false
+  autofocus = false,
+    style,
 }) => {
   const {
     control,
@@ -163,6 +165,7 @@ const FormField: React.FC<FormFieldProps> = ({
                         value &&
                         !noValidationStyling &&
                         styles.inputError,
+                        style
                     ]}
                     secureTextEntry={secureTextEntry}
                     placeholder={placeholder}
@@ -207,7 +210,7 @@ const styles = StyleSheet.create({
   },
   inputWrapper: {
     position: "relative",
-    flex: 1,
+    flex: 1
   },
   iconToggle: {
     position: "absolute",
@@ -216,13 +219,12 @@ const styles = StyleSheet.create({
     transform: [{ translateY: -10 }],
   },
   input: {
+    fontSize: 18,
     borderRadius: 8,
     backgroundColor: Colors.dark500,
     color: Colors.white,
     paddingVertical: 12,
-    fontSize: 18,
-    minHeight: 48,
-    paddingHorizontal: 16,
+    paddingHorizontal: 12,
   },
   phoneContainer: {
     width: "100%",

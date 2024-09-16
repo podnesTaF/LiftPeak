@@ -3,7 +3,7 @@ import { BottomSheetBackdrop, BottomSheetModal, BottomSheetView } from "@gorhom/
 import { Colors } from "@shared/styles"; 
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import useImagePicker from "@shared/hooks/useImagePicker";
+import useImagePicker from "../hooks/useImagePicker";
 
 export enum MediaOptions {
   IMAGE = 'image',

@@ -6,7 +6,7 @@ export const CreateGroupSchema = z.object({
     description: z.string().min(3).max(200),
     location: z.string().min(3).max(50),
     type: z.enum(['public','private']),
-    tab: z.string().min(1).max(30),
+    tag: z.string().min(1).max(30),
 });
 
 export type CreateGroupDto = z.infer<typeof CreateGroupSchema>;

@@ -21,12 +21,13 @@ interface MediaPickerProps {
   addMedia: (props: { actualUrl: string; thumbnailUrl: string }) => void;
   removeMedia: (url: string) => void;
   single?: boolean;
+  actions?: MediaOptions[];
 }
 
 export const MediaPicker = ({
   uploadedFiles,
   addMedia,
-  removeMedia, single
+  removeMedia, single, actions
 }: MediaPickerProps) => {
   const [localLoadingFileUrl, setLocalLoadingFileUrl] = React.useState<
     string | null
@@ -180,7 +181,7 @@ export const MediaPicker = ({
         closeModal={closeModal}
         ref={bottomSheetRef}
         onPick={uploadFile}
-        actions={[MediaOptions.IMAGE_AND_VIDEO, MediaOptions.TAKE_PHOTO, MediaOptions.FILM]}
+        actions={actions || [MediaOptions.IMAGE_AND_VIDEO, MediaOptions.TAKE_PHOTO, MediaOptions.FILM]}
       />
     </ScrollView>
   );

@@ -3,7 +3,7 @@ import {Text, View} from "react-native";
 import {Ionicons} from "@expo/vector-icons";
 import {defaultStyles} from "@shared/styles";
 import Button from "@shared/components/Button";
-import {Link, useRouter} from "expo-router";
+import {useRouter} from "expo-router";
 
 const CreateGroupPlaceholder = () => {
     const router = useRouter()
