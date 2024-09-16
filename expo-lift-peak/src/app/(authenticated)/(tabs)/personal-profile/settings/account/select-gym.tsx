@@ -1,4 +1,4 @@
-import { Colors } from "@shared/styles";
+import { Colors, defaultStyles } from "@shared/styles";
 import axios from "axios";
 import { useEffect, useState, useCallback } from "react";
 import {
@@ -15,39 +15,27 @@ import {
   TextInput,
   TouchableOpacity,
 } from "react-native";
-import { useNavigation, useRouter } from "expo-router"; // Updated
-import { Ionicons } from "@expo/vector-icons";
-import { useToastStore } from "@shared/store";
+import { useRouter } from "expo-router";
+import { useProfileStore } from "@features/profile/store";
+import { IGym } from "@entities/gym";
 
 interface Gym {
   name: string;
   place_id: string;
   formatted_address: string;
+  longitude: number;
+  latitude: number;
 }
 
 const GooglePlacesAPIKey = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
 const SelectGym = () => {
-  const [searchResults, setSearchResults] = useState<Gym[]>([]);
+  const [searchResults, setSearchResults] = useState<IGym[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [selectedGym, setSelectedGym] = useState<Gym | null>(null); // Store selected gym object
-  const [gymInput, setGymInput] = useState<string>(""); // Local state for gym input
-  const { showToast } = useToastStore();
-  const router = useRouter(); // Router hook for navigation
-  const navigation = useNavigation();
+  const [selectedGym, setSelectedGym] = useState<IGym | null>(null);
+  const [gymInput, setGymInput] = useState<string>("");
+  const router = useRouter();
 
-  // Handles the "Continue" button action and navigates back to ProfileForm
-  const handleGymSelection = () => {
-    if (selectedGym) {
-      router.replace({
-        pathname: "/(authenticated)/(tabs)/personal-profile/settings/account/profile", 
-        params: { gymName: selectedGym.name }, // Passing selected gym name back
-      });
-      showToast("Gym selected successfully", "Success", "success");
-    }
-  };
-
-  // Fetches gym search results from Google Places API
   const getSearchResults = useCallback(async (text: string) => {
     if (!text) {
       setSearchResults([]);
@@ -65,7 +53,16 @@ const SelectGym = () => {
           },
         }
       );
-      setSearchResults(response.data.results);
+      const mappedResults: IGym[] = response.data.results.map((gym: any) => ({
+        name: gym.name,
+        place_id: gym.place_id,
+        address: gym.formatted_address,
+        latitude: gym.geometry.location.lat,
+        longtitude: gym.geometry.location.lng
+      }))
+
+      console.log(mappedResults)
+      setSearchResults(mappedResults)
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -73,51 +70,70 @@ const SelectGym = () => {
     }
   }, []);
 
-  // Fetches gyms when the input changes
   useEffect(() => {
     getSearchResults(gymInput);
   }, [gymInput, getSearchResults]);
 
-  // Render function
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === "ios" ? "padding" : "height"}
-      style={{ flex: 1 }}
+      style={[defaultStyles.container]}
     >
-      <View style={styles.inputWrapper}>
-        <TextInput
-          style={styles.textInput}
-          placeholder="Choose your gym"
-          value={gymInput}
-          onChangeText={(text) => setGymInput(text)}
-          autoFocus
-          autoCorrect={false}
-        />
-      </View>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-        <View style={styles.resultsWrapper}>
-          {renderContent(gymInput, loading, searchResults, selectedGym, setSelectedGym)}
+        <View style={styles.container}>
+          <View style={styles.inputWrapper}>
+            <TextInput
+              style={styles.textInput}
+              placeholder="Choose your gym"
+              value={gymInput}
+              onChangeText={(text) => setGymInput(text)}
+              autoFocus
+              autoCorrect={false}
+            />
+          </View>
+          <View style={styles.resultsWrapper}>
+            {renderContent(
+              gymInput,
+              loading,
+              searchResults,
+              selectedGym,
+              setSelectedGym
+            )}
+          </View>
+          <TouchableOpacity
+            style={[
+              styles.button,
+              {
+                backgroundColor: selectedGym ? Colors.success : Colors.dark300,
+                opacity: selectedGym ? 1 : 0.5, 
+              },
+            ]}
+            onPress={() => router.back()}
+            disabled={!selectedGym}
+          >
+            <Text style={styles.buttonText}>Continue</Text>
+          </TouchableOpacity>
         </View>
       </TouchableWithoutFeedback>
-      <TouchableOpacity
-        style={[styles.button, { backgroundColor: selectedGym ? Colors.success : Colors.dark300, marginBottom: 100 }]} // Button color based on gym selection
-        onPress={handleGymSelection}
-        disabled={!selectedGym} // Disable button if no gym is selected
-      >
-        <Text style={[styles.buttonText, ]}>Continue</Text>
-      </TouchableOpacity>
     </KeyboardAvoidingView>
   );
 };
 
-// Helper function to render content based on the state
 const renderContent = (
   gymInput: string | undefined,
   loading: boolean,
-  searchResults: Gym[],
-  selectedGym: Gym | null,
-  setSelectedGym: (gym: Gym) => void
+  searchResults: IGym[],
+  selectedGym: IGym | null,
+  setSelectedGym: (gym: IGym) => void
 ) => {
+
+  const {addGym} = useProfileStore()
+
+  const handleSelectedGym = (item: IGym) => {
+    setSelectedGym(item)
+    addGym(item)
+  }
+
   if (!gymInput) {
     return <Text style={styles.hintText}>Search Gyms ...</Text>;
   }
@@ -138,18 +154,19 @@ const renderContent = (
   return (
     <FlatList
       data={searchResults}
-      keyExtractor={(item) => item.place_id}
+      keyExtractor={(item) => item.address}
       renderItem={({ item }) => (
         <Pressable
-          onPress={() => setSelectedGym(item)} // Set selected gym object when pressed
+          onPress={() => handleSelectedGym(item)}
           style={[
             styles.itemContainer,
-            selectedGym?.place_id === item.place_id && styles.selectedItemContainer, // Highlight selected item
+            selectedGym?.address === item.address &&
+              styles.selectedItemContainer,
           ]}
         >
           <View style={styles.itemContent}>
             <Text style={styles.gymName}>{item.name}</Text>
-            <Text style={styles.gymAddress}>{item.formatted_address}</Text>
+            <Text style={styles.gymAddress}>{item.address}</Text>
           </View>
         </Pressable>
       )}
@@ -158,10 +175,22 @@ const renderContent = (
 };
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: "flex-end",
+  },
   inputWrapper: {
     paddingTop: 26,
     paddingHorizontal: 16,
     marginBottom: 8,
+  },
+  textInput: {
+    color: Colors.white,
+    fontSize: 18,
+    padding: 12,
+    borderRadius: 8,
+    borderWidth: 2,
+    backgroundColor: Colors.dark500,
   },
   resultsWrapper: {
     flex: 1,
@@ -210,25 +239,32 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
   },
   gymAddress: {
-    color: Colors.dark300,
+    color: Colors.white,
     fontSize: 14,
     marginTop: 4,
   },
   button: {
     padding: 16,
     borderRadius: 8,
-    marginHorizontal: 16,
-    marginBottom: 16,
     alignItems: "center",
+    justifyContent: "center",
+    position: 'absolute',
+    left: 20,
+    right: 20,
+    bottom: 120, 
+    shadowColor: "#000", 
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    elevation: 5, 
   },
   buttonText: {
     color: Colors.white,
     fontSize: 16,
     fontWeight: "bold",
-  },
-  textInput: {
-    color: Colors.white,
-    fontSize: 18,
   },
 });
 

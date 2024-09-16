@@ -10,6 +10,6 @@ export interface ISocialMediaLink {
 
 export enum SocialMediaPlatform {
     Twitter = 'Twitter',
-    Facebook = 'Facebook',
+    Snapchat = 'Snapchat',
     Instagram = 'Instagram',
 }
