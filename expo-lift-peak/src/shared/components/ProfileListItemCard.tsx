@@ -33,7 +33,7 @@ const ProfileListItemCard = <T extends {}>({
         style={styles.removeButton}
         onPress={() => onPress(item)} 
       >
-        <Ionicons name="trash-bin-outline" size={20} color="red" />
+        <Ionicons name="trash-bin-outline" size={20} color={Colors.danger} />
       </TouchableOpacity>
     </View>
   );

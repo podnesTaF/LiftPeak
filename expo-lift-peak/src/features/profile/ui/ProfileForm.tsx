@@ -1,4 +1,10 @@
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  TextInput,
+} from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { Colors } from "@shared/styles";
@@ -8,13 +14,33 @@ import ProfileListItemCard from "@shared/components/ProfileListItemCard";
 
 const ProfileForm = () => {
   const router = useRouter();
-  const { gyms, removeGym } = useProfileStore();
+  const { gyms, removeGym, setGoal, goal } = useProfileStore();
 
   return (
     <View style={{ marginHorizontal: 24, marginTop: 38, flex: 1 }}>
       <View style={{ flex: 1, gap: 55 }}>
-        <View style={{gap: 15}}>
+        <View style={{ gap: 45 }}>
           <View style={{ gap: 8 }}>
+            <Text style={styles.label}>My Goal</Text>
+            <TextInput
+              multiline={true}
+              maxLength={200}
+              value={goal}
+              placeholderTextColor={Colors.dark300}
+              placeholder="Tell us about your goal"
+              textContentType="oneTimeCode"
+              autoCapitalize="none"
+              onChangeText={(text) => setGoal(text)}
+              style={[
+                styles.inputArea,
+                {
+                  height: 100,
+                },
+              ]}
+            ></TextInput>
+          </View>
+
+          <View style={{ gap: 15 }}>
             <Text style={styles.label}>My Gym</Text>
 
             <TouchableOpacity
@@ -32,26 +58,28 @@ const ProfileForm = () => {
                 color={Colors.dark300}
               />
             </TouchableOpacity>
+
+            <View style={{ gap: 10 }}>
+              {gyms &&
+                gyms?.length > 0 &&
+                gyms.map((gym) => {
+                  return (
+                    <ProfileListItemCard
+                      key={gym.address}
+                      item={gym}
+                      displayKey={gym.name}
+                      displayText={gym.address}
+                      onPress={removeGym}
+                    />
+                  );
+                })}
+            </View>
           </View>
 
-          <View style={{ gap: 10 }}>
-            {gyms &&
-              gyms?.length > 0 &&
-              gyms.map((gym) => {
-                return (
-                  <ProfileListItemCard
-                    key={gym.address}
-                    item={gym}
-                    displayKey={gym.name}
-                    displayText={gym.address}
-                    onPress={removeGym}
-                  />
-                );
-              })}
+          <View>
+            <SocialMediaPicker />
           </View>
         </View>
-
-        <SocialMediaPicker />
       </View>
     </View>
   );
@@ -75,6 +103,15 @@ const styles = StyleSheet.create({
     fontSize: 18,
   },
 
+  inputArea: {
+    borderRadius: 8,
+    backgroundColor: Colors.dark500,
+    color: Colors.white,
+    paddingVertical: 12,
+    fontSize: 18,
+    minHeight: 48,
+    paddingHorizontal: 16,
+  },
   label: {
     color: Colors.dark300,
     fontSize: 16,
