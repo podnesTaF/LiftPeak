@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { FileService } from 'src/modules/file/file.service';
 import { AuthenticatedUser } from 'src/modules/users/decorators/user.decorator';
 import { Repository } from 'typeorm';
+import { CreateGroupDto } from '../dto/create-group.dto';
 import { Group } from '../entities/group.entity';
 
 @Injectable()
@@ -13,13 +14,16 @@ export class GroupService {
     private readonly fileService: FileService,
   ) {}
 
-  async createGroup(user: AuthenticatedUser, createGroupDto: any) {
+  async createGroup(user: AuthenticatedUser, createGroupDto: CreateGroupDto) {
     const group = new Group();
     group.name = createGroupDto.name;
     group.ownerId = user.id;
     group.groupTag = createGroupDto.groupTag;
     group.description = createGroupDto.description;
     group.isPrivate = !!createGroupDto.isPrivate;
+    group.wallPictureUrl = createGroupDto.wallpaperUrl;
+    group.pictureUrl = createGroupDto.pictureUrl;
+    group.location = createGroupDto.location;
 
     return await this.groupRepository.save(group);
   }

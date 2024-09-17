@@ -35,7 +35,7 @@ export class ConstructorService {
     const workoutPlan = workoutGenerator.calculateSetsAndRestTimes(
       exercises,
       dto.workoutTimeInSec,
-      dto.restBetweenSetsInSec || 90,
+      dto.restBetweenSetsInSec,
     );
 
     return workoutPlan;

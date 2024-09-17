@@ -8,6 +8,9 @@ export class CreateGroupDto {
   @IsOptional()
   description: string;
 
+  @IsString()
+  location: string;
+
   @IsBoolean()
   @IsOptional()
   isPrivate: boolean;
@@ -15,4 +18,12 @@ export class CreateGroupDto {
   @IsString()
   @IsOptional()
   groupTag: string;
+
+  @IsString()
+  @IsOptional()
+  pictureUrl: string;
+
+  @IsString()
+  @IsOptional()
+  wallpaperUrl: string;
 }

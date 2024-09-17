@@ -127,6 +127,7 @@ export class WorkoutGenerator {
     workoutPlan: { exercise: Exercise; sets: number; restTime: number }[];
     targetStats: any;
   } {
+    this.avgRestTime = restBetweenSetsInSec || 120;
     const totalSetUnits = this.calculateSetUnits(
       workoutTimeInSec,
       restBetweenSetsInSec,

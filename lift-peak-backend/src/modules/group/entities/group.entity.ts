@@ -19,6 +19,9 @@ export class Group extends AbstractEntity {
   })
   pictureUrl: string;
 
+  @Column({ default: 'Not Specified' })
+  location: string;
+
   @Column({
     nullable: true,
   })
