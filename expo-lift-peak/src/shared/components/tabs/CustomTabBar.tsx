@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, View} from "react-native";
+import {StyleProp, StyleSheet, View, ViewStyle} from "react-native";
 import {Colors} from "@shared/styles";
 import TabItem from "@shared/components/tabs/TabItem";
 
@@ -8,14 +8,17 @@ interface CustomTabBarProps {
     activeTab: string;
     tabs: {name: string, icon?: React.ReactNode}[]
     labelHidden?: boolean;
+    style?:  StyleProp<ViewStyle>;
+    itemFullWidth?: boolean;
 }
 
-const CustomTabBar = ({setActiveTab, activeTab, tabs,labelHidden}: CustomTabBarProps) => {
+const CustomTabBar = ({setActiveTab, activeTab, tabs,labelHidden, style, itemFullWidth}: CustomTabBarProps) => {
     return (
-        <View style={styles.tabBar}>
+        <View style={[styles.tabBar, style]}>
             {tabs.map((tab, index) => (
                 <TabItem
                     key={index}
+                    fullWidth={itemFullWidth}
                     name={tab.name}
                     icon={tab.icon}
                     label={labelHidden ? "" : tab.name}

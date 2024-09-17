@@ -4,11 +4,12 @@ import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
 import {useQuery} from "@tanstack/react-query";
 import {getGroup} from "@entities/group";
 import Animated, {useAnimatedScrollHandler} from "react-native-reanimated";
-import {defaultStyles} from "@shared/styles";
+import {Colors, defaultStyles} from "@shared/styles";
 import {GroupHeader} from "@features/group/ui/GroupHeader";
 import CustomTabBar from "@shared/components/tabs/CustomTabBar";
 import {MaterialIcons} from "@expo/vector-icons";
 import GroupPostsFeed from "@features/group/ui/GroupPostsFeed";
+import {useHeaderHeight} from "@react-navigation/elements";
 
 
 const tabs = [
@@ -26,6 +27,7 @@ const GroupPage = () => {
     const {id} = useLocalSearchParams<{ id?: string }>()
     const [activeTab, setActiveTab] = React.useState('feed')
     const {scrollY} = useAnimatedScroll();
+    const headerHeight = useHeaderHeight();
 
     const {data} = useQuery({
         queryKey: ['group', id],
@@ -38,10 +40,10 @@ const GroupPage = () => {
     });
 
     return (
-        <Animated.ScrollView onScroll={onScroll} stickyHeaderIndices={[1]} contentContainerStyle={{paddingBottom: 120}}
+        <Animated.ScrollView onScroll={onScroll} contentContainerStyle={{paddingBottom: 120}}
                              style={defaultStyles.container} scrollEventThrottle={16}>
             <GroupHeader group={data} />
-            <CustomTabBar labelHidden={true} activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs}/>
+            <CustomTabBar labelHidden={true} itemFullWidth={true} style={{backgroundColor: Colors.dark900}} activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs}/>
             {activeTab === "feed" && (
                 <GroupPostsFeed groupId={id} />
             )}

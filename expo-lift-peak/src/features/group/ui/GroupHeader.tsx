@@ -34,54 +34,49 @@ export const GroupHeader = ({group}: GroupHeaderProps) => {
     return (
         <>
             <Animated.View style={[{backgroundColor: Colors.dark900}, containerStyle]}>
-                <View style={{paddingTop: Constants.statusBarHeight, paddingHorizontal: 16, justifyContent: "space-between", alignItems: "center", zIndex: 100, height: 180}}>
+                <View style={{paddingTop: Constants.statusBarHeight, paddingHorizontal: 16, justifyContent: "space-between", alignItems: "center", zIndex: 100, height: 220}}>
                     {group?.wallPictureUrl ? (
                         <Image source={{uri: group.wallPictureUrl}}
-                               style={{ height: 180, objectFit: "cover", position: "absolute", top: 0, left: 0,right: 0}}/>
+                               style={{ height: 220, objectFit: "cover", position: "absolute", top: 0, left: 0,right: 0}}/>
                     ) : (
-                        <View style={{height: 180, backgroundColor: Colors.dark300, position: "absolute", top: 0, left: 0, right: 0}}/>
+                        <View style={{height: 220, backgroundColor: Colors.dark300, position: "absolute", top: 0, left: 0, right: 0}}/>
                     )}
                     <View style={styles.avatarContainer}>
-                        <Avatar size={100} name={group.name.slice(0,1)} url={group.pictureUrl} />
+                        <Avatar size={80} borderRadius={12} name={group.name.slice(0,1)} url={group.pictureUrl} />
                     </View>
                 </View>
-                <View style={{padding: 16, paddingTop: 64, backgroundColor: Colors.dark700, width: "100%", gap: 8}}>
-                    <Text style={defaultStyles.smallTitle}>
+                <View style={{padding: 16, paddingTop: 50, width: "100%", gap: 8, alignItems: 'center'}}>
+                    <Text style={[defaultStyles.smallTitle, {textAlign: 'center', fontSize: 24}]}>
                         {group.name}
                     </Text>
-                    {group.groupTag && (
-                        <Text style={defaultStyles.secondaryText}>
-                            @{group.groupTag}
-                        </Text>
-                    )}
-                    <View style={{flexDirection: "row", justifyContent: "space-around", width: "100%"}}>
-                        <View style={{alignItems: "center"}}>
-                            <Text style={defaultStyles.secondaryText}>Followers</Text>
-                            <Text style={defaultStyles.smallTitle}>{group.membersCount}</Text>
-                        </View>
+                    <Text style={[defaultStyles.secondaryText, {textAlign: 'center'}]}>
+                        {group.description}
+                    </Text>
+                    <View style={{flexDirection: "row", justifyContent: "center", width: "100%", paddingTop: 8}}>
+                       <Text style={[defaultStyles.secondaryText, {fontSize: 15}]}>
+                           {group.membersCount} Warriors • @{group.groupTag} • {group.location}
+                       </Text>
                     </View>
-                </View>
-                {group.description && (
-                    <View style={{paddingHorizontal: 12, paddingVertical: 20, backgroundColor: Colors.dark500}}>
-                        <Text style={{color: "white", fontWeight: "500"}}>
-                            {group.description}
-                        </Text>
-                    </View>
-                )}
-                <View style={{
-                    paddingVertical: 10,
-                    paddingHorizontal: 16
-                }}>
-                    {isFollowing ? (
-                            <Button onPress={() => router.push("/(authenticated)/create-post")} fullWidth color={"dark500"} title={"Joined"}>
+                    <View style={{
+                        paddingVertical: 10,
+                        width: "100%",
+                        flexDirection: 'row',
+                        gap: 12
+                    }}>
+                        {isFollowing ? (
+                            <Button style={{flex: 1}} onPress={() => router.push("/(authenticated)/create-post")} color={"dark500"} title={"Joined"}>
                                 <Ionicons name={"person-remove-outline"} size={24} color={Colors.white} />
                             </Button>
                         ) : (
-                            <Button onPress={() => router.push({pathname: "/(authenticated)/create-post", params: {groupId: group?.id}})} fullWidth color={"white"} title={"Join"}>
-                                <Ionicons name={"person-add-outline"} size={24} color={Colors.dark900} />
+                            <Button style={{flex: 1}} onPress={() => router.push({pathname: "/(authenticated)/create-post", params: {groupId: group?.id}})} color={"white"} title={"Join"}>
+                                <Ionicons name={"add-outline"} size={24} color={Colors.dark900} />
                             </Button>
                         )
-                    }
+                        }
+                        <Button style={{flex: 1}} onPress={() => router.push("/(authenticated)/create-post")} color={"dark500"} title={"Invite"}>
+                            <Ionicons name={"person-add-outline"} size={24} color={Colors.white} />
+                        </Button>
+                    </View>
                 </View>
             </Animated.View>
         </>
@@ -90,13 +85,8 @@ export const GroupHeader = ({group}: GroupHeaderProps) => {
 
 const styles = StyleSheet.create({
     avatarContainer: {
-        top: 20,
+        top: 84,
         borderRadius: 100,
-        padding: 1,
-        width: 106,
-        height: 106,
-        borderColor: Colors.dark500,
-        borderWidth: 2,
-        transform: [{translateY: 53}],
+        transform: [{translateY: 40}],
     }
 })

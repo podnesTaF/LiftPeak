@@ -10,9 +10,10 @@ export interface TabItemProps {
         : string;
     onTabPress?: (tabName: string) => void;
     children?: React.ReactNode;
+    fullWidth?: boolean;
 }
 
-const TabItem = ({ name, label, activeTab, onTabPress, icon }: TabItemProps) => {
+const TabItem = ({ name, label, activeTab, onTabPress, icon, fullWidth}: TabItemProps) => {
     const isActive = activeTab === name;
 
     const handlePress = () => {
@@ -22,7 +23,7 @@ const TabItem = ({ name, label, activeTab, onTabPress, icon }: TabItemProps) => 
 
     return (
         <TouchableOpacity
-            style={[styles.tabItem, isActive && styles.activeTabItem]}
+            style={[styles.tabItem, isActive && styles.activeTabItem, fullWidth && {flex: 1}]}
             onPress={handlePress}
         >
             {icon}
@@ -37,6 +38,7 @@ const styles = StyleSheet.create({
     tabItem: {
         paddingHorizontal: 16,
         paddingVertical: 12,
+        alignItems: "center",
         borderBottomWidth: 3,
         borderBottomColor: 'transparent',
     },

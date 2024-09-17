@@ -8,6 +8,7 @@ import {Text, TouchableOpacity, View} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
 import Constants from "expo-constants";
 import {Ionicons} from "@expo/vector-icons";
+import {BlurView} from "expo-blur";
 
 const Layout = () => {
     const {id} = useLocalSearchParams<{ id?: string }>()
@@ -23,7 +24,7 @@ const Layout = () => {
         const bottom = interpolate(
             scrollY.value,
             [150, 200],
-            [16, -20],
+            [0, -20],
             Extrapolation.CLAMP
         )
 
@@ -44,7 +45,7 @@ const Layout = () => {
         const bottom = interpolate(
             scrollY.value,
             [150, 200],
-            [-20, 16],
+            [-20, 0],
             Extrapolation.CLAMP
         )
         const opacity = interpolate(
@@ -64,30 +65,32 @@ const Layout = () => {
         <AnimatedScrollProvider scrollY={scrollY}>
             <Stack.Screen options={{
                 headerShown: true,
-                headerTransparent: false,
+                headerTransparent: true,
                 header: () => (
-                    <View style={[{flexDirection: "row", width: "100%", alignItems: "center", overflow: "hidden", justifyContent: "space-between", paddingBottom: 12, paddingTop: Constants.statusBarHeight, backgroundColor: Colors.dark700}]}>
-                        <View style={{paddingHorizontal: 12}}>
-                            <TouchableOpacity onPress={()=> router.back()} >
-                                <Ionicons name={"chevron-back"} size={30} color={"white"} />
-                            </TouchableOpacity>
-                        </View>
-                        <Animated.View style={[{position: "absolute", left: 70},textStyle]}>
-                            <Text style={[defaultStyles.smallTitle]}>
-                                Group
-                            </Text>
-                        </Animated.View>
-                        <Animated.View style={[{position: "absolute", left: 70}, nameStyle]}>
-                            <Text style={defaultStyles.smallTitle}>
-                                {data?.name}
-                            </Text>
-                        </Animated.View>
+                    <BlurView tint={"dark"} intensity={0} style={[{flexDirection: "row", width: "100%", alignItems: "center", overflow: "hidden", justifyContent: "space-between", paddingBottom: 12, paddingTop: Constants.statusBarHeight}]}>
+                        <TouchableOpacity onPress={()=> router.back()} style={{flexDirection: 'row', alignItems: 'center'}}>
+                            <View style={{paddingHorizontal: 12}}>
+                                <TouchableOpacity onPress={()=> router.back()} >
+                                    <Ionicons name={"chevron-back"} size={30} color={"white"} />
+                                </TouchableOpacity>
+                            </View>
+                            <Animated.View style={[textStyle]}>
+                                <Text style={[defaultStyles.smallTitle]}>
+                                    Group
+                                </Text>
+                            </Animated.View>
+                            <Animated.View style={[{position: 'absolute', left: 55, top: 4},nameStyle]}>
+                                <Text style={defaultStyles.smallTitle}>
+                                    {data?.name}
+                                </Text>
+                            </Animated.View>
+                        </TouchableOpacity>
                         <View style={{paddingHorizontal: 12}}>
                             <TouchableOpacity onPress={()=> router.back()} >
                                 <Ionicons name={"ellipsis-vertical"} size={30} color={Colors.white}/>
                             </TouchableOpacity>
                         </View>
-                    </View>
+                    </BlurView>
                 ),
             }}/>
             <Stack>

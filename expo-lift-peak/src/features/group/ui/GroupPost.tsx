@@ -18,7 +18,7 @@ interface GroupPostProps {
 const GroupPost = ({groupPost}: GroupPostProps) => {
 
     return (
-        <View style={{backgroundColor: Colors.dark700, padding: 12, gap: 12}}>
+        <View style={{padding: 12, gap: 12}}>
             <GroupPostHeader groupPost={groupPost} />
             <GroupPostBody groupPost={groupPost} />
             <PostActions type={CommentType.GROUP_POST} item={groupPost} />

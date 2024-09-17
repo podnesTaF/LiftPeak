@@ -19,7 +19,7 @@ const GroupPostsFeed = ({groupId}:GroupPostsFeedProps) => {
     return (
         <View style={{gap: 12}}>
             {data?.map((post) => (
-                <View key={post.id}>
+                <View key={post.id} style={{paddingVertical: 20}}>
                   <GroupPost groupPost={post} />
                 </View>
             ))}

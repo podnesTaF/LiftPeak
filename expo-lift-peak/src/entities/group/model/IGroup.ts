@@ -5,6 +5,7 @@ export interface IGroup {
     id: number;
     name: string;
     description: string;
+    location: string
     pictureUrl: string;
     wallPictureUrl: string;
     isPrivate: boolean;

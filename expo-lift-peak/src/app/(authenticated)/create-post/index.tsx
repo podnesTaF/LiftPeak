@@ -23,7 +23,7 @@ const CreateGroupPost = () => {
     mutationFn: (dto: CreatePostDto)=> createPost(groupId || '1', dto),
     onSuccess: () => {
       showToast('Post Created', 'success', 'success', 3000);
-      router.push('/(authenticated)/(tabs)/groups/' + groupId);
+      router.push('/(authenticated)/(tabs)/home/groups/' + groupId);
     },
     onError: () => {
       showToast('Failed to create post', 'error', 'error', 3000);
