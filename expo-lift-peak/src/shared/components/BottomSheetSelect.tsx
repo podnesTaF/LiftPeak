@@ -13,6 +13,7 @@ import {
 import Button from "@shared/components/Button";
 import {cutString} from "@shared/utils";
 import {Color} from "ansi-fragments/build/fragments/Color";
+import { renderBottomSheetBackdrop } from './bottomSheet/bottomSheetBackdrop';
 
 interface Option {
     label: React.ReactNode;
@@ -66,12 +67,7 @@ const BottomSheetSelect = ({label, placeholder, value, options, onChange, multip
     const handleClosePress = () => bottomSheetRef.current?.close();
     const handlePresentPress = () => bottomSheetRef.current?.present();
 
-    const renderBackdrop = useCallback(
-        (props: any) => (
-            <BottomSheetBackdrop opacity={0.7} appearsOnIndex={0} disappearsOnIndex={-1} enableTouchThrough={false} {...props} />
-        ),
-        []
-    );
+    const memoizedBackdrop = useCallback(renderBottomSheetBackdrop, []);
 
     const renderFooter = useCallback(
         (props: BottomSheetFooterProps) => (
@@ -114,7 +110,7 @@ const BottomSheetSelect = ({label, placeholder, value, options, onChange, multip
                 backgroundStyle={{
                     backgroundColor: Colors.dark700,
                 }}
-                backdropComponent={renderBackdrop}
+                backdropComponent={memoizedBackdrop}
                 ref={bottomSheetRef}
                 handleIndicatorStyle={{
                     backgroundColor: 'white',

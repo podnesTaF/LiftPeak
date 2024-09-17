@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useFocusEffect, useRouter } from "expo-router";
 import { loginSchema, LoginRequest, useAuthStore } from "@features/auth";
 import { Colors, defaultStyles } from "@shared/styles";
-import FormField from "@shared/components/form/FormField";
+import FormField from "@shared/components/form/formfield/FormField";
 import Button from "@shared/components/Button";
 import { useToastStore } from "@shared/store";
 import { login } from "@features/auth/api/authApi";

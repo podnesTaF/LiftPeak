@@ -16,7 +16,7 @@ import PhoneInput from "react-native-phone-number-input";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
-import Button from "../Button";
+import Button from "../../Button";
 
 interface FormFieldProps {
   name: string;

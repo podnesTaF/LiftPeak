@@ -18,14 +18,7 @@ import {
 import { useRouter } from "expo-router";
 import { useProfileStore } from "@features/profile/store";
 import { IGym } from "@entities/gym";
-
-interface Gym {
-  name: string;
-  place_id: string;
-  formatted_address: string;
-  longitude: number;
-  latitude: number;
-}
+import { useToastStore } from "@shared/store";
 
 const GooglePlacesAPIKey = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
 
@@ -35,6 +28,23 @@ const SelectGym = () => {
   const [selectedGym, setSelectedGym] = useState<IGym | null>(null);
   const [gymInput, setGymInput] = useState<string>("");
   const router = useRouter();
+  const { addGym, isDuplicateGym } = useProfileStore();
+  const { showToast } = useToastStore();
+
+  const handleAddGym = () => {
+    if (isDuplicateGym(selectedGym!)) {
+      router.back();
+      showToast(
+        "Gym Already Added",
+        "This gym is already part of your list. Please select another one.",
+        "error",
+        4000
+      );
+    } else {
+      addGym(selectedGym!);
+      router.back();
+    }
+  };
 
   const getSearchResults = useCallback(async (text: string) => {
     if (!text) {
@@ -58,11 +68,11 @@ const SelectGym = () => {
         place_id: gym.place_id,
         address: gym.formatted_address,
         latitude: gym.geometry.location.lat,
-        longtitude: gym.geometry.location.lng
-      }))
+        longtitude: gym.geometry.location.lng,
+      }));
 
-      console.log(mappedResults)
-      setSearchResults(mappedResults)
+      console.log(mappedResults);
+      setSearchResults(mappedResults);
     } catch (error) {
       console.error("Error fetching data:", error);
     } finally {
@@ -105,10 +115,10 @@ const SelectGym = () => {
               styles.button,
               {
                 backgroundColor: selectedGym ? Colors.success : Colors.dark300,
-                opacity: selectedGym ? 1 : 0.5, 
+                opacity: selectedGym ? 1 : 0.5,
               },
             ]}
-            onPress={() => router.back()}
+            onPress={handleAddGym}
             disabled={!selectedGym}
           >
             <Text style={styles.buttonText}>Continue</Text>
@@ -126,13 +136,9 @@ const renderContent = (
   selectedGym: IGym | null,
   setSelectedGym: (gym: IGym) => void
 ) => {
-
-  const {addGym} = useProfileStore()
-
   const handleSelectedGym = (item: IGym) => {
-    setSelectedGym(item)
-    addGym(item)
-  }
+    setSelectedGym(item);
+  };
 
   if (!gymInput) {
     return <Text style={styles.hintText}>Search Gyms ...</Text>;
@@ -248,18 +254,18 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
-    position: 'absolute',
+    position: "absolute",
     left: 20,
     right: 20,
-    bottom: 120, 
-    shadowColor: "#000", 
+    bottom: 120,
+    shadowColor: "#000",
     shadowOffset: {
       width: 0,
       height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
-    elevation: 5, 
+    elevation: 5,
   },
   buttonText: {
     color: Colors.white,

@@ -1,5 +1,5 @@
 import Button from "@shared/components/Button";
-import FormField from "@shared/components/form/FormField";
+import FormField from "@shared/components/form/formfield/FormField";
 import { useToastStore } from "@shared/store";
 import { defaultStyles, Colors } from "@shared/styles";
 import { useFormContext } from "react-hook-form";

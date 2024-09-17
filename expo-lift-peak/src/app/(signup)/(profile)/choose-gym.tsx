@@ -15,7 +15,7 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useFormContext } from "react-hook-form";
-import FormField from "@shared/components/form/FormField";
+import FormField from "@shared/components/form/formfield/FormField";
 import { router, useNavigation } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { useToastStore } from "@shared/store";

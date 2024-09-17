@@ -1,7 +1,7 @@
 import {IProfile} from "@entities/user";
 
 export interface ISocialMediaLink {
-    id: number;
+    id?: number;
     profileId: number;
     profile?: IProfile;
     platform: SocialMediaPlatform;

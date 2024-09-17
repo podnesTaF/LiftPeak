@@ -1,6 +1,6 @@
 import { View, Text } from "react-native";
 import React from "react";
-import FormField from "@shared/components/form/FormField";
+import FormField from "@shared/components/form/formfield/FormField";
 import Dropdown from "@shared/components/DropDown";
 
 const General = () => {

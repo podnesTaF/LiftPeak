@@ -1,8 +1,9 @@
 import { create } from "zustand";
 import { createJSONStorage, persist } from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { IProfile, ISocialMediaLink } from "@entities/user";
+import { ISocialMediaLink } from "@entities/user";
 import { IGym } from "@entities/gym";
+import { useToastStore } from "@shared/store";
 
 export interface profileState {
   gyms: IGym[] | null;
@@ -10,15 +11,19 @@ export interface profileState {
   wallpaperUrl: string | undefined;
   avatarUrl: string | undefined;
   goal: string | undefined;
+
   setGyms: (gyms: IGym[]) => void;
   setLinks: (links: ISocialMediaLink[]) => void;
   setWallpaperUrl: (wallpaperUrl: string) => void;
   setAvatarUrl: (avatarUrl: string) => void;
   setGoal: (goal: string) => void;
+
   addGym: (gym: IGym) => void;
-  addLink: (link: ISocialMediaLink) => void;
   removeGym: (gym: IGym) => void;
+  addLink: (link: ISocialMediaLink) => void;
   removeLink: (link: ISocialMediaLink) => void;
+
+  isDuplicateGym: (gym: IGym) => boolean;
 }
 
 export const useProfileStore = create<profileState>()(
@@ -42,10 +47,15 @@ export const useProfileStore = create<profileState>()(
         set({ avatarUrl });
       },
       setGoal: (goal: string) => {
-        set({goal});
-      }, 
+        set({ goal });
+      },
+      isDuplicateGym: (gym: IGym) => {
+        const currentGyms = get().gyms || [];
+        return currentGyms.some((g) => g.address === gym.address);
+      },
       addGym: (gym: IGym) => {
         const currentGyms = get().gyms || [];
+
         set({ gyms: [...currentGyms, gym] });
       },
       removeGym: (gym: IGym) => {

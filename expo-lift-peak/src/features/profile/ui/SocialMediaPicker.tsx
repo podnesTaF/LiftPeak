@@ -17,6 +17,8 @@ import ProfileListItemCard from "@shared/components/ProfileListItemCard";
 import { useProfileStore } from "../store";
 import { ISocialMediaLink, SocialMediaPlatform } from "@entities/user";
 import { useAuthStore } from "@features/auth";
+import { useToastStore } from "@shared/store";
+import { generateSocialMediaUrl } from "../utils";
 
 const socialMediaPlatforms = [
   { label: "Instagram", value: SocialMediaPlatform.Instagram },
@@ -24,21 +26,7 @@ const socialMediaPlatforms = [
   { label: "Twitter", value: SocialMediaPlatform.Twitter },
 ];
 
-const generateSocialMediaUrl = (
-  platform: SocialMediaPlatform,
-  username: string
-) => {
-  switch (platform) {
-    case SocialMediaPlatform.Instagram:
-      return `https://www.instagram.com/${username}`;
-    case SocialMediaPlatform.Snapchat:
-      return `https://www.snapchat.com/add/${username}`;
-    case SocialMediaPlatform.Twitter:
-      return `https://www.twitter.com/${username}`;
-    default:
-      return "";
-  }
-};
+
 
 const SocialMediaPicker = () => {
   const [selectedPlatform, setSelectedPlatform] =
@@ -46,6 +34,7 @@ const SocialMediaPicker = () => {
   const [username, setUsername] = useState("");
   const { links, addLink, removeLink } = useProfileStore();
   const { user } = useAuthStore();
+  const { showToast } = useToastStore();
 
   const renderBackdrop = useCallback(
     (props: any) => (
@@ -60,6 +49,22 @@ const SocialMediaPicker = () => {
     []
   );
 
+  const handleSelectPlatform = (platform: SocialMediaPlatform) => {
+    const isDuplicate = links?.some((l) => l.platform === platform);
+    if (!isDuplicate) {
+      setSelectedPlatform(platform);
+      handleMenuClose();
+    } else {
+      handleMenuClose();
+      showToast(
+        "Platform Already Added",
+        `${platform} is already in your list. Please choose a different platform.`,
+        "error",
+        4000
+      );
+    }
+  };
+
   const handleAddLink = () => {
     if (selectedPlatform && username) {
       const socialMediaUrl = generateSocialMediaUrl(selectedPlatform, username);
@@ -70,7 +75,6 @@ const SocialMediaPicker = () => {
       }
 
       const newLink: ISocialMediaLink = {
-        id: Date.now(),
         platform: selectedPlatform,
         url: socialMediaUrl,
         profileId: user!.id,
@@ -96,7 +100,7 @@ const SocialMediaPicker = () => {
 
   return (
     <View>
-      <View style={{gap: 15}}>
+      <View style={{ gap: 15 }}>
         <View style={{ gap: 20 }}>
           <View style={{ gap: 8 }}>
             <Text style={styles.label}>Add Social Media</Text>
@@ -155,25 +159,20 @@ const SocialMediaPicker = () => {
         snapPoints={["28%", "50%"]}
       >
         <BottomSheetView style={styles.contentContainer}>
-          {socialMediaPlatforms.map((button) => (
+          {socialMediaPlatforms.map((platform) => (
             <TouchableOpacity
-              key={button.value}
+              key={platform.value}
               style={styles.buttonContainer}
-              onPress={() => {
-                setSelectedPlatform(button.value);
-                handleMenuClose();
-              }}
+              onPress={() => handleSelectPlatform(platform.value)}
             >
-              {button.value === SocialMediaPlatform.Instagram && (
-                <Ionicons name="logo-instagram" size={24} color="white" />
-              )}
-              {button.value === SocialMediaPlatform.Snapchat && (
-                <Ionicons name="logo-snapchat" size={24} color="white" />
-              )}
-              {button.value === SocialMediaPlatform.Twitter && (
-                <Ionicons name="logo-twitter" size={24} color="white" />
-              )}
-              <Text style={styles.buttonText}>{button.label}</Text>
+              <Ionicons
+                size={24}
+                color={Colors.white}
+                name={
+                  `logo-${platform.value.toLowerCase()}` as keyof typeof Ionicons.glyphMap
+                }
+              />
+              <Text style={styles.buttonText}>{platform.label}</Text>
             </TouchableOpacity>
           ))}
         </BottomSheetView>
