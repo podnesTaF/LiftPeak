@@ -84,7 +84,7 @@ export const ProfileHeader = ({user}: ProfileHeaderProps) => {
                            <Button onPress={() => router.push('/(authenticated)/(tabs)/personal-profile/settings')} style={{flex: 1}} color={"dark500"} title={"Settings"}>
                                <Ionicons name={"settings-outline"} size={24} color={Colors.white} />
                            </Button>
-                           <Button style={{flex: 1}} color={"white"} title={"Edit Profile"}>
+                           <Button onPress={() => router.push('/(authenticated)/(tabs)/personal-profile/settings/account/profile')} style={{flex: 1}} color={"white"} title={"Edit Profile"}>
                                <Ionicons name={"create-outline"} size={24} color={Colors.dark900} />
                            </Button>
                        </View>

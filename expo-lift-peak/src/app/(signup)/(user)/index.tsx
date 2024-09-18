@@ -1,6 +1,6 @@
 import { checkIfUserExists } from "@features/auth/api/authApi";
 import Button from "@shared/components/Button";
-import FormField from "@shared/components/form/FormField";
+import FormField from "@shared/components/form/formfield/FormField";
 import { useToastStore } from "@shared/store";
 import { Colors, defaultStyles } from "@shared/styles";
 import { useMutation } from "@tanstack/react-query";
@@ -32,11 +32,17 @@ const Signup = () => {
         );
 
         setValue("email", "");
-      } else {
+      } else if (!exists) {
         router.push({
           pathname: "/(signup)/(user)/otp",
           params: { email: emailValue },
         });
+      } else {
+        showToast(
+          "Something went wrong",
+          "An unexpected error occurred. Please try again later.",
+          "error"
+        );
       }
     },
     onError: () => {

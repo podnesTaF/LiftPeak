@@ -1,7 +1,7 @@
 import {IProfile} from "@entities/user";
 
 export interface ISocialMediaLink {
-    id: number;
+    id?: number;
     profileId: number;
     profile?: IProfile;
     platform: SocialMediaPlatform;
@@ -10,6 +10,6 @@ export interface ISocialMediaLink {
 
 export enum SocialMediaPlatform {
     Twitter = 'Twitter',
-    Facebook = 'Facebook',
+    Snapchat = 'Snapchat',
     Instagram = 'Instagram',
 }

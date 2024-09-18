@@ -5,16 +5,18 @@ import { BottomSheetModal } from '@gorhom/bottom-sheet';
 import ImagePickerComponent, {MediaOptions} from '@shared/components/ImagePickerComponent';
 import Avatar from '@shared/components/Avatar';
 import { Colors } from '@shared/styles';
+import { useProfileStore } from '../store';
 
 interface AvatarPickerProps {
-    avatarUrl?: string; 
     usernameInitial: string;
     onAvatarPick: (mediaUri: string) => void;
   }
   
 
-const AvatarPicker: React.FC<AvatarPickerProps> = ({ avatarUrl, usernameInitial, onAvatarPick }) => {
+const AvatarPicker: React.FC<AvatarPickerProps> = ({usernameInitial, onAvatarPick }) => {
   const avatarSheetRef = useRef<BottomSheetModal>(null);
+
+  const {avatarUrl, setAvatarUrl} = useProfileStore()
 
   const closeAvatarModal = () => avatarSheetRef.current?.dismiss();
   const openAvatarPicker = () => avatarSheetRef.current?.present();

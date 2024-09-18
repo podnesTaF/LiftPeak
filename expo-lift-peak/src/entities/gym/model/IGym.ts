@@ -1,7 +1,7 @@
 import {IUser} from "@entities/user";
 
 export interface IGym {
-    id: number;
+    id?: number;
     name: string;
     address: string;
     longitude: number;

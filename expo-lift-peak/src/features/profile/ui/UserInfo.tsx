@@ -6,7 +6,7 @@ import {IUser, SocialMediaPlatform} from '@entities/user';
 
 const socialMediaIcon = {
     [SocialMediaPlatform.Twitter]: "logo-twitter",
-    [SocialMediaPlatform.Facebook]: "logo-facebook",
+    [SocialMediaPlatform.Snapchat]: "logo-snapchat",
     [SocialMediaPlatform.Instagram]: "logo-instagram"
 } as const
 

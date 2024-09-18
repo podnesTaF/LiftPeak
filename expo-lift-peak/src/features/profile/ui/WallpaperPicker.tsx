@@ -4,15 +4,18 @@ import {Ionicons} from '@expo/vector-icons';
 import {BottomSheetModal} from '@gorhom/bottom-sheet';
 import ImagePickerComponent, {MediaOptions} from '@shared/components/ImagePickerComponent';
 import {Colors} from '@shared/styles';
+import { useProfileStore } from '../store';
+
 
 interface WallpaperPickerProps {
-    wallpaperUrl?: string; 
     onWallpaperPick: (mediaUri: string) => void;
   }
   
 
-const WallpaperPicker: React.FC<WallpaperPickerProps> = ({ wallpaperUrl, onWallpaperPick }) => {
+const WallpaperPicker: React.FC<WallpaperPickerProps> = ({ onWallpaperPick }) => {
   const wallpaperSheetRef = useRef<BottomSheetModal>(null);
+
+  const {wallpaperUrl, setWallpaperUrl} = useProfileStore();
 
   const closeWallpaperModal = () => wallpaperSheetRef.current?.dismiss();
   const openWallpaperPicker = () => wallpaperSheetRef.current?.present();
