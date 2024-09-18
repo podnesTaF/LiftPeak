@@ -2,9 +2,10 @@ import React, { useRef } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import ImagePickerComponent, {MediaOptions} from '@shared/components/ImagePickerComponent';
+import ImagePickerComponent from '@shared/components/ImagePickerComponent';
 import Avatar from '@shared/components/Avatar';
 import { Colors } from '@shared/styles';
+import {MediaOptions} from "@shared/model/IMediaOption";
 
 interface AvatarPickerProps {
     avatarUrl?: string; 

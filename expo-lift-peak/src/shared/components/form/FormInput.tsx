@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {Controller, useFormContext} from "react-hook-form";
-import {StyleProp, StyleSheet, TextInput, TextInputProps, TextStyle} from "react-native";
-import {Colors} from "@shared/styles";
+import {StyleProp, StyleSheet, Text, TextInput, TextInputProps, TextStyle, View} from "react-native";
+import {Colors, defaultStyles} from "@shared/styles";
 import {TextInputMask} from "react-native-masked-text";
 
 interface FormInputProps {
@@ -10,9 +10,10 @@ interface FormInputProps {
     placeholder?: string;
     inputStyle?: StyleProp<TextStyle>;
     startValue?: string;
+    multiline?: boolean
 }
 
-const FormInput = ({name, type, inputStyle, placeholder, startValue}:FormInputProps) => {
+const FormInput = ({name, type, inputStyle, placeholder, startValue, multiline}:FormInputProps) => {
     const {
         control,
         formState: { errors },
@@ -33,18 +34,27 @@ const FormInput = ({name, type, inputStyle, placeholder, startValue}:FormInputPr
         <Controller
             control={control}
             render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                    placeholderTextColor={Colors.dark300}
-                    textContentType={type}
-                    autoCapitalize="none"
-                    onChangeText={(text) => handleInputChange(text, onChange)}
-                    onBlur={onBlur}
-                    value={inputValue}
-                    style={[styles.input, inputStyle]}
-                    secureTextEntry={type === "password"}
-                    placeholder={placeholder}
-                    editable={true}
-                />
+                <View style={{gap: 6}}>
+                    <TextInput
+                        placeholderTextColor={Colors.dark300}
+                        textContentType={type}
+                        autoCapitalize="none"
+                        onChangeText={(text) => handleInputChange(text, onChange)}
+                        onBlur={onBlur}
+                        value={inputValue}
+                        style={[styles.input, inputStyle]}
+                        secureTextEntry={type === "password"}
+                        placeholder={placeholder}
+                        editable={true}
+                        multiline={multiline}
+                    />
+                    {errors[name] && (
+                        <Text style={[defaultStyles.secondaryText, {color: Colors.danger}]}>
+                            {errors[name]?.message?.toString()}
+                        </Text>
+                    )}
+                </View>
+
             ) }
             name={name}
         />

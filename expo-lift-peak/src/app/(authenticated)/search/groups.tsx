@@ -27,14 +27,16 @@ const GroupSearch = () => {
                         <SearchBar clicked={clicked} searchPhrase={value} setSearchPhrase={setValue}
                                    setClicked={setClicked}/>
                     </BlurView>
-                    <CreateGroupPlaceholder/>
+                    <View style={{padding: 12}}>
+                        <CreateGroupPlaceholder/>
+                    </View>
                 </>}
                 key={"f"} data={data} numColumns={2} columnWrapperStyle={{
                 gap: 12,
                 paddingHorizontal: 12,
                 paddingVertical: 6
             }} renderItem={({item}) => (
-                <View style={{flex: 1}}>
+                <View style={{flex: 1, padding: 12}}>
                     <GroupCard group={item}/>
                 </View>
             )}

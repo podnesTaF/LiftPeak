@@ -2,7 +2,7 @@ import { useCallback } from 'react';
 import * as ImagePicker from 'expo-image-picker';
 import * as ImageManipulator from 'expo-image-manipulator';
 import { useToastStore } from '@shared/store';
-import {MediaOptions} from "../components/ImagePickerComponent";
+import {MediaOptions} from "@shared/model/IMediaOption";
 
 
 interface UseImagePickerParams {

@@ -4,14 +4,7 @@ import { Colors } from "@shared/styles";
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import useImagePicker from "../hooks/useImagePicker";
-
-export enum MediaOptions {
-  IMAGE = 'image',
-  IMAGE_AND_VIDEO = 'imageAndVideo',
-  TAKE_PHOTO = 'takePhoto',
-  VIDEO = 'video',
-  FILM = 'film',
-}
+import {MediaOptions} from "@shared/model/IMediaOption";
 
 interface ImagePickerComponentProps {
   actions: MediaOptions[]

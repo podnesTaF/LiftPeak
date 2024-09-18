@@ -12,7 +12,6 @@ import {
 } from "@gorhom/bottom-sheet";
 import Button from "@shared/components/Button";
 import {cutString} from "@shared/utils";
-import {Color} from "ansi-fragments/build/fragments/Color";
 
 interface Option {
     label: React.ReactNode;
@@ -41,7 +40,7 @@ interface IBottomSheetItemProps {
 }
 
 // OptionItem Component
-const OptionItem = ({option, selectedValues, handleCheckboxChange}: IBottomSheetItemProps) => (
+export const OptionItem = ({option, selectedValues, handleCheckboxChange}: IBottomSheetItemProps) => (
     <TouchableOpacity
         style={styles.optionContainer}
         onPress={() => handleCheckboxChange(option.value)}
