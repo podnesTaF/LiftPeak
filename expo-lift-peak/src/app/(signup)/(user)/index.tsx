@@ -32,11 +32,17 @@ const Signup = () => {
         );
 
         setValue("email", "");
-      } else {
+      } else if (!exists) {
         router.push({
           pathname: "/(signup)/(user)/otp",
           params: { email: emailValue },
         });
+      } else {
+        showToast(
+          "Something went wrong",
+          "An unexpected error occurred. Please try again later.",
+          "error"
+        );
       }
     },
     onError: () => {

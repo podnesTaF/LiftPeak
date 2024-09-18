@@ -9,14 +9,18 @@ import {
   Modal,
   Platform,
   Pressable,
+  StyleProp,
+  TextStyle,
 } from "react-native";
 import { Colors } from "@shared/styles";
 import { Ionicons } from "@expo/vector-icons";
-import PhoneInput from "react-native-phone-number-input";
 import DateTimePicker, {
   DateTimePickerEvent,
 } from "@react-native-community/datetimepicker";
 import Button from "../../Button";
+import PhoneInput from "./PhoneInput";
+import DateInputField from "./DateInput";
+import TextInputField from "./TextInputField";
 
 interface FormFieldProps {
   name: string;
@@ -26,7 +30,7 @@ interface FormFieldProps {
   noValidationStyling?: boolean;
   showPasswordToggle?: boolean;
   autofocus?: boolean;
-  numberOfLines?: number;
+  style?: StyleProp<TextStyle>;
 }
 
 const FormField: React.FC<FormFieldProps> = ({
@@ -37,23 +41,12 @@ const FormField: React.FC<FormFieldProps> = ({
   noValidationStyling = false,
   showPasswordToggle = false,
   autofocus = false,
-  numberOfLines = 1,
+  style,
 }) => {
   const {
     control,
     formState: { errors },
   } = useFormContext();
-
-  const [secureTextEntry, setSecureTextEntry] = useState(type === "password");
-  const [showPicker, setShowPicker] = useState(false);
-
-  const togglePasswordVisibility = () => {
-    setSecureTextEntry((prev) => !prev);
-  };
-
-  const toggleDatepicker = () => {
-    setShowPicker(!showPicker);
-  };
 
   const hasError = !!errors[name];
 
@@ -67,120 +60,26 @@ const FormField: React.FC<FormFieldProps> = ({
             <View style={{ gap: 8, flexDirection: "row" }}>
               <View style={styles.inputWrapper}>
                 {type === "phone" ? (
-                  <PhoneInput
-                    defaultValue={value}
-                    defaultCode="US"
-                    layout="first"
-                    onChangeFormattedText={onChange}
-                    containerStyle={[styles.phoneContainer]}
-                    textContainerStyle={[styles.phoneTextContainer]}
-                    flagButtonStyle={[styles.phoneFlagButton]}
-                    textInputProps={{
-                      placeholder: "",
-                      selectionColor: undefined,
-                    }}
-                    codeTextStyle={{ color: Colors.white }}
-                    textInputStyle={{ color: Colors.white }}
-                    countryPickerProps={{
-                      withAlphaFilter: true,
-                      theme: {
-                        backgroundColor: Colors.dark700,
-                        onBackgroundTextColor: Colors.white,
-                      },
-                      flatListProps: {
-                        contentContainerStyle: {
-                          paddingHorizontal: 16,
-                          marginTop: 6,
-                        },
-                      },
-                    }}
-                    renderDropdownImage={
-                      <Ionicons
-                        name="chevron-down-outline"
-                        size={20}
-                        color={Colors.dark300}
-                      />
-                    }
-                    onChangeText={onChange}
-                  />
+                  <PhoneInput value={value} onChange={onChange} />
                 ) : type === "date" ? (
-                  <>
-                    {!showPicker && (
-                      <Pressable onPress={toggleDatepicker}>
-                        <TextInput
-                          editable={false}
-                          placeholder={placeholder}
-                          pointerEvents="none"
-                          value={value ? value : ""}
-                          style={[
-                            styles.input,
-                            hasError &&
-                              value &&
-                              !noValidationStyling &&
-                              styles.inputError,
-                          ]}
-                          placeholderTextColor={Colors.dark300}
-                        />
-                      </Pressable>
-                    )}
-                    {showPicker && (
-                      <DateTimePicker
-                        mode="date"
-                        value={value ? new Date(value) : new Date()}
-                        display={Platform.OS === "ios" ? "spinner" : "default"}
-                        onChange={(event, date) => {
-                          onChange(date?.toDateString());
-                        }}
-                        style={styles.datePicker}
-                      />
-                    )}
-                    {showPicker && Platform.OS === "ios" && (
-                      <View style={styles.datePickerButtons}>
-                        <Button
-                          onPress={toggleDatepicker}
-                          color="dark500"
-                          title="Confirm birthdate"
-                        />
-                      </View>
-                    )}
-                  </>
-                ) : (
-                  <TextInput
-                    multiline={type === "textarea"}
-                    maxLength={type === "textarea" ? 200 : 50}
-                    numberOfLines={numberOfLines}
-                    placeholderTextColor={Colors.dark300}
-                    textContentType="oneTimeCode"
-                    autoCapitalize="none"
-                    onChangeText={onChange}
-                    onBlur={onBlur}
+                  <DateInputField
                     value={value}
-                    autoFocus={autofocus}
-                    style={[
-                      styles.input,
-                      {
-                        height: type === "textarea" ? 100 : 48
-                      },
-                      hasError &&
-                        value &&
-                        !noValidationStyling &&
-                        styles.inputError,
-                    ]}
-                    secureTextEntry={secureTextEntry}
+                    onChange={onChange}
                     placeholder={placeholder}
                   />
-                )}
-                {showPasswordToggle && type === "password" && (
-                  <TouchableOpacity
-                    onPress={togglePasswordVisibility}
-                    style={styles.iconToggle}
-                  >
-                    <Ionicons
-                      name={secureTextEntry ? "eye-off" : "eye"}
-                      size={20}
-                      color={Colors.dark300}
-                    />
-                  </TouchableOpacity>
+                ) : (
+                  <TextInputField
+                    type={type}
+                    onChange={onChange}
+                    onBlur={onBlur}
+                    value={value}
+                    autofocus={autofocus}
+                    hasError={hasError}
+                    noValidationStyling={noValidationStyling}
+                    style={style}
+                    showPasswordToggle={showPasswordToggle}
+                    placeholder={placeholder}
+                  />
                 )}
 
                 {value !== "" &&
@@ -204,67 +103,9 @@ const FormField: React.FC<FormFieldProps> = ({
 };
 
 const styles = StyleSheet.create({
-  container: {
-    padding: 16,
-  },
   inputWrapper: {
     position: "relative",
     flex: 1,
-  },
-  iconToggle: {
-    position: "absolute",
-    right: 20,
-    top: "50%",
-    transform: [{ translateY: -10 }],
-  },
-  input: {
-    borderRadius: 8,
-    backgroundColor: Colors.dark500,
-    color: Colors.white,
-    paddingVertical: 12,
-    fontSize: 18,
-    minHeight: 48,
-    paddingHorizontal: 16,
-  },
-  phoneContainer: {
-    width: "100%",
-    borderRadius: 8,
-    backgroundColor: Colors.dark500,
-  },
-  phoneTextContainer: {
-    borderTopRightRadius: 8,
-    borderBottomRightRadius: 8,
-    backgroundColor: Colors.dark500,
-  },
-  phoneFlagButton: {
-    borderRightWidth: 1,
-    borderRightColor: Colors.dark700,
-  },
-  calendarCenteredView: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 22,
-  },
-  calendarModalView: {
-    margin: 20,
-    backgroundColor: Colors.white,
-    borderRadius: 20,
-    width: "90%",
-    padding: 35,
-    alignItems: "center",
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,
-  },
-  inputError: {
-    borderColor: "rgba(255, 0, 0, 0.5)",
-    borderWidth: 1,
   },
   icon: {
     position: "absolute",
@@ -275,17 +116,6 @@ const styles = StyleSheet.create({
   label: {
     color: Colors.dark300,
     fontSize: 16,
-  },
-  errorText: {
-    color: "red",
-    marginBottom: 10,
-  },
-  datePicker: {
-    height: 160,
-    marginTop: -10,
-  },
-  datePickerButtons: {
-    paddingTop: 10,
   },
 });
 

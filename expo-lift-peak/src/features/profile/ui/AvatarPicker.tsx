@@ -2,7 +2,7 @@ import React, { useRef } from 'react';
 import { View, Pressable, StyleSheet } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import ImagePickerComponent from '@shared/components/ImagePickerComponent';
+import ImagePickerComponent, {MediaOptions} from '@shared/components/ImagePickerComponent';
 import Avatar from '@shared/components/Avatar';
 import { Colors } from '@shared/styles';
 import { useProfileStore } from '../store';
@@ -33,11 +33,8 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({usernameInitial, onAvatarPic
       <ImagePickerComponent
         closeModal={closeAvatarModal}
         ref={avatarSheetRef}
-        buttons={[
-          { title: 'Select profile picture', actionType: 'pickMediaFromGallery', icon: 'images-outline' },
-          { title: 'Take a Photo', actionType: 'takePhoto', icon: 'camera-outline' },
-        ]}
-        onPick={setAvatarUrl}
+        actions={[MediaOptions.IMAGE, MediaOptions.TAKE_PHOTO]}
+        onPick={onAvatarPick}
       />
     </View>
   );

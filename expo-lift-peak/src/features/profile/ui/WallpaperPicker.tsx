@@ -1,10 +1,11 @@
-import React, { useRef } from 'react';
-import { View, Image, Pressable, StyleSheet } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import ImagePickerComponent from '@shared/components/ImagePickerComponent';
-import { Colors } from '@shared/styles';
+import React, {useRef} from 'react';
+import {Image, Pressable, StyleSheet, View} from 'react-native';
+import {Ionicons} from '@expo/vector-icons';
+import {BottomSheetModal} from '@gorhom/bottom-sheet';
+import ImagePickerComponent, {MediaOptions} from '@shared/components/ImagePickerComponent';
+import {Colors} from '@shared/styles';
 import { useProfileStore } from '../store';
+
 
 interface WallpaperPickerProps {
     onWallpaperPick: (mediaUri: string) => void;
@@ -37,11 +38,8 @@ const WallpaperPicker: React.FC<WallpaperPickerProps> = ({ onWallpaperPick }) =>
       <ImagePickerComponent
         closeModal={closeWallpaperModal}
         ref={wallpaperSheetRef}
-        buttons={[
-          { title: 'Choose cover photo', actionType: 'pickMediaFromGallery', icon: 'images-outline' },
-          { title: 'Take a Photo', actionType: 'takePhoto', icon: 'camera-outline' },
-        ]}
-        onPick={setWallpaperUrl}
+        actions={[MediaOptions.IMAGE, MediaOptions.TAKE_PHOTO]}
+        onPick={onWallpaperPick}
       />
     </View>
   );
