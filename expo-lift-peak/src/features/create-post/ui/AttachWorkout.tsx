@@ -4,6 +4,7 @@ import {useQuery} from "@tanstack/react-query";
 import {getRoutineList, RoutineCard} from "@entities/routine";
 import {Colors} from "@shared/styles";
 import {IWorkoutPreview} from "@features/workout";
+import { renderBottomSheetBackdrop } from '@shared/components/bottomSheet/bottomSheetBackdrop';
 
 interface AttachWorkoutProps {
     onAdd: (workout: IWorkoutPreview) => void;
@@ -14,12 +15,7 @@ const AttachWorkout = forwardRef<BottomSheetModal, AttachWorkoutProps>(({onAdd},
         queryFn: getRoutineList,
     })
 
-    const renderBackdrop = useCallback(
-        (props: any) => (
-            <BottomSheetBackdrop opacity={0.7} appearsOnIndex={0} disappearsOnIndex={-1} enableTouchThrough={false} {...props} />
-        ),
-        []
-    );
+    const memoizedBackdrop = useCallback(renderBottomSheetBackdrop, []);
 
 
     return (
@@ -28,7 +24,7 @@ const AttachWorkout = forwardRef<BottomSheetModal, AttachWorkoutProps>(({onAdd},
                 backgroundColor: Colors.dark900,
             }}
 
-            backdropComponent={renderBackdrop}
+            backdropComponent={memoizedBackdrop}
             ref={ref as any}
             snapPoints={["80%"]}
         >

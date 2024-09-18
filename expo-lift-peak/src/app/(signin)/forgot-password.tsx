@@ -4,7 +4,7 @@ import {
 } from "@features/auth/utils/email.schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Button from "@shared/components/Button";
-import FormField from "@shared/components/form/FormField";
+import FormField from "@shared/components/form/formfield/FormField";
 import { Colors, defaultStyles } from "@shared/styles";
 import { router } from "expo-router";
 import { FormProvider, useForm } from "react-hook-form";

@@ -1,6 +1,6 @@
 import Button from "@shared/components/Button";
 import DropDown from "@shared/components/DropDown";
-import FormField from "@shared/components/form/FormField";
+import FormField from "@shared/components/form/formfield/FormField";
 import { defaultStyles } from "@shared/styles";
 import { useRouter } from "expo-router";
 import React from "react";

@@ -3,6 +3,7 @@ import {BottomSheetBackdrop, BottomSheetModal, BottomSheetScrollView} from "@gor
 import {useQuery} from "@tanstack/react-query";
 import {Colors} from "@shared/styles";
 import {ExerciseCard, findExerciseList, IExercise} from "@entities/exercise";
+import { renderBottomSheetBackdrop } from '@shared/components/bottomSheet/bottomSheetBackdrop';
 
 interface AttachExerciseProps {
     onAdd: (exercise: IExercise) => void;
@@ -16,12 +17,7 @@ const AttachExercise = forwardRef<BottomSheetModal, AttachExerciseProps>(({onAdd
     })
 
 
-    const renderBackdrop = useCallback(
-        (props: any) => (
-            <BottomSheetBackdrop opacity={0.7} appearsOnIndex={0} disappearsOnIndex={-1} enableTouchThrough={false} {...props} />
-        ),
-        []
-    );
+    const memoizedBackdrop = useCallback(renderBottomSheetBackdrop, []);
 
 
     return (
@@ -30,7 +26,7 @@ const AttachExercise = forwardRef<BottomSheetModal, AttachExerciseProps>(({onAdd
                 backgroundColor: Colors.dark900,
             }}
 
-            backdropComponent={renderBackdrop}
+            backdropComponent={memoizedBackdrop}
 
             ref={ref}
             snapPoints={["80%"]}

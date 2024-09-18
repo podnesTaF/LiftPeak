@@ -12,7 +12,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Link, useFocusEffect, useRouter } from "expo-router";
 import { loginSchema, LoginRequest, useAuthStore } from "@features/auth";
 import { Colors, defaultStyles } from "@shared/styles";
-import FormField from "@shared/components/form/FormField";
+import FormField from "@shared/components/form/formfield/FormField";
 import Button from "@shared/components/Button";
 import { useToastStore } from "@shared/store";
 import { login } from "@features/auth/api/authApi";
@@ -56,7 +56,7 @@ const Login = () => {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={[defaultStyles.container]}
     >
-      <View style={{ flex: 1, gap: 16, paddingBottom: 40, marginTop: 38, marginHorizontal: 24 }}>
+      <View style={{ flex: 1, gap: 16, paddingBottom: 70, marginTop: 38, marginHorizontal: 24 }}>
         <Text style={defaultStyles.header}>Log in</Text>
         <FormProvider {...form}>
           <View style={{ paddingVertical: 16, flex: 1, gap: 26 }}>

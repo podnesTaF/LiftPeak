@@ -17,6 +17,7 @@ import {useCommentStore, WorkoutPostBody} from "@features/feed";
 import Constants from 'expo-constants';
 import Comment from "@features/feed/ui/Comment";
 import {CommentType, getComments, leaveComment} from "@entities/reaction";
+import { renderBottomSheetBackdrop } from '@shared/components/bottomSheet/bottomSheetBackdrop';
 
 interface CommentSheetProps {
 }
@@ -62,12 +63,7 @@ const CommentSheet = forwardRef<BottomSheetModal, {}>(({}:CommentSheetProps, ref
         </BottomSheetFooter>
     ), [workout])
 
-    const renderBackdrop = useCallback(
-        (props: any) => (
-            <BottomSheetBackdrop opacity={0.7} appearsOnIndex={0} disappearsOnIndex={-1} enableTouchThrough={false} {...props} />
-        ),
-        []
-    );
+    const memoizedBackdrop = useCallback(renderBottomSheetBackdrop, []);
 
     const renderHeader = useCallback((props: BottomSheetHandleProps) => (
         <View
@@ -101,7 +97,7 @@ const CommentSheet = forwardRef<BottomSheetModal, {}>(({}:CommentSheetProps, ref
             }}
             topInset={Constants.statusBarHeight}
             handleComponent={renderHeader}
-            backdropComponent={renderBackdrop}
+            backdropComponent={memoizedBackdrop}
             enablePanDownToClose={true}
             snapPoints={["100%"]}
         >

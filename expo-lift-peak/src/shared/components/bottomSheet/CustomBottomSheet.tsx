@@ -8,6 +8,7 @@ import {
 } from "@gorhom/bottom-sheet";
 import Button from "@shared/components/Button";
 import {Colors} from "@shared/styles";
+import { renderBottomSheetBackdrop } from './bottomSheetBackdrop';
 
 interface CustomBottomSheetProps {
     handleClose: () => void;
@@ -17,12 +18,7 @@ interface CustomBottomSheetProps {
 
 const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>(({handleClose, snapPoints,children}, ref) => {
 
-    const renderBackdrop = useCallback(
-        (props: any) => (
-            <BottomSheetBackdrop opacity={0.7} appearsOnIndex={0} disappearsOnIndex={-1} enableTouchThrough={false} {...props} />
-        ),
-        []
-    );
+    const memoizedBackdrop = useCallback(renderBottomSheetBackdrop, []);
 
     const renderFooter = useCallback(
         (props: BottomSheetFooterProps) => (
@@ -39,7 +35,7 @@ const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>((
             backgroundStyle={{
                 backgroundColor: Colors.dark700,
             }}
-            backdropComponent={renderBackdrop}
+            backdropComponent={memoizedBackdrop}
             ref={ref}
             handleIndicatorStyle={{
                 backgroundColor: 'white',
