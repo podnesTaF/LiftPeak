@@ -1,7 +1,8 @@
 import { Exercise } from 'src/modules/exercise/entity/exercise.entity';
+import { Poll } from 'src/modules/pool/entities/poll.entity';
 import { Workout } from 'src/modules/workout/entities/workout.entity';
 import { AbstractEntity } from 'src/shared/entities/abstract.entity';
-import { Column, Entity, JoinColumn, ManyToOne } from 'typeorm';
+import { Column, Entity, JoinColumn, ManyToOne, OneToOne } from 'typeorm';
 import { GroupPost } from './group-post.entity';
 
 export enum PostContentType {
@@ -9,6 +10,7 @@ export enum PostContentType {
   IMAGE = 'image',
   EXERCISE = 'exercise',
   WORKOUT = 'workout',
+  POLL = 'poll',
 }
 
 export enum TextType {
@@ -62,4 +64,12 @@ export class PostContent extends AbstractEntity {
   workoutId: number;
   @ManyToOne(() => Workout, { nullable: true })
   workout: Workout;
+
+  @Column({
+    nullable: true,
+  })
+  pollId: number;
+  @OneToOne(() => Poll, (poll) => poll.postContent)
+  @JoinColumn()
+  poll: Poll;
 }

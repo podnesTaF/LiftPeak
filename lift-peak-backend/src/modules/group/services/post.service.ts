@@ -1,5 +1,7 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Poll } from 'src/modules/pool/entities/poll.entity';
+import { PollService } from 'src/modules/pool/poll.service';
 import { DataSource, EntityManager, Repository } from 'typeorm';
 import { CreateContentDto } from '../dto/create-content.dto';
 import { CreatePostDto } from '../dto/create-post.dto';
@@ -15,6 +17,7 @@ export class PostService {
     @InjectRepository(PostContent)
     private readonly postContentRepository: Repository<PostContent>,
     private dataSource: DataSource,
+    private readonly pollService: PollService,
   ) {}
 
   async createPost(userId: number, groupId: number, dto: CreatePostDto) {
@@ -58,9 +61,14 @@ export class PostService {
     dto: CreateContentDto,
     queryManager?: EntityManager,
   ) {
+    let poll: Poll | null = null;
+    if (dto.type === 'poll' && dto.poll) {
+      poll = await this.pollService.create(dto.poll, queryManager);
+    }
     const postContent = this.postContentRepository.create({
       ...dto,
       postId: postId,
+      poll,
     });
     if (queryManager) {
       return queryManager.save(PostContent, postContent);

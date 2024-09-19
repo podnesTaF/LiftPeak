@@ -18,6 +18,7 @@ import { LikeModule } from './modules/like/like.module';
 import { MediaModule } from './modules/media/media.module';
 import { NotificationModule } from './modules/notification/notification.module';
 import { OtpModule } from './modules/otp/otp.module';
+import { PollModule } from './modules/pool/poll.module';
 import { RoleModule } from './modules/role/role.module';
 import { TargetModule } from './modules/target/target.module';
 import { UsersModule } from './modules/users/users.module';
@@ -50,6 +51,7 @@ import { WorkoutModule } from './modules/workout/workout.module';
     NotificationModule,
     ConstructorModule,
     EquipmentModule,
+    PollModule,
   ],
   controllers: [],
 })

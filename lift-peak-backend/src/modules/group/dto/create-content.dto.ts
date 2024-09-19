@@ -1,4 +1,12 @@
-import { IsEnum, IsNumber, IsOptional, IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import {
+  IsEnum,
+  IsNumber,
+  IsObject,
+  IsOptional,
+  IsString,
+} from 'class-validator';
+import { CreatePollDto } from 'src/modules/pool/dto/create-poll.dto';
 import { PostContentType, TextType } from '../entities/post-content.entity';
 
 export class CreateContentDto {
@@ -28,4 +36,9 @@ export class CreateContentDto {
   @IsNumber()
   @IsOptional()
   workoutId: number;
+
+  @IsObject()
+  @Type(() => CreatePollDto)
+  @IsOptional()
+  poll?: CreatePollDto;
 }
