@@ -129,6 +129,7 @@ const SocialMediaPicker = () => {
                 autoComplete="off"
                 textContentType="none"
                 autoCorrect={false}
+                autoFocus
               />
               <TouchableOpacity
                 style={styles.addButton}

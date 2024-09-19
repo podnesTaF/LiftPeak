@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useCallback, useEffect } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -19,7 +19,7 @@ import { useNavigation } from "expo-router";
 
 const Profile = () => {
   const { user } = useAuthStore();
-  const {setLinks, setGyms, setAvatarUrl, setWallpaperUrl, setGoal, avatarUrl, wallpaperUrl, links, gyms, goal} = useProfileStore();
+  const {setProfileField, setGyms,profile, gyms} = useProfileStore();
   const navigation = useNavigation();
 
   const { data } = useQuery({
@@ -28,28 +28,22 @@ const Profile = () => {
     enabled: !!user?.id,
   });
 
+  const handleSetProfile = useCallback(() => {
+    if (data?.profile) {
+      const { avatarUrl, wallpaperUrl, socialMediaLinks, goal } = data?.profile;
+  
+      if (avatarUrl) setProfileField("avatarUrl", avatarUrl);
+      if (wallpaperUrl) setProfileField("wallpaperUrl", wallpaperUrl);
+      if (socialMediaLinks) setProfileField("socialMediaLinks", socialMediaLinks);
+      if (goal) setProfileField("goal", goal);
+    }
+  
+    if (data?.gyms) setGyms(data.gyms);
+  }, [data, setProfileField, setGyms]);
+
   useEffect(() => {
-
-    if(data?.profile?.avatarUrl){
-      setAvatarUrl(data.profile.avatarUrl)
-    }
-
-    if(data?.profile?.wallpaperUrl){
-      setWallpaperUrl(data.profile.wallpaperUrl)
-    }
-
-    if(data?.profile?.socialMediaLinks){
-      setLinks(data.profile.socialMediaLinks)
-    }
-
-    if(data?.gyms){
-      setGyms(data.gyms)
-    }
-
-    if(data?.profile?.goal){
-      setGoal(data.profile.goal)
-    }
-  }, [data, setLinks, setGyms])
+    handleSetProfile();
+  }, [data, handleSetProfile]);
 
 
   useEffect(() => {
@@ -60,15 +54,13 @@ const Profile = () => {
         </TouchableOpacity>
       )
     })
-  }, [navigation, avatarUrl, wallpaperUrl, links, gyms, goal])
+  }, [navigation, profile?.avatarUrl, profile?.wallpaperUrl, profile?.socialMediaLinks, gyms, profile?.goal])
 
   
 
   if (!data) {
     return null;
-  } else{
-    console.log(data)
-  }
+  } 
 
   const handleAvatarPick = (mediaUri: string) => {
     console.log("Avatar picked:", mediaUri);
@@ -88,7 +80,6 @@ const Profile = () => {
         <ScrollView
           style={{ backgroundColor: Colors.dark700, flex: 1 }}
           contentContainerStyle={styles.contentContainer}
-          keyboardShouldPersistTaps="handled"
         >
           <WallpaperPicker
             onWallpaperPick={handleWallpaperPick}

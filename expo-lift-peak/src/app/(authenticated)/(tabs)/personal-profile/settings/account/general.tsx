@@ -1,43 +1,46 @@
-import { View, Text } from "react-native";
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+  StyleSheet,
+} from "react-native";
 import React from "react";
-import FormField from "@shared/components/form/formfield/FormField";
-import Dropdown from "@shared/components/DropDown";
+import { Colors } from "@shared/styles";
+import { FormProvider, useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 
 const General = () => {
+  const form = useForm({
+    mode: "onChange",
+    // resolver: zodResolver(generalSettingsSchema)
+  });
+
   return (
-    <View>
-      <FormField
-        name="firstName"
-        placeholder=""
-        label="First name"
-        noValidationStyling
-      />
-      <FormField
-        name="lastName"
-        placeholder=""
-        label="Last name"
-        noValidationStyling
-      />
-      <FormField
-        placeholder="Select your birthdate"
-        name="birthdate"
-        label="Birthdate"
-        type="date"
-        noValidationStyling
-      />
-      <Dropdown
-        data={[
-          { value: "Male", label: "Male" },
-          { value: "Female", label: "Female" },
-          { value: "noOther", label: "No Other" },
-        ]}
-        name={"gender"}
-        onChange={console.log}
-        placeholder="Select your gender"
-        label="Gender"
-      />
-    </View>
+    <FormProvider {...form}>
+      <KeyboardAvoidingView
+        behavior={Platform.OS === "ios" ? "padding" : "height"}
+        style={{ flex: 1 }}
+      >
+        <ScrollView
+          style={{ backgroundColor: Colors.dark700, flex: 1 }}
+          contentContainerStyle={styles.contentContainer}
+          keyboardShouldPersistTaps="handled"
+        ></ScrollView>
+      </KeyboardAvoidingView>
+    </FormProvider>
   );
 };
 
 export default General;
+
+const styles = StyleSheet.create({
+  contentContainer: {
+    paddingBottom: 100,
+    marginHorizontal: 24,
+    marginTop: 38,
+    flex: 1,
+    gap: 45,
+  },
+});
