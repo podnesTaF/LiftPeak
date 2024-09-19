@@ -1,4 +1,4 @@
-import React, {useRef} from 'react';
+import React, {useRef, useState} from 'react';
 import {Ionicons} from "@expo/vector-icons";
 import {Keyboard, TouchableOpacity, View} from "react-native";
 import * as ImagePicker from "expo-image-picker";
@@ -10,15 +10,23 @@ import AttachExercise from "@features/create-post/ui/AttachExercise";
 import {IExercise} from "@entities/exercise";
 import {BlockType} from "@features/create-post/model";
 import {TextType} from "@entities/post";
+import {useRouter} from "expo-router";
 
 interface PostAttachmentsProps {
     onAddBlock: (type: BlockType,insertAt: null | number, content?: string) => void;
     insertAt: number | null;
+    setListMode: (enabled: boolean) => void;
+    isListMode: boolean
 }
 
-const PostAttachments = ({onAddBlock,insertAt}: PostAttachmentsProps) => {
+const PostAttachments = ({onAddBlock,insertAt, setListMode, isListMode}: PostAttachmentsProps) => {
     const workoutAttachmentRef = useRef<BottomSheetModal>()
     const exerciseAttachmentRef = useRef<BottomSheetModal>()
+    const router = useRouter();
+
+    const toggleListMode = () => {
+        setListMode(!isListMode);  // Notify parent about mode change
+    };
 
     const openExerciseAttachment = () => {
         Keyboard.dismiss();
@@ -33,6 +41,11 @@ const PostAttachments = ({onAddBlock,insertAt}: PostAttachmentsProps) => {
         Keyboard.dismiss();
         workoutAttachmentRef.current?.present();
     }
+
+    const openPollEditor = () => {
+        router.push({pathname: "/(authenticated)/create-post/poll-editor", params: {insertAt: insertAt || ""}})
+    }
+
     const dismissWorkoutAttachment = () => {
         workoutAttachmentRef.current?.dismiss();
     }
@@ -70,6 +83,12 @@ const PostAttachments = ({onAddBlock,insertAt}: PostAttachmentsProps) => {
                     </TouchableOpacity>
                     <TouchableOpacity onPress={openWorkoutAttachment}>
                         <Ionicons name={"list"} size={30} color={Colors.dark300} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={openPollEditor}>
+                        <Ionicons name={"bar-chart-outline"} size={30} color={Colors.dark300} />
+                    </TouchableOpacity>
+                    <TouchableOpacity onPress={toggleListMode}>
+                        <Ionicons name={isListMode ? "list-circle" : "list-circle-outline"} size={30} color={isListMode ? Colors.success : Colors.dark300}/>
                     </TouchableOpacity>
                 </View>
                 <TouchableOpacity onPress={() => onAddBlock(TextType.TEXT, insertAt)} style={{marginLeft: 5}}>

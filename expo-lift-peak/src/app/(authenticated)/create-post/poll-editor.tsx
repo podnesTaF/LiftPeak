@@ -3,34 +3,34 @@ import {Stack, useLocalSearchParams, useRouter} from "expo-router";
 import Button from "@shared/components/Button";
 import {ScrollView, Text, View, StyleSheet, TouchableOpacity} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
-import {Block, IAnswer, IPool} from "@features/create-post/model";
+import {Block, IAnswer} from "@features/create-post/model";
 import {usePostStore} from "@features/create-post/store/postStore";
 import {v4 as uuidv4} from "uuid";
 import InputField from "@shared/components/form/InputField";
 import {Ionicons} from "@expo/vector-icons";
 import Checkbox from "expo-checkbox";
 
-const PoolEditor = () => {
+const PollEditor = () => {
     const router = useRouter()
     const {id, insertAt} = useLocalSearchParams<{ id?: string, insertAt?: string }>();
-    const {getPoolBlockById, addBlock, setBlocks, blocks, updateBlock} = usePostStore()
-    const [answers, setAnswers] = useState<IAnswer[]>(getPoolBlockById(id)?.pool?.answers || [{
+    const {getPollBlockById, addBlock, setBlocks, blocks, updateBlock} = usePostStore()
+    const [answers, setAnswers] = useState<IAnswer[]>(getPollBlockById(id)?.poll?.answers || [{
         id: uuidv4() + 1,
         name: ""
     }, {
         id: uuidv4() + 2,
         name: ""
     }]);
-    const [question, setQuestion] = useState(getPoolBlockById(id)?.pool?.question || '')
-    const [isAnonymous, setIsAnonymous] = useState<boolean>(getPoolBlockById(id)?.pool?.isAnonymous || false);
-    const [multipleAnswer, setMultipleAnswer] =  useState<boolean>(getPoolBlockById(id)?.pool?.multipleAnswer || false);
+    const [question, setQuestion] = useState(getPollBlockById(id)?.poll?.question || '')
+    const [isAnonymous, setIsAnonymous] = useState<boolean>(getPollBlockById(id)?.poll?.isAnonymous || false);
+    const [multipleAnswer, setMultipleAnswer] =  useState<boolean>(getPollBlockById(id)?.poll?.multipleAnswer || false);
 
-    const createPool = () => {
+    const createPoll = () => {
         const newBlock: Block = {
             id: id || uuidv4(),
-            type: "pool",
+            type: "poll",
             content:'',
-            pool: {
+            poll: {
                 question,
                 answers: answers,
                 isAnonymous,
@@ -75,12 +75,12 @@ const PoolEditor = () => {
         <>
             <Stack.Screen options={{
                 headerRight: () => (
-                    <Button color={"transparent"} title={"Post"} onPress={() => createPool()} />
+                    <Button color={"transparent"} title={"Post"} onPress={() => createPoll()} />
                 )
             }} />
             <ScrollView style={defaultStyles.container} contentContainerStyle={{paddingVertical: 12, gap: 12}}>
                 <View style={{backgroundColor: Colors.dark700, paddingVertical: 16, paddingHorizontal: 12, gap: 20}}>
-                    <InputField value={question} onChange={setQuestion} placeholder={"Enter Pool Question"} label={"Question"} />
+                    <InputField value={question} onChange={setQuestion} placeholder={"Enter Poll Question"} label={"Question"} />
                     <View style={{gap: 14}}>
                         <Text style={defaultStyles.secondaryText}>
                             Answers
@@ -138,4 +138,4 @@ const styles = StyleSheet.create({
     }
 })
 
-export default PoolEditor;
+export default PollEditor;

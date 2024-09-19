@@ -12,33 +12,39 @@ import PostAttachments from "@features/create-post/ui/PostAttachments";
 import {Block, BlockType} from "@features/create-post/model";
 import {TextType} from "@entities/post";
 import {BlockRenderer} from "@features/create-post/ui/BlockRenderer";
+import {usePostStore} from "@features/create-post/store/postStore";
 
 interface CreatePostProps {
-    blocks: Block[];
-    setBlocks: React.Dispatch<React.SetStateAction<Block[]>>;
+
 }
 
-export function CreatePost({blocks, setBlocks}: CreatePostProps) {
+export function CreatePost({}: CreatePostProps) {
     const [focusedInputIdx, setFocusedInputIdx] = useState<number | null>(null);
     const scrollRef = useRef<ScrollView | null>(null);
     const inputRefs = useRef<Record<string, TextInput | null>>({});
+    const [isListMode, setIsListMode] = useState(false)
+    const { blocks, addBlock: addStoreBlock, removeBlock, setBlocks } = usePostStore();
 
-
-    const addBlock = (type: BlockType = TextType.TEXT, insertAt: number | null = null, content?: string) => {
+    const addBlock = (
+        type: BlockType = TextType.TEXT,
+        insertAt: number | null = null,
+        content?: string
+    ) => {
         const newBlock: Block = {
             id: uuidv4(),
             type,
             content: content || '',
         };
         if (insertAt === null) {
-            setBlocks((prevBlocks) => [...prevBlocks, newBlock]);
+            addStoreBlock(newBlock);
             setFocusedInputIdx(blocks.length + 1);
         } else {
-            setBlocks((prevBlocks) => [
-                ...prevBlocks.slice(0, insertAt + 1),
+            const updatedBlocks = [
+                ...blocks.slice(0, insertAt + 1),
                 newBlock,
-                ...prevBlocks.slice(insertAt + 1),
-            ]);
+                ...blocks.slice(insertAt + 1),
+            ];
+            setBlocks(updatedBlocks);
             if (type === 'text') {
                 setFocusedInputIdx(insertAt + 1);
             }
@@ -55,24 +61,26 @@ export function CreatePost({blocks, setBlocks}: CreatePostProps) {
     };
 
     const updateBlockContent = (id: string, content: string) => {
-        setBlocks((prevBlocks) =>
-            prevBlocks.map((block) =>
+        setBlocks(
+            blocks.map((block) =>
                 block.id === id ? { ...block, content } : block
             )
         );
     };
+
 
     const handleBackspacePress = (block: Block, index: number) => {
         if (block.content === '' && blocks.length > 1) {
             const previousBlockId = blocks[index - 1]?.id;
             inputRefs.current[previousBlockId]?.focus();
 
-            setBlocks((prevBlocks) => [
-                ...prevBlocks.slice(0, index),
-                ...prevBlocks.slice(index + 1),
-            ]);
+            const updatedBlocks = [
+                ...blocks.slice(0, index),
+                ...blocks.slice(index + 1),
+            ];
+            setBlocks(updatedBlocks);
 
-            if(Object.values(TextType).includes(block.type as TextType)) {
+            if (Object.values(TextType).includes(block.type as TextType)) {
                 setFocusedInputIdx(index - 1);
             } else {
                 setFocusedInputIdx(null);
@@ -85,10 +93,41 @@ export function CreatePost({blocks, setBlocks}: CreatePostProps) {
             'Select Block Type',
             '',
             [
-                { text: 'Title', onPress: () => setBlocks((prevBlocks) => prevBlocks.map((block) => block.id === blockId ? { ...block, type: TextType.TITLE } : block)) },
-                { text: 'Subtitle', onPress: () => setBlocks((prevBlocks) => prevBlocks.map((block) => block.id === blockId ? { ...block, type: TextType.SUBTITLE } : block)) },
-                { text: 'Text', onPress: () => setBlocks((prevBlocks) => prevBlocks.map((block) => block.id === blockId ? { ...block, type: TextType.TEXT } : block)) },
-                { text: 'Remove Block', onPress: () => setBlocks((prevBlocks) => prevBlocks.filter((block) => block.id !== blockId)), style: 'destructive' },
+                {
+                    text: 'Title',
+                    onPress: () => {
+                        setBlocks(
+                            blocks.map((block) =>
+                                block.id === blockId ? { ...block, type: TextType.TITLE } : block
+                            )
+                        );
+                    },
+                },
+                {
+                    text: 'Subtitle',
+                    onPress: () => {
+                        setBlocks(
+                            blocks.map((block) =>
+                                block.id === blockId ? { ...block, type: TextType.SUBTITLE } : block
+                            )
+                        );
+                    },
+                },
+                {
+                    text: 'Text',
+                    onPress: () => {
+                        setBlocks(
+                            blocks.map((block) =>
+                                block.id === blockId ? { ...block, type: TextType.TEXT } : block
+                            )
+                        );
+                    },
+                },
+                {
+                    text: 'Remove Block',
+                    onPress: () => removeBlock(blockId),
+                    style: 'destructive',
+                },
                 { text: 'Cancel', style: 'cancel' },
             ],
             { cancelable: true }
@@ -111,13 +150,15 @@ export function CreatePost({blocks, setBlocks}: CreatePostProps) {
                         updateBlockContent={updateBlockContent}
                         handleBackspacePress={handleBackspacePress}
                         renderOptionsMenu={renderOptionsMenu}
-                        removeBlock={(id) => setBlocks((prevBlocks) => prevBlocks.filter((block) => block.id !== id))}
+                        removeBlock={removeBlock}
                         setFocusedInputIdx={setFocusedInputIdx}
                         focusedInputIdx={focusedInputIdx}
+                        setListMode={setIsListMode}
+                        isListMode={isListMode}
                     />
                 ))}
             </ScrollView>
-            <PostAttachments onAddBlock={addBlock} insertAt={focusedInputIdx} />
+            <PostAttachments setListMode={setIsListMode} isListMode={isListMode} onAddBlock={addBlock} insertAt={focusedInputIdx} />
         </KeyboardAvoidingView>
     );
 }

@@ -21,6 +21,20 @@ const Layout = () => {
                     </TouchableOpacity>
                 )
             }}/>
+            <Stack.Screen name={"poll-editor"} options={{
+                headerStyle: {
+                    backgroundColor: Colors.dark700,
+                },
+                headerTintColor: Colors.white,
+                headerTitle: "Add Poll",
+                animation: "slide_from_bottom",
+                headerBackTitleVisible: false,
+                headerLeft: () => (
+                    <TouchableOpacity onPress={() => router.back()}>
+                        <Ionicons name={"close"} size={32} color={Colors.dark300} />
+                    </TouchableOpacity>
+                )
+            }}/>
         </Stack>
     );
 };

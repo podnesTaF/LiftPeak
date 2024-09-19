@@ -1,10 +1,24 @@
 import {TextType} from "@entities/post";
 
-export type BlockType = TextType | 'image' | 'exercise' | "workout";
+export type BlockType = TextType | 'image' | 'exercise' | "workout" | "poll";
+
+
+export interface IPoll {
+    question: string;
+    answers: IAnswer[];
+    isAnonymous: boolean;
+    multipleAnswer: boolean
+}
+
+export interface IAnswer {
+    id:string;
+    name: string;
+}
 
 export interface BaseBlock {
     id: string;
     type: BlockType;
+    poll?: IPoll;
 }
 
 export interface TextBlock extends BaseBlock {
@@ -27,6 +41,11 @@ export interface WorkoutBlock extends BaseBlock {
     content: string;
 }
 
+export interface PollBlock extends BaseBlock {
+    type: "poll",
+    content: string,
+}
 
 
-export type Block = TextBlock | ImageBlock | ExerciseBlock | WorkoutBlock;
+
+export type Block = TextBlock | ImageBlock | ExerciseBlock | WorkoutBlock | PollBlock;

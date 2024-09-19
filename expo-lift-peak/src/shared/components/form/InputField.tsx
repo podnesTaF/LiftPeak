@@ -1,6 +1,6 @@
 import React from 'react';
 import {StyleSheet, Text, TextInput, TextInputProps, View, TouchableOpacity, StyleProp, TextStyle} from "react-native";
-import { Colors } from "@shared/styles";
+import {Colors, defaultStyles} from "@shared/styles";
 import { TextInputMask } from 'react-native-masked-text';
 
 interface InputFieldProps {
@@ -21,6 +21,11 @@ const InputField = ({ label, activeText,placeholder, type, value, onBlur, onChan
 
     return (
         <View style={styles.inputContainer}>
+            {label && (
+                <Text style={defaultStyles.secondaryText}>
+                    {label}
+                </Text>
+            )}
             {!mask ? <TextInput
                 placeholderTextColor={Colors.dark300}
                 textContentType={type}
@@ -60,8 +65,8 @@ const InputField = ({ label, activeText,placeholder, type, value, onBlur, onChan
 };
 const styles = StyleSheet.create({
     inputContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        gap: 10,
+        flex: 1
     },
     input: {
         flex: 1,

@@ -11,7 +11,7 @@ interface BlockPollProps {
     block: PollBlock;
 }
 
-const BlockPool = ({block}: BlockPollProps) => {
+const BlockPoll = ({block}: BlockPollProps) => {
     const router = useRouter();
     const {removeBlock} = usePostStore()
 
@@ -26,7 +26,7 @@ const BlockPool = ({block}: BlockPollProps) => {
                 </Text>
             </View>
             <View style={{flexDirection: "row", gap: 12, alignItems: "center"}}>
-                <TouchableOpacity onPress={() => router.push({pathname: "/(authenticated)/create-post/pool-editor", params: {id: block.id}})}>
+                <TouchableOpacity onPress={() => router.push({pathname: "/(authenticated)/create-post/poll-editor", params: {id: block.id}})}>
                     <Ionicons name={"create-outline"} color={Colors.white} size={24}/>
                 </TouchableOpacity>
                 <TouchableOpacity onPress={() => removeBlock(block.id)}>
@@ -37,4 +37,4 @@ const BlockPool = ({block}: BlockPollProps) => {
     );
 };
 
-export default BlockPool;
+export default BlockPoll;
