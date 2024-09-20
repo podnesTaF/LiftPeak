@@ -4,6 +4,7 @@ import { GroupPost } from 'src/modules/group/entities/group-post.entity';
 import { Group } from 'src/modules/group/entities/group.entity';
 import { Like } from 'src/modules/like/entities/like.entity';
 import { Notification } from 'src/modules/notification/entities/notification.entity';
+import { Answer } from 'src/modules/pool/entities/answer.entity';
 import { Role } from 'src/modules/role/entities/role.entity';
 import { RoutineSave } from 'src/modules/workout/entities/routine-save.entity';
 import { Workout } from 'src/modules/workout/entities/workout.entity';
@@ -94,4 +95,7 @@ export class User extends AbstractEntity {
 
   @OneToMany(() => Notification, (not) => not.recipient)
   receivedNotifications: Notification[];
+
+  @ManyToMany(() => Answer, (a) => a.voters)
+  answers: Answer[];
 }

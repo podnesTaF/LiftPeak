@@ -2,7 +2,9 @@ import {BlockMedia} from "@features/create-post/ui/BlockMedia";
 import React from "react";
 import {BlockInput} from "@features/create-post/ui/BlockInput";
 import {TextInput, View} from "react-native";
-import {Block} from "@features/create-post/model";
+import {Block, PollBlock} from "@features/create-post/model";
+import {useRouter} from "expo-router";
+import BlockPoll from "@features/create-post/ui/BlockPoll";
 
 interface BlockRendererProps {
     block: Block;
@@ -14,6 +16,8 @@ interface BlockRendererProps {
     removeBlock: (id: string) => void;
     setFocusedInputIdx: React.Dispatch<React.SetStateAction<number | null>>;
     focusedInputIdx: number | null;
+    isListMode?: boolean;
+    setListMode: (enabled: boolean) => void;
 }
 
 export const BlockRenderer: React.FC<BlockRendererProps> = ({
@@ -26,7 +30,10 @@ export const BlockRenderer: React.FC<BlockRendererProps> = ({
                                                                 removeBlock,
                                                                 setFocusedInputIdx,
                                                                 focusedInputIdx,
+                                                                isListMode,
+    setListMode
                                                             }) => {
+    const router = useRouter()
     const handleInputFocus = () => {
         setFocusedInputIdx(index);
     };
@@ -39,6 +46,8 @@ export const BlockRenderer: React.FC<BlockRendererProps> = ({
                 <BlockMedia block={block} removeBlock={removeBlock} isRoutine />
             ) : block.type === 'exercise' ? (
                 <BlockMedia block={block} removeBlock={removeBlock} isExercise />
+            ) : block.type === 'poll' ? (
+                <BlockPoll block={block as PollBlock} />
             ) : (
                 <BlockInput
                     ref={(ref) => (inputRefs.current[block.id] = ref)}
@@ -51,6 +60,8 @@ export const BlockRenderer: React.FC<BlockRendererProps> = ({
                         setFocusedInputIdx(null)
                     }}
                     focusedInputIdx={focusedInputIdx}
+                    setListMode={setListMode}
+                    isListMode={isListMode}
                 />
             )}
         </View>

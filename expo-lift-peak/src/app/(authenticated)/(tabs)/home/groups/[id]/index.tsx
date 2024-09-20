@@ -1,5 +1,5 @@
 import React from 'react';
-import {useLocalSearchParams} from "expo-router";
+import {useLocalSearchParams, useRouter} from "expo-router";
 import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
 import {useQuery} from "@tanstack/react-query";
 import {getGroup} from "@entities/group";
@@ -10,6 +10,7 @@ import CustomTabBar from "@shared/components/tabs/CustomTabBar";
 import {MaterialIcons} from "@expo/vector-icons";
 import GroupPostsFeed from "@features/group/ui/GroupPostsFeed";
 import {useHeaderHeight} from "@react-navigation/elements";
+import {Text, TouchableOpacity} from "react-native";
 
 
 const tabs = [
@@ -27,7 +28,7 @@ const GroupPage = () => {
     const {id} = useLocalSearchParams<{ id?: string }>()
     const [activeTab, setActiveTab] = React.useState('feed')
     const {scrollY} = useAnimatedScroll();
-    const headerHeight = useHeaderHeight();
+    const router = useRouter()
 
     const {data} = useQuery({
         queryKey: ['group', id],
@@ -44,6 +45,11 @@ const GroupPage = () => {
                              style={defaultStyles.container} scrollEventThrottle={16}>
             <GroupHeader group={data} />
             <CustomTabBar labelHidden={true} itemFullWidth={true} style={{backgroundColor: Colors.dark900}} activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs}/>
+            <TouchableOpacity onPress={() => router.push("/(authenticated)/create-post")} style={{paddingVertical: 20, paddingHorizontal: 12, marginTop: 12, backgroundColor: Colors.dark700}}>
+                <Text style={[defaultStyles.secondaryText, {fontWeight: "600", fontSize: 16}]}>
+                    How was your lift?
+                </Text>
+            </TouchableOpacity>
             {activeTab === "feed" && (
                 <GroupPostsFeed groupId={id} />
             )}

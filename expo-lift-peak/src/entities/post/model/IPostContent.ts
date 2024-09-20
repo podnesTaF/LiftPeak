@@ -21,6 +21,7 @@ export enum PostContentType {
     IMAGE = 'image',
     EXERCISE = 'exercise',
     WORKOUT = 'workout',
+    POLL = "poll"
 }
 
 export enum TextType {

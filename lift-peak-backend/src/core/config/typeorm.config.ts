@@ -15,6 +15,8 @@ import { Like } from 'src/modules/like/entities/like.entity';
 import { Media } from 'src/modules/media/entity/media.entity';
 import { Notification } from 'src/modules/notification/entities/notification.entity';
 import { Otp } from 'src/modules/otp/entities/otp.entity';
+import { Answer } from 'src/modules/pool/entities/answer.entity';
+import { Poll } from 'src/modules/pool/entities/poll.entity';
 import { Role } from 'src/modules/role/entities/role.entity';
 import { Target } from 'src/modules/target/entities/target.entity';
 import { Gym } from 'src/modules/users/entities/gym.entity';
@@ -68,6 +70,8 @@ export const config: TypeOrmModuleOptions = {
     PostSeen,
     Equipment,
     Notification,
+    Poll,
+    Answer,
   ],
   synchronize: true,
 };
