@@ -11,6 +11,7 @@ import {MaterialIcons} from "@expo/vector-icons";
 import GroupPostsFeed from "@features/group/ui/GroupPostsFeed";
 import {useHeaderHeight} from "@react-navigation/elements";
 import {Text, TouchableOpacity} from "react-native";
+import GroupMembers from "@features/group/ui/GroupMembers";
 
 
 const tabs = [
@@ -52,6 +53,9 @@ const GroupPage = () => {
             </TouchableOpacity>
             {activeTab === "feed" && (
                 <GroupPostsFeed groupId={id} />
+            )}
+            {activeTab === 'members' && (
+                <GroupMembers groupId={id} />
             )}
         </Animated.ScrollView>
     );
