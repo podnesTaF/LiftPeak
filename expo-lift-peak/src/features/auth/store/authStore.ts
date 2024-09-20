@@ -2,6 +2,7 @@ import { create } from "zustand";
 import {createJSONStorage, persist} from "zustand/middleware";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import {IProfile, IUser} from "@entities/user";
+import { useProfileStore } from "@features/profile/store";
 
 export interface AuthState {
     user: IUser | null;
@@ -27,12 +28,16 @@ export const useAuthStore = create<AuthState>()(
                 set({user, token: user ? user.token : null, expiresAt: user?.expiresAt});
             },
             extendUser: (user: IUser) => {
+                const {resetProfile} = useProfileStore.getState();
+                resetProfile();
                 set({user, isExtended: true});
             },
             setToken: (token: string | null) => {
                 set({token});
             },
             clearAuth: async () => {
+                const {resetProfile} = useProfileStore.getState();
+                resetProfile();
                 await AsyncStorage.removeItem('token');
                 set({user: null, token: null, isExtended: false});
             },

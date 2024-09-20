@@ -50,7 +50,7 @@ const Profile = () => {
     navigation.setOptions({
       headerRight: () => (
         <TouchableOpacity>
-          <Text style={{fontSize: 17, color: Colors.successLight}}>Save</Text>
+          <Text style={{fontSize: 17, color: Colors.successLight, paddingEnd: 5}}>Save</Text>
         </TouchableOpacity>
       )
     })

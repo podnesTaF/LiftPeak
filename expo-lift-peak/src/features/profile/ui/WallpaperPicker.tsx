@@ -16,7 +16,7 @@ const WallpaperPicker: React.FC<WallpaperPickerProps> = ({
 }) => {
   const wallpaperSheetRef = useRef<BottomSheetModal>(null);
 
-  const { wallpaperUrl, setWallpaperUrl } = useProfileStore();
+  const { profile } = useProfileStore();
 
   const closeWallpaperModal = () => wallpaperSheetRef.current?.dismiss();
   const openWallpaperPicker = () => wallpaperSheetRef.current?.present();
@@ -27,8 +27,8 @@ const WallpaperPicker: React.FC<WallpaperPickerProps> = ({
         style={styles.wallpaperContainer}
         onPress={openWallpaperPicker}
       >
-        {wallpaperUrl ? (
-          <Image style={styles.wallpaper} source={{ uri: wallpaperUrl }} />
+        {profile.wallpaperUrl ? (
+          <Image style={styles.wallpaper} source={{ uri: profile.wallpaperUrl }} />
         ) : (
           <View style={styles.wallpaperPlaceholder} />
         )}

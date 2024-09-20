@@ -19,6 +19,7 @@ const ProfileOverview = () => {
     setIsFollowing,
     setFollowersCount,
     setFollowingsCount,
+    profile,
   } = useProfileStore();
   const [activeTab, setActiveTab] = React.useState("about");
   const { scrollY } = useAnimatedScroll();
@@ -59,6 +60,7 @@ const ProfileOverview = () => {
           firstName,
           lastName,
           dateOfBirth,
+          gender
         } = profileData;
 
         if (firstName) setProfileField("firstName", firstName);
@@ -69,6 +71,7 @@ const ProfileOverview = () => {
           setProfileField("socialMediaLinks", socialMediaLinks);
         if (goal) setProfileField("goal", goal);
         if (dateOfBirth) setProfileField("dateOfBirth", dateOfBirth);
+        if (gender) setProfileField("gender", gender);
       }
     }
   }, [
@@ -113,8 +116,8 @@ const ProfileOverview = () => {
         tabs={[{ name: "about" }, { name: "statistics" }]}
       />
       {activeTab === "about" &&
-        (data ? (
-          <UserInfo user={data} />
+        (profile  ? (
+          <UserInfo/>
         ) : (
           <Text style={{ color: "white" }}>Loading...</Text>
         ))}

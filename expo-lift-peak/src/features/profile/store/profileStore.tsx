@@ -27,6 +27,7 @@ export interface profileState {
   addLink: (socialMediaLink: ISocialMediaLink) => void;
   removeLink: (link: ISocialMediaLink) => void;
   isDuplicateGym: (gym: IGym) => boolean;
+  resetProfile: () => void;
 }
 
 export const useProfileStore = create<profileState>()(
@@ -98,6 +99,17 @@ export const useProfileStore = create<profileState>()(
           },
         });
       },
+      resetProfile: () => {
+        set({
+          id: null,
+          gyms: [],
+          profile: {},
+          username: null,
+          isFollowing: null,
+          followersCount: null,
+          followingsCount: null,
+        })
+      }
     }),
     {
       name: "profile-storage",

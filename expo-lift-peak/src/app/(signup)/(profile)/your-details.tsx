@@ -1,9 +1,11 @@
+import BirthdateSelector from "@shared/components/BirthdateSelector";
 import Button from "@shared/components/Button";
 import DropDown from "@shared/components/DropDown";
 import FormField from "@shared/components/form/formfield/FormField";
+import GenderSelector from "@shared/components/GenderSelector";
 import { defaultStyles } from "@shared/styles";
 import { useRouter } from "expo-router";
-import React from "react";
+import React, { useState } from "react";
 import {
   KeyboardAvoidingView,
   Platform,
@@ -14,6 +16,18 @@ import {
 } from "react-native";
 
 const YourDetails = () => {
+  const [birthdate, setBirthdate] = useState<string | null>(null);
+  const [gender, setGender] = useState<string | null>(null);
+
+  const handleSelectBirthdate = (date: string) => {
+    setBirthdate(date)
+  }
+
+  const handleSelectGender = (selectedGender: string) => {
+    setGender(selectedGender)
+  }
+
+
   const router = useRouter();
 
   const handleDetails = () => {
@@ -33,24 +47,8 @@ const YourDetails = () => {
             </View>
 
             <View style={{ flex: 1, gap: 20 }}>
-              <DropDown
-                data={[
-                  { value: "Male", label: "Male" },
-                  { value: "Female", label: "Female" },
-                  { value: "noOther", label: "No Other" },
-                ]}
-                name={"gender"}
-                onChange={console.log}
-                placeholder="Select your gender"
-                label="Gender"
-              />
-              <FormField
-                placeholder="Select your birthdate"
-                name="birthdate"
-                label="Birthdate"
-                type="date"
-                noValidationStyling
-              />
+            <GenderSelector label="Gender" onSelect={handleSelectGender}/>
+            <BirthdateSelector label="Birthdate" onSelect={handleSelectBirthdate}/>
               <FormField
                 placeholder="Enter your phone number"
                 name="phone"
