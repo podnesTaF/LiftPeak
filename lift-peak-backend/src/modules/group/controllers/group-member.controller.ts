@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UseGuards,
 } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
@@ -18,8 +19,15 @@ export class GroupMemberController {
   constructor(private readonly groupMemberService: GroupMemberService) {}
 
   @Get()
-  async findAll(@Param('id') groupId: string) {
-    return this.groupMemberService.findAllMembers(+groupId);
+  async findAll(
+    @Param('id') groupId: string,
+    @Query() { count, query }: { count?: number; query?: string },
+  ) {
+    return this.groupMemberService.findAllMembers({
+      groupId: +groupId,
+      limit: count,
+      query,
+    });
   }
 
   @Post()
