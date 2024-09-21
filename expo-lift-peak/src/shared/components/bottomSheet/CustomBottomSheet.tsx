@@ -12,6 +12,7 @@ import { renderBottomSheetBackdrop } from "./bottomSheetBackdrop";
 import { ViewStyle } from "react-native";
 
 interface CustomBottomSheetProps {
+
   handleClose?: () => void;
   snapPoints?: (string | number)[];
   buttonName?: string;
@@ -21,6 +22,7 @@ interface CustomBottomSheetProps {
 
 const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>(
   ({ handleClose, snapPoints, buttonName, buttonStyle, children }, ref) => {
+
     const memoizedBackdrop = useCallback(renderBottomSheetBackdrop, []);
 
     const renderFooter = useCallback(
@@ -54,6 +56,7 @@ const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>(
     
 
     return (
+
       <BottomSheetModal
       footerComponent={handleClose ? renderFooter : undefined}
         backgroundStyle={{
@@ -72,6 +75,7 @@ const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>(
           {children}
         </BottomSheetView>
       </BottomSheetModal>
+
     );
   }
 );

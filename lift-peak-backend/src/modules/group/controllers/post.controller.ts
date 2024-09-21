@@ -11,19 +11,19 @@ import { PostService } from '../services/post.service';
 export class PostController {
   constructor(private readonly postService: PostService) {}
 
-  @Post(':groupId')
+  @Post(':id')
   @UseGuards(GroupAdminGuard)
   createPost(
-    @Param('groupId') groupId: number,
+    @Param('id') groupId: number,
     @GetUser() user: AuthenticatedUser,
     @Body() dto: CreatePostDto,
   ) {
     return this.postService.createPost(user.id, groupId, dto);
   }
 
-  @Get(':groupId')
+  @Get(':id')
   @UseGuards(GroupAdminGuard)
-  getPost(@Param('groupId') groupId: number) {
+  getPost(@Param('id') groupId: number) {
     return this.postService.getGroupFeed(groupId);
   }
 }
