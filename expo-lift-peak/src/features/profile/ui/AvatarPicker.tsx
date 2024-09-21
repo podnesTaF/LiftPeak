@@ -17,7 +17,7 @@ interface AvatarPickerProps {
 const AvatarPicker: React.FC<AvatarPickerProps> = ({usernameInitial, onAvatarPick }) => {
   const avatarSheetRef = useRef<BottomSheetModal>(null);
 
-  const {avatarUrl, setAvatarUrl} = useProfileStore()
+  const {profile} = useProfileStore()
 
   const closeAvatarModal = () => avatarSheetRef.current?.dismiss();
   const openAvatarPicker = () => avatarSheetRef.current?.present();
@@ -25,7 +25,7 @@ const AvatarPicker: React.FC<AvatarPickerProps> = ({usernameInitial, onAvatarPic
   return (
     <View style={styles.avatarWrapper}>
       <Pressable style={styles.avatarContainer} onPress={openAvatarPicker}>
-        <Avatar size={160} name={usernameInitial} url={avatarUrl} />
+        <Avatar size={160} name={usernameInitial} url={profile.avatarUrl} />
         <View style={styles.cameraIconAvatar}>
           <Ionicons name="camera-outline" size={24} color={Colors.white} />
         </View>

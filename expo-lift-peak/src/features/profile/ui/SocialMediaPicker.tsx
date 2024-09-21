@@ -32,7 +32,7 @@ const SocialMediaPicker = () => {
   const [selectedPlatform, setSelectedPlatform] =
     useState<SocialMediaPlatform | null>(null);
   const [username, setUsername] = useState("");
-  const { links, addLink, removeLink } = useProfileStore();
+  const { profile, addLink, removeLink } = useProfileStore();
   const { user } = useAuthStore();
   const { showToast } = useToastStore();
 
@@ -50,7 +50,7 @@ const SocialMediaPicker = () => {
   );
 
   const handleSelectPlatform = (platform: SocialMediaPlatform) => {
-    const isDuplicate = links?.some((l) => l.platform === platform);
+    const isDuplicate = profile?.socialMediaLinks?.some((l) => l.platform === platform) ?? false;
     if (!isDuplicate) {
       setSelectedPlatform(platform);
       handleMenuClose();
@@ -69,7 +69,7 @@ const SocialMediaPicker = () => {
     if (selectedPlatform && username) {
       const socialMediaUrl = generateSocialMediaUrl(selectedPlatform, username);
 
-      if (links && links.some((link) => link.platform === selectedPlatform)) {
+      if (profile.socialMediaLinks && profile.socialMediaLinks.some((link) => link.platform === selectedPlatform)) {
         alert(`${selectedPlatform} has already been added.`);
         return;
       }
@@ -129,6 +129,7 @@ const SocialMediaPicker = () => {
                 autoComplete="off"
                 textContentType="none"
                 autoCorrect={false}
+                autoFocus
               />
               <TouchableOpacity
                 style={styles.addButton}
@@ -140,8 +141,8 @@ const SocialMediaPicker = () => {
           )}
         </View>
 
-        {links &&
-          links.map((item) => (
+        {profile.socialMediaLinks &&
+          profile.socialMediaLinks.map((item) => (
             <ProfileListItemCard
               key={item.url}
               item={item}

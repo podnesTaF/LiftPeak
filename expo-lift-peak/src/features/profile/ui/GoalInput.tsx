@@ -4,7 +4,7 @@ import { useProfileStore } from "../store";
 import { Colors } from "@shared/styles";
 
 const GoalInput = () => {
-  const { goal, setGoal } = useProfileStore();
+  const { profile,  setProfileField} = useProfileStore();
 
   return (
     <View style={{ gap: 8 }}>
@@ -12,12 +12,12 @@ const GoalInput = () => {
       <TextInput
         multiline={true}
         maxLength={200}
-        value={goal}
+        value={profile.goal}
         placeholderTextColor={Colors.dark300}
         placeholder="Tell us about your goal"
         textContentType="oneTimeCode"
         autoCapitalize="none"
-        onChangeText={(text) => setGoal(text)}
+        onChangeText={(text) => setProfileField("goal", text)}
         style={[
           styles.inputArea,
           {
