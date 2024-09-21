@@ -22,7 +22,7 @@ export class GroupAdminGuard implements CanActivate {
 
     const req = context.switchToHttp().getRequest();
     const user = req.user;
-    const groupId = req.params.groupId;
+    const groupId = req.params.id;
 
     const isAdmin = await this.groupMemberService.isUserAdminOfGroup(
       user.id,

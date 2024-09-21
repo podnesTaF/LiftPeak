@@ -25,7 +25,7 @@ export class GroupMemberService {
     return this.groupMemberRepository.save({ groupId, userId });
   }
 
-  async removeMember(groupId: number, userId: number) {
+  async leaveGroup(groupId: number, userId: number) {
     const groupExists = await this.groupRepository.exists({
       where: { id: groupId },
     });
@@ -35,6 +35,13 @@ export class GroupMemberService {
     }
 
     return this.groupMemberRepository.delete({ groupId, userId });
+  }
+
+  async removeMember(memberId: number) {
+    const member = await this.groupMemberRepository.findOneOrFail({
+      where: { id: memberId },
+    });
+    return this.groupMemberRepository.delete({ id: member.id });
   }
 
   async findAllMembers({
@@ -88,6 +95,46 @@ export class GroupMemberService {
     }
 
     const member = group.members.find((member) => member.userId === +userId);
+
+    if (!member) {
+      return false;
+    }
+
     return member.role === MemberRole.ADMIN;
+  }
+
+  async getMyMembership(
+    userId: number,
+    groupId: number,
+  ): Promise<GroupMember | null> {
+    const member = await this.groupMemberRepository.findOne({
+      where: { userId, groupId },
+    });
+
+    return member;
+  }
+
+  async privilegeRole({
+    memberId,
+    groupId,
+    role,
+  }: {
+    memberId: number;
+    groupId: number;
+    role: MemberRole;
+  }) {
+    const member = await this.groupMemberRepository.findOne({
+      where: { id: memberId, groupId: groupId },
+    });
+
+    if (!member) {
+      throw new Error(
+        `Member with ID ${memberId} in group ${groupId} not found`,
+      );
+    }
+
+    member.role = role;
+
+    return await this.groupMemberRepository.save(member);
   }
 }
