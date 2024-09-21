@@ -6,7 +6,7 @@ import {Ionicons} from "@expo/vector-icons";
 import {IMember} from "@entities/group";
 import {useRouter} from "expo-router";
 
-const MemberItem = ({item}: {item: IMember}) => {
+const MemberItem = ({item, onSelect, membership}: {item: IMember, onSelect: (member: IMember) => void, membership?: IMember | null}) => {
     const router = useRouter()
     return (
         <View style={[defaultStyles.row, {paddingVertical: 8, paddingHorizontal: 12}]}>
@@ -27,9 +27,9 @@ const MemberItem = ({item}: {item: IMember}) => {
                     </Text>
                 </View>
             </TouchableOpacity>
-                <TouchableOpacity>
-                    <Ionicons name={"ellipsis-horizontal"} size={24} color={Colors.dark300} />
-                </TouchableOpacity>
+            {membership?.role === 'admin' && membership.id !== item.id && <TouchableOpacity onPress={() => onSelect(item)}>
+                <Ionicons name={"ellipsis-horizontal"} size={24} color={Colors.dark300}/>
+            </TouchableOpacity>}
         </View>
     );
 };

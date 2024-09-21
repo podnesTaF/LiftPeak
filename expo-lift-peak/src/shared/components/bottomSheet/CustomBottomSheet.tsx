@@ -14,9 +14,10 @@ interface CustomBottomSheetProps {
     handleClose: () => void;
     snapPoints?: (string | number)[];
     children?: React.ReactNode;
+    hideFooter?: boolean
 }
 
-const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>(({handleClose, snapPoints,children}, ref) => {
+const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>(({handleClose, snapPoints,hideFooter,children}, ref) => {
 
     const memoizedBackdrop = useCallback(renderBottomSheetBackdrop, []);
 
@@ -31,7 +32,7 @@ const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>((
 
     return (
         <BottomSheetModal
-            footerComponent={renderFooter}
+            footerComponent={!hideFooter ? renderFooter : undefined}
             backgroundStyle={{
                 backgroundColor: Colors.dark700,
             }}

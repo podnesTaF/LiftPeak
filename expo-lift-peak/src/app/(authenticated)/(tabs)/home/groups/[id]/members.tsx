@@ -1,21 +1,39 @@
-import React, {useState} from 'react';
+import React, {useRef, useState} from 'react';
 import {useQuery} from "@tanstack/react-query";
-import {getGroupMembers} from "@features/group/api/groupApi";
+import {getGroupMembers, getMyMembership} from "@features/group/api/groupMember";
 import {Stack, useLocalSearchParams} from "expo-router";
 import {FlatList, View} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
 import MemberItem from "@features/group/ui/MemberItem";
 import SearchBar from "@shared/components/form/SearchBar";
+import {BottomSheetModal} from "@gorhom/bottom-sheet";
+import {IMember} from "@entities/group";
+import CustomBottomSheet from "@shared/components/bottomSheet/CustomBottomSheet";
+import MemberActions from "@features/group/ui/MemberActions";
 
 const Members = () => {
     const {id} = useLocalSearchParams<{ id?: string }>()
     const [query, setQuery] = useState("");
     const [clicked, setClicked] = useState(false);
+    const bottomSheetRef = useRef<BottomSheetModal>()
+    const [selectedMember, setSelectedMember] = useState<IMember | null>(null)
+
+    const {data: myMembership} = useQuery({
+        queryKey: ['membership', id],
+        queryFn: () => getMyMembership(id!),
+        enabled: !!id
+    })
+
     const {data} = useQuery({
-        queryKey: ['groupMembers_' + id + "_" + query],
+        queryKey: ['groupMembers', id, query],
         queryFn: () => getGroupMembers({id, query: query}),
         enabled: !!id
     })
+
+    const onSelectMember = (member: IMember) => {
+        setSelectedMember(member)
+        bottomSheetRef.current?.present();
+    }
 
     return (
         <>
@@ -38,10 +56,13 @@ const Members = () => {
                 }
                 data={data?.data}
                 renderItem={({item}) => (
-                    <MemberItem item={item} />
+                    <MemberItem item={item} onSelect={onSelectMember} membership={myMembership} />
                 )}
                 keyExtractor={(item) => item.id.toString()}
             />
+            <CustomBottomSheet hideFooter ref={bottomSheetRef as any} snapPoints={["30%"]} handleClose={() => bottomSheetRef.current?.close()}>
+                {selectedMember && myMembership?.role === "admin" && <MemberActions close={() => bottomSheetRef.current?.dismiss()} selectedMember={selectedMember} membership={myMembership} groupId={+id!} />}
+            </CustomBottomSheet>
         </>
     );
 };
