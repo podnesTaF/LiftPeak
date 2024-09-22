@@ -21,7 +21,9 @@ const PostContentItem = ({content}: PostContentItemProps) => {
     return (
         <>
             {content.type === 'poll' && content.poll && (
-                <Poll poll={content.poll as IPoll} />
+              <View style={{paddingHorizontal: 12}}>
+                  <Poll poll={content.poll as IPoll} />
+              </View>
             )}
             {content.type === "text" && (
                 <Text

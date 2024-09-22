@@ -21,7 +21,9 @@ const GroupPost = ({groupPost}: GroupPostProps) => {
 
     return (
         <View style={{gap: 12}}>
-            <GroupPostHeader groupPost={groupPost} />
+            <View style={{paddingHorizontal: 12}}>
+                <GroupPostHeader groupPost={groupPost} />
+            </View>
             <GroupPostBody groupPost={groupPost} />
             <PostActions type={CommentType.GROUP_POST} item={groupPost} />
         </View>
@@ -57,7 +59,7 @@ const GroupPostBody = ({groupPost}: {groupPost: IGroupPost}) => {
     return (
         <View style={{gap: 0}}>
             {previewContent.map((item) => (
-               <PostContentItem  content={item}/>
+               <PostContentItem  key={item.id} content={item}/>
             ))}
             <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
                 <Text
