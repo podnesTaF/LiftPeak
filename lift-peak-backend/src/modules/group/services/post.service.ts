@@ -79,9 +79,50 @@ export class PostService {
   async getGroupFeed(groupId: number) {
     const group = await this.postRepository.find({
       where: { groupId },
-      relations: ['contents', 'group', 'comments', 'likes'],
+      relations: [
+        'group',
+        'comments',
+        'likes',
+        'contents.exercise',
+        'contents.workout.workoutLog.exerciseLogs.exercise',
+        'contents.workout.user.profile',
+        'contents.poll.answers.voters',
+      ],
     });
 
-    return group;
+    const result = group.map((post) => ({
+      ...post,
+      contents: post.contents.map((content) => ({
+        ...content,
+        workoutPreview: content.workout
+          ? {
+              id: content.workout.id,
+              title: content.workout.title,
+              user: {
+                id: content.workout.user.id,
+                username: content.workout.user.username,
+                profile: {
+                  id: content.workout.user.profile.id,
+                  avatarUrl: content.workout.user.profile.avatarUrl,
+                  firstName: content.workout.user.profile.firstName,
+                  lastName: content.workout.user.profile.lastName,
+                },
+              },
+              exercises: content.workout.workoutLog.exerciseLogs.map(
+                (el) => el.exercise.name,
+              ),
+            }
+          : null,
+        poll: {
+          ...content.poll,
+          answers: content.poll?.answers?.map((answer) => ({
+            ...answer,
+            voters: answer.voters.map((voter) => ({ id: voter.id })),
+          })),
+        },
+      })),
+    }));
+
+    return result;
   }
 }

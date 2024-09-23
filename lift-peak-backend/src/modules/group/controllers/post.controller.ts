@@ -22,7 +22,6 @@ export class PostController {
   }
 
   @Get(':id')
-  @UseGuards(GroupAdminGuard)
   getPost(@Param('id') groupId: number) {
     return this.postService.getGroupFeed(groupId);
   }
