@@ -1,5 +1,9 @@
 import {IGroupPost} from "@entities/post/model/IGroupPost";
 import {IExercise} from "@entities/exercise";
+import {IPoll} from "@entities/post/model/IPoll";
+import {IPollBlock} from "@features/create-post/model";
+import {IWorkout} from "@entities/workout";
+import {IWorkoutPreview} from "@features/workout";
 
 export interface IPostContent {
     id: number;
@@ -12,7 +16,9 @@ export interface IPostContent {
     exerciseId?: number;
     exercise?: IExercise;
     workoutId?: number;
-    workout?: IExercise;
+    workout?: IWorkout;
+    workoutPreview?: IWorkoutPreview;
+    poll?: IPoll | IPollBlock;
 }
 
 

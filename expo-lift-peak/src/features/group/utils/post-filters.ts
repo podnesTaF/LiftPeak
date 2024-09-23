@@ -15,7 +15,9 @@ export const getContentByType = (contents: IPostContent[]): {
             acc.exercise.push(content);
         } else if (content.type === "workout") {
             acc.workout.push(content);
+        } else if(content.type === 'poll') {
+            acc.workout.push(content)
         }
         return acc;
-    }, {text: [] as IPostContent[], image: [] as IPostContent[], exercise: [] as IPostContent[], workout: [] as IPostContent[]});
+    }, {text: [] as IPostContent[], image: [] as IPostContent[], exercise: [] as IPostContent[], workout: [] as IPostContent[], poll: [] as IPostContent[]});
 }

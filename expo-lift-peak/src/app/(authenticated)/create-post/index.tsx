@@ -1,7 +1,7 @@
 import React, {useState} from 'react';
 import {CreatePost} from "@features/create-post/ui/CreatePost";
-import {Block, CreatePostDto} from "@features/create-post/model";
-import {PostContentType, TextType} from "@entities/post";
+import {Block, CreatePostDto, IPollBlock} from "@features/create-post/model";
+import {IPostContent, PostContentType, TextType} from "@entities/post";
 import {useMutation} from "@tanstack/react-query";
 import {createPost} from "@features/create-post/api/CreatePostApi";
 import {useToastStore} from "@shared/store";
@@ -9,6 +9,7 @@ import {Stack, useLocalSearchParams, useRouter} from "expo-router";
 import Button from "@shared/components/Button";
 import {uploadMedia} from "@features/media-upload";
 import {usePostStore} from "@features/create-post/store/postStore";
+import {IPoll} from "@entities/post/model/IPoll";
 
 const CreateGroupPost = () => {
   const {blocks, clearStore} = usePostStore()

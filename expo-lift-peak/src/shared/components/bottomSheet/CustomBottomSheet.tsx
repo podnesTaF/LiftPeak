@@ -12,31 +12,21 @@ import { renderBottomSheetBackdrop } from "./bottomSheetBackdrop";
 import { ViewStyle } from "react-native";
 
 interface CustomBottomSheetProps {
-<<<<<<< HEAD
   handleClose?: () => void;
   snapPoints?: (string | number)[];
   buttonName?: string;
   buttonStyle?: ViewStyle;
   children?: React.ReactNode;
+  hideFooter?: boolean
 }
 
-const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>(
-  ({ handleClose, snapPoints, buttonName, buttonStyle, children }, ref) => {
-=======
-    handleClose: () => void;
-    snapPoints?: (string | number)[];
-    children?: React.ReactNode;
-    hideFooter?: boolean
-}
+const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>(({handleClose, snapPoints,hideFooter, buttonName, buttonStyle,children}, ref) => {
 
-const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>(({handleClose, snapPoints,hideFooter,children}, ref) => {
-
->>>>>>> b70f1c0987d6289c192ffe8fdb6a68c4600ef795
     const memoizedBackdrop = useCallback(renderBottomSheetBackdrop, []);
 
     const renderFooter = useCallback(
       (props: BottomSheetFooterProps) => {
-        if (!handleClose) {
+        if (!handleClose || hideFooter) {
           return null;
         }
     
@@ -65,7 +55,6 @@ const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>((
     
 
     return (
-<<<<<<< HEAD
       <BottomSheetModal
       footerComponent={handleClose ? renderFooter : undefined}
         backgroundStyle={{
@@ -84,26 +73,6 @@ const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>((
           {children}
         </BottomSheetView>
       </BottomSheetModal>
-=======
-        <BottomSheetModal
-            footerComponent={!hideFooter ? renderFooter : undefined}
-            backgroundStyle={{
-                backgroundColor: Colors.dark700,
-            }}
-            backdropComponent={memoizedBackdrop}
-            ref={ref}
-            handleIndicatorStyle={{
-                backgroundColor: 'white',
-            }}
-            index={0}
-            enablePanDownToClose={true}
-            snapPoints={snapPoints || [ "80%"]}
-        >
-            <BottomSheetView style={{paddingVertical: 16, flex: 1}}>
-                {children}
-            </BottomSheetView>
-        </BottomSheetModal>
->>>>>>> b70f1c0987d6289c192ffe8fdb6a68c4600ef795
     );
   }
 );

@@ -3,7 +3,7 @@ import {Stack, useLocalSearchParams, useRouter} from "expo-router";
 import Button from "@shared/components/Button";
 import {ScrollView, Text, View, StyleSheet, TouchableOpacity} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
-import {Block, IAnswer} from "@features/create-post/model";
+import {Block, IAnswerBlock} from "@features/create-post/model";
 import {usePostStore} from "@features/create-post/store/postStore";
 import {v4 as uuidv4} from "uuid";
 import InputField from "@shared/components/form/InputField";
@@ -14,7 +14,7 @@ const PollEditor = () => {
     const router = useRouter()
     const {id, insertAt} = useLocalSearchParams<{ id?: string, insertAt?: string }>();
     const {getPollBlockById, addBlock, setBlocks, blocks, updateBlock} = usePostStore()
-    const [answers, setAnswers] = useState<IAnswer[]>(getPollBlockById(id)?.poll?.answers || [{
+    const [answers, setAnswers] = useState<IAnswerBlock[]>(getPollBlockById(id)?.poll?.answers || [{
         id: uuidv4() + 1,
         name: ""
     }, {

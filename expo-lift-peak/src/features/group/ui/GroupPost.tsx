@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import {Dimensions, FlatList, Image, StyleSheet, Text, TouchableOpacity, View} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
 import {IGroupPost} from "@entities/post";
@@ -10,6 +10,8 @@ import {getContentByType} from "@features/group/utils/post-filters";
 import {getTextStyle} from "@features/group/utils/post-helpers";
 import {PostActions} from "@features/feed/ui/WorkoutPost";
 import {CommentType} from "@entities/reaction";
+import MediaGrid from "@shared/components/MediaGrid";
+import PostContentItem from "@features/group/ui/PostContent/PostContentItem";
 
 interface GroupPostProps {
     groupPost: IGroupPost;
@@ -18,7 +20,7 @@ interface GroupPostProps {
 const GroupPost = ({groupPost}: GroupPostProps) => {
 
     return (
-        <View style={{padding: 12, gap: 12}}>
+        <View style={{gap: 12}}>
             <GroupPostHeader groupPost={groupPost} />
             <GroupPostBody groupPost={groupPost} />
             <PostActions type={CommentType.GROUP_POST} item={groupPost} />
@@ -49,71 +51,46 @@ const GroupPostHeader = ({groupPost}: {groupPost: IGroupPost}) => {
 }
 
 const GroupPostBody = ({groupPost}: {groupPost: IGroupPost}) => {
-    const {exercise, image, text, workout} = getContentByType(groupPost.contents);
-    const screenWidth = Dimensions.get('window').width;
-    const isLargeScreen = screenWidth > 500;
-    const imageWidth = isLargeScreen ? 400 : screenWidth - 32;
-    const imageHeight = imageWidth * 0.8;
-    const router = useRouter();
-
-
-    const title = text.find(c => c.textType === 'title');
-
+    const [isExpanded, setIsExpanded] = useState(false);
+    const previewContent = isExpanded ? groupPost.contents : groupPost.contents.filter(c => c.type !== "image").slice(0,3 );
+    const { exercise, image, workout } = getContentByType(groupPost.contents);
     return (
-        <View style={{gap: 8}}>
-            {text.map((item) => (
-                <Text
-                    key={item.id}
-                    style={[{
-                        color: 'white',
-                        textAlignVertical: 'top',
-                    }, getTextStyle(item.textType!)]}
-                >
-                    {item.content}
-                </Text>
+        <View style={{gap: 0}}>
+            {previewContent.map((item) => (
+               <PostContentItem  content={item}/>
             ))}
-            <Text style={{
-                fontWeight: "600",
-                color: Colors.success,
-                fontSize: 14
-            }}>
-                Read Full Post
-            </Text>
-            <FlatList
-                data={image}
-                horizontal
-                pagingEnabled
-                snapToInterval={imageWidth + 16}
-                decelerationRate={"fast"}
-                ItemSeparatorComponent={() => <View style={{width: 16}}/>}
-                renderItem={({item, index}) => (
-                    <>
-                        {index === 0 && <View style={{width: 12}}></View>}
-                        <Image
-                            source={{uri: item.imageUrl}}
-                            style={[{width: imageWidth, height: imageHeight, borderRadius: 10,
-                                overflow: 'hidden',
-                                marginTop: 10,}]}
-                            resizeMode="cover"
-                        />
-                        {index + 1 === image.length && <View style={{width: 12}}></View>}
-                    </>
-                )}
-                keyExtractor={(item) => item.id!.toString()}
-                showsHorizontalScrollIndicator={false}
-            />
-            <View style={{gap: 6}}>
-                {exercise.length > 0 && <View style={styles.widgetContainer}>
-                    <Text>
-                        {exercise.length} Exercises Attached
-                    </Text>
-                </View>}
-                <View style={styles.widgetContainer}>
-                    <Text>
-                        {workout.length} Exercises Attached
-                    </Text>
-                </View>
-            </View>
+            <TouchableOpacity onPress={() => setIsExpanded(!isExpanded)}>
+                <Text
+                    style={{
+                        fontWeight: '600',
+                        color: Colors.success,
+                        fontSize: 14,
+                        paddingHorizontal: 12,
+                        marginVertical: 6,
+                    }}
+                >
+                    {isExpanded ? 'Collapse Post' : 'Read Full Post'}
+                </Text>
+            </TouchableOpacity>
+            {!isExpanded &&
+               <>
+                   <View style={{marginVertical: 12}}>
+                       <MediaGrid images={image} />
+                   </View>
+                   <View style={{gap: 6, paddingHorizontal: 12}}>
+                       {exercise.length > 0 && <View style={styles.widgetContainer}>
+                           <Text>
+                               {exercise.length} Exercises Attached
+                           </Text>
+                       </View>}
+                       <View style={styles.widgetContainer}>
+                           <Text>
+                               {workout.length} Exercises Attached
+                           </Text>
+                       </View>
+                   </View>
+               </>
+            }
         </View>
     )
 }

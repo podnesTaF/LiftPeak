@@ -3,14 +3,14 @@ import {TextType} from "@entities/post";
 export type BlockType = TextType | 'image' | 'exercise' | "workout" | "poll";
 
 
-export interface IPoll {
+export interface IPollBlock {
     question: string;
-    answers: IAnswer[];
+    answers: IAnswerBlock[];
     isAnonymous: boolean;
     multipleAnswer: boolean
 }
 
-export interface IAnswer {
+export interface IAnswerBlock {
     id:string;
     name: string;
 }
@@ -18,7 +18,7 @@ export interface IAnswer {
 export interface BaseBlock {
     id: string;
     type: BlockType;
-    poll?: IPoll;
+    poll?: IPollBlock;
 }
 
 export interface TextBlock extends BaseBlock {

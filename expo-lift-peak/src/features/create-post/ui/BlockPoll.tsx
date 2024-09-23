@@ -16,12 +16,12 @@ const BlockPoll = ({block}: BlockPollProps) => {
     const {removeBlock} = usePostStore()
 
     return (
-        <View style={[defaultStyles.row, {paddingVertical: 8, paddingHorizontal: 12, width: "100%"}]}>
+        <View style={[defaultStyles.row, {paddingVertical: 12, paddingHorizontal: 16, flex: 1, backgroundColor: Colors.success, margin: 12, borderRadius: 12,}]}>
             <View style={{gap:6}}>
-                <Text style={{color: "white", fontSize: 14}}>
-                    {cutString(block.poll?.question || '', 50)}
+                <Text lineBreakMode={"tail"} style={{color: "white", fontSize: 16, fontWeight: "600",}}>
+                    {cutString(block.poll?.question || '', 30)}
                 </Text>
-                <Text style={[defaultStyles.secondaryText, {fontSize: 12}]}>
+                <Text style={[defaultStyles.secondaryText, {fontSize: 14, color: "white"}]}>
                     {block.poll?.isAnonymous ? "Anonymous poll" : "Open poll"} • {block.poll?.answers.length || 0} answers
                 </Text>
             </View>

@@ -1,5 +1,5 @@
 import React from 'react';
-import {StyleSheet, Text, TouchableOpacity, View} from "react-native";
+import {StyleProp, StyleSheet, Text, TouchableOpacity, View, ViewStyle} from "react-native";
 import {Colors, defaultStyles} from "@shared/styles";
 import {IWorkoutPreview} from "@features/workout";
 import Avatar from "@shared/components/Avatar";
@@ -11,16 +11,17 @@ interface  RoutineCardProps {
     onPress?: (workout: IWorkoutPreview) => void;
     workout: IWorkoutPreview;
     addAvailable?: boolean
+    style?: StyleProp<ViewStyle>
 }
 
-export const RoutineCard = ({workout, onPress, addAvailable = true}: RoutineCardProps) => {
+export const RoutineCard = ({workout, onPress, addAvailable = true, style}: RoutineCardProps) => {
     const {mutate} = useMutation({
         mutationKey: ["addToRoutine", workout.id],
         mutationFn: () => addToRoutine({workoutId: workout.id}),
     })
 
     return (
-        <TouchableOpacity style={styles.container}  onPress={() => onPress && onPress(workout)}>
+        <TouchableOpacity style={[styles.container, style]}  onPress={() => onPress && onPress(workout)}>
             <View style={{flexDirection: "row", justifyContent: "space-between", gap: 12}}>
                 <View style={{flexDirection: 'row', gap: 12, alignItems: 'center'}}>
                     <Avatar size={20} name={workout.user?.username?.slice(0,2)  || ''} url={workout.user?.profile?.avatarUrl}>
