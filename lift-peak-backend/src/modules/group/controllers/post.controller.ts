@@ -1,5 +1,6 @@
 import { Body, Controller, Get, Param, Post, UseGuards } from '@nestjs/common';
 import { GroupAdminGuard } from 'src/modules/auth/guards/group-admin.guard';
+import { JwtAuthGuard } from 'src/modules/auth/guards/jwt-auth.guard';
 import {
   AuthenticatedUser,
   GetUser,
@@ -22,7 +23,8 @@ export class PostController {
   }
 
   @Get(':id')
-  getPost(@Param('id') groupId: number) {
-    return this.postService.getGroupFeed(groupId);
+  @UseGuards(JwtAuthGuard)
+  getPost(@Param('id') groupId: number, @GetUser() user: AuthenticatedUser) {
+    return this.postService.getGroupFeed(groupId, user.id);
   }
 }

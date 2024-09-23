@@ -11,7 +11,7 @@ import { PostContent } from './post-content.entity';
 export class GroupPost extends AbstractEntity {
   @Column()
   groupId: number;
-  @ManyToOne(() => Group, (group) => group.posts)
+  @ManyToOne(() => Group, (group) => group.posts, { onDelete: 'CASCADE' })
   group: Group;
 
   @Column()

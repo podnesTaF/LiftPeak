@@ -35,7 +35,9 @@ export class PostContent extends AbstractEntity {
 
   @Column()
   postId: number;
-  @ManyToOne(() => GroupPost, (groupPost) => groupPost.contents)
+  @ManyToOne(() => GroupPost, (groupPost) => groupPost.contents, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'postId' })
   post: GroupPost;
 
@@ -55,21 +57,21 @@ export class PostContent extends AbstractEntity {
     nullable: true,
   })
   exerciseId: number;
-  @ManyToOne(() => Exercise, { nullable: true })
+  @ManyToOne(() => Exercise, { nullable: true, onDelete: 'SET NULL' })
   exercise: Exercise;
 
   @Column({
     nullable: true,
   })
   workoutId: number;
-  @ManyToOne(() => Workout, { nullable: true })
+  @ManyToOne(() => Workout, { nullable: true, onDelete: 'SET NULL' })
   workout: Workout;
 
   @Column({
     nullable: true,
   })
   pollId: number;
-  @OneToOne(() => Poll, (poll) => poll.postContent)
+  @OneToOne(() => Poll, (poll) => poll.postContent, { onDelete: 'SET NULL' })
   @JoinColumn()
   poll: Poll;
 }

@@ -76,7 +76,7 @@ export class PostService {
     return this.postContentRepository.save(postContent);
   }
 
-  async getGroupFeed(groupId: number) {
+  async getGroupFeed(groupId: number, userId: number) {
     const group = await this.postRepository.find({
       where: { groupId },
       relations: [
@@ -119,6 +119,9 @@ export class PostService {
             ...answer,
             voters: answer.voters.map((voter) => ({ id: voter.id })),
           })),
+          currentUserVoteAnswerId: content.poll?.answers?.find((a) =>
+            a.voters?.find((v) => v.id === userId),
+          )?.id,
         },
       })),
     }));

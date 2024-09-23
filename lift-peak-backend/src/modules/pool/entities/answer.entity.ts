@@ -8,6 +8,8 @@ export class Answer extends AbstractEntity {
   @Column()
   name: string;
 
+  @Column()
+  pollId: number;
   @ManyToOne(() => Poll, (poll) => poll.answers, { onDelete: 'CASCADE' })
   poll: Poll;
 

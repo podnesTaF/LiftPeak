@@ -42,7 +42,11 @@ export class Notification extends AbstractEntity {
   recipient: User;
 
   // Optional: relation to post for notifications like 'group_like', 'group_comment', etc.
-  @ManyToOne(() => GroupPost, { nullable: true, eager: true })
+  @ManyToOne(() => GroupPost, {
+    nullable: true,
+    onDelete: 'CASCADE',
+    onUpdate: 'CASCADE',
+  })
   @JoinColumn({ name: 'postId' })
   post: GroupPost;
 

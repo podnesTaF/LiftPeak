@@ -4,6 +4,7 @@ import { FileService } from '../file/file.service';
 import { Answer } from '../pool/entities/answer.entity';
 import { Poll } from '../pool/entities/poll.entity';
 import { PollService } from '../pool/poll.service';
+import { User } from '../users/entities/user.entity';
 import { GroupMemberController } from './controllers/group-member.controller';
 import { GroupController } from './controllers/group.controller';
 import { PostController } from './controllers/post.controller';
@@ -24,6 +25,7 @@ import { PostService } from './services/post.service';
       PostContent,
       Poll,
       Answer,
+      User,
     ]),
   ],
   controllers: [GroupController, GroupMemberController, PostController],

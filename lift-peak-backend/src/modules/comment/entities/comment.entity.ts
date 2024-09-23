@@ -38,7 +38,10 @@ export class Comment extends AbstractEntity {
 
   @Column({ nullable: true })
   postId?: number;
-  @ManyToOne(() => GroupPost, (post) => post.comments, { nullable: true })
+  @ManyToOne(() => GroupPost, (post) => post.comments, {
+    nullable: true,
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'postId' })
   post?: GroupPost;
 }
