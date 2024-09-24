@@ -135,9 +135,11 @@ export class ProfileService {
 
     profile.firstName = dto.firstName ?? profile.firstName;
     profile.lastName = dto.lastName ?? profile.lastName;
-    profile.dateOfBirth = dto.dateOfBirth ?? profile.dateOfBirth;
+    profile.dateOfBirth =
+      dto.dateOfBirth === undefined ? profile.dateOfBirth : dto.dateOfBirth;
     profile.phoneNumber = dto.phoneNumber ?? profile.phoneNumber;
-    profile.gender = dto.gender ?? profile.gender;
+    profile.gender = dto.gender === undefined ? profile.gender : dto.gender;
+    profile.goal = dto.goal ?? profile.goal;
 
     return this.profileRepository.save(profile);
   }

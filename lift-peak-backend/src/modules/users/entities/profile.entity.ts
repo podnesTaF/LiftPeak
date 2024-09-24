@@ -17,13 +17,13 @@ export class Profile extends AbstractEntity {
   @Column()
   lastName: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'date' })
   dateOfBirth: Date;
 
   @Column({ nullable: true })
   phoneNumber: string;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, type: 'enum', enum: Gender })
   gender: Gender;
 
   @Column({ nullable: true })
