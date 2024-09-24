@@ -13,31 +13,30 @@ import {
   import { Ionicons } from "@expo/vector-icons";
   import { Colors } from "@shared/styles";
   import { BottomSheetModal } from "@gorhom/bottom-sheet";
-  import { useProfileStore } from "@features/profile/store";
   
   interface BirthdateSelectorProps {
     label?: string;
-    onSelect: (date: string) => void; 
+    onSelect: (date: string) => void;
+    value?: string | null;
   }
   
-  const BirthdateSelector: React.FC<BirthdateSelectorProps> = ({
+  const DateSelect: React.FC<BirthdateSelectorProps> = ({
     label,
-    onSelect,
+    onSelect, value
   }) => {
-    const { profile } = useProfileStore();
   
     const [tempDate, setTempDate] = useState<Date | null>(null);
-    const [selectedBirthdate, setSelectedBirthdate] = useState<string | null>(
-      profile?.dateOfBirth
-        ? new Date(profile.dateOfBirth).toISOString().split("T")[0]
+    const [selectedDate, setSelectedDate] = useState<string | null>(
+        value
+        ? new Date(value).toISOString().split("T")[0]
         : null
     );
   
     const bottomSheetRef = useRef<BottomSheetModal>(null);
   
     const openBottomSheet = () => {
-      const dateToSet = selectedBirthdate
-        ? new Date(selectedBirthdate)
+      const dateToSet = selectedDate
+        ? new Date(selectedDate)
         : new Date();
       setTempDate(dateToSet);
       bottomSheetRef.current?.present();
@@ -46,14 +45,14 @@ import {
     const handleConfirmSelection = () => {
       if (tempDate) {
         const formattedDate = tempDate.toISOString().split("T")[0]; 
-        setSelectedBirthdate(formattedDate);
+        setSelectedDate(formattedDate);
         onSelect(formattedDate); 
       }
       bottomSheetRef.current?.dismiss();
     };
   
     const onDateChange = (
-      event: DateTimePickerEvent,
+        _: DateTimePickerEvent,
       date?: Date | undefined
     ) => {
       if (date) {
@@ -67,7 +66,7 @@ import {
           {label && <Text style={styles.label}>{label}</Text>}
           <TouchableOpacity onPress={openBottomSheet} style={styles.inputWrapper}>
             <Text style={{ color: Colors.dark300, fontSize: 18 }}>
-              {selectedBirthdate ? selectedBirthdate : "Select your birthdate"}
+              {selectedDate ?? "Select your birthdate"}
             </Text>
             <Ionicons
               name={"chevron-forward-sharp"}
@@ -76,7 +75,6 @@ import {
             />
           </TouchableOpacity>
         </View>
-  
         <CustomBottomSheet
           ref={bottomSheetRef}
           handleClose={handleConfirmSelection}
@@ -110,6 +108,7 @@ import {
               value={tempDate || new Date()}
               display={Platform.OS === "ios" ? "spinner" : "default"}
               onChange={onDateChange}
+              textColor={"white"}
               style={styles.datePicker}
             />
           </View>
@@ -118,7 +117,7 @@ import {
     );
   };
   
-  export default BirthdateSelector;
+  export default DateSelect;
   
   const styles = StyleSheet.create({
     inputWrapper: {
@@ -136,6 +135,7 @@ import {
     },
     datePicker: {
       marginTop: 10,
+      color: "white"
     },
   });
   

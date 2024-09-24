@@ -7,61 +7,56 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Colors } from "@shared/styles";
 import { FormProvider, useForm } from "react-hook-form";
-import { Ionicons } from "@expo/vector-icons"; // Import Ionicons for icons
-import { Picker } from "@react-native-picker/picker";
+import { Ionicons } from "@expo/vector-icons";
 import FormField from "@shared/components/form/formfield/FormField";
-import CustomBottomSheet from "@shared/components/bottomSheet/CustomBottomSheet";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
 import GenderSelector from "@shared/components/GenderSelector";
-import BirthdateSelector from "@shared/components/BirthdateSelector";
-import { useNavigation } from "expo-router";
-import { useProfileStore } from "@features/profile/store";
+import DateSelect from "@shared/components/DateSelect";
+import {useNavigation, useRouter} from "expo-router";
+import {zodResolver} from "@hookform/resolvers/zod";
+import {UpdateGeneralSchema, updateGeneralSchema} from "@features/settings/utils/update-general.schema";
+import {useAuthStore} from "@features/auth";
+import {useMutation} from "@tanstack/react-query";
+import {updateUserProfile} from "@features/profile";
+import {IProfile} from "@entities/user";
 
 const General = () => {
+  const {user, updateProfile} = useAuthStore()
+  const router = useRouter();
 
-  const [birthdate, setBirthdate] = useState<string | null>(null);
-  const [gender, setGender] = useState<string | null>(null);
+  const {mutate} = useMutation({
+    mutationFn: (dto: UpdateGeneralSchema) => updateUserProfile(dto as Partial<IProfile>),
+    onSuccess: (updatedProfile) => {
+      updateProfile(updatedProfile)
+      router.back()
+    }
+  })
 
-  const handleSelectBirthdate = (date: string) => {
-    setBirthdate(date)
-  }
-
-  const handleSelectGender = (selectedGender: string) => {
-    setGender(selectedGender)
-  }
-
-  console.log("gender:", gender, "birthdate:", birthdate)
-
-  const form = useForm({
+  const form = useForm<UpdateGeneralSchema>({
     mode: "onChange",
+    resolver: zodResolver(updateGeneralSchema),
+    defaultValues: {
+      firstName: user?.profile?.firstName,
+      lastName: user?.profile?.lastName,
+      dateOfBirth: user?.profile?.dateOfBirth,
+      gender: user?.profile?.gender
+    }
   });
 
   const navigation = useNavigation();
-
-  const {profile, username} = useProfileStore()
-  const {setValue} = form;
-
-  useEffect(() => {
-    setValue("firstName", profile.firstName)
-    setValue("lastName", profile.lastName)
-    setValue("username", username)
-
-  })
 
 
   useEffect(() => {
     navigation.setOptions({
       headerRight: () => (
-        <TouchableOpacity>
+        <TouchableOpacity onPress={form.handleSubmit((dto) => mutate(dto))}>
           <Text style={{fontSize: 17, color: Colors.successLight, paddingEnd: 5}}>Save</Text>
         </TouchableOpacity>
       )
     })
   }, [navigation])
-
 
   return (
     <FormProvider {...form}>
@@ -90,19 +85,16 @@ const General = () => {
             placeholder="Enter your last name"
             noValidationStyling
           />
-          <FormField
-            name="username"
-            label="Username"
-            placeholder="Enter your username"
-            noValidationStyling
-          />
-
           <View style={styles.sectionHeaderContainer}>
             <Ionicons name="lock-closed" size={20} color={Colors.white} />
             <Text style={styles.sectionHeader}>Private Information</Text>
           </View>
-          <GenderSelector label="Gender" onSelect={handleSelectGender}/>
-          <BirthdateSelector label="Birthdate" onSelect={handleSelectBirthdate}/>
+          <GenderSelector label="Gender" onSelect={(g) => {
+            form.setValue("gender", g)
+          }} value={form.getValues("gender")} />
+          <DateSelect label="Birthdate" onSelect={(b) => {
+            form.setValue("dateOfBirth", b)
+          }} value={form.getValues("dateOfBirth")}/>
         </ScrollView>
       </KeyboardAvoidingView>
     </FormProvider>

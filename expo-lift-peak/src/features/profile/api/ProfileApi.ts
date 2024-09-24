@@ -8,8 +8,8 @@ export const getUserInfo = async (id?: number | string) => {
     return data
 }
 
-export const updateUserProfile = async (profile: IProfile, gyms?: IGym[]) => {
-    const {data} = await api.patch("/profiles", profile)
+export const updateUserProfile = async (profile: Partial<IProfile>, gyms?: IGym[]) => {
+    const {data} = await api.patch<IProfile>("/profiles", profile)
     if(gyms){
        await updateGyms(gyms)
     }

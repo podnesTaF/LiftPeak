@@ -1,4 +1,4 @@
-import {FlatList, RefreshControl, StyleSheet, View, ViewToken} from 'react-native';
+import {RefreshControl, StyleSheet, View, ViewToken} from 'react-native';
 
 import React, {useCallback, useEffect, useRef, useState} from "react";
 import {defaultStyles} from "@shared/styles";
@@ -18,9 +18,8 @@ export default function Followings() {
     const [refreshing, setRefreshing] = useState(false);
     const [visibleItems, setVisibleItems] = useState<number[]>([]);
     const timers = useRef<{ [key: string]: NodeJS.Timeout }>({}).current;
+    const headerHeight = useHeaderHeight();
     const tabBarHeight = useBottomTabBarHeight() + 20;
-    const headerHeight = useHeaderHeight()
-
     const {data: workouts} = useQuery({
         queryKey: ["workouts"],
         queryFn: getAllWorkouts,
@@ -67,12 +66,13 @@ export default function Followings() {
         setVisibleItems(visibleIds);
     }).current;
 
+
     return (
         <>
             <Animated.FlatList
                 onScroll={scrollHandler}
-                style={[defaultStyles.container, {paddingTop: headerHeight + 50}]}
-                contentContainerStyle={{paddingBottom: tabBarHeight}}
+                style={[defaultStyles.container]}
+                contentContainerStyle={{paddingBottom: tabBarHeight, paddingTop: headerHeight + 40}}
                 data={workouts}
                 ListHeaderComponent={<FollowingCircles/>}
                 renderItem={({item}) => (

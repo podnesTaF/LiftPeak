@@ -75,7 +75,7 @@ const Layout = () => {
             title: "Feed",
             headerTintColor: "#fff",
             header: () => (
-                <AnimatedSafeAreaView style={[styles.safeArea,animatedBackgroundStyle]}>
+                <AnimatedSafeAreaView style={[animatedBackgroundStyle, {height: 102}]}>
                             <View style={{paddingHorizontal: 12 }}>
                                 <Animated.View style={[styles.headerTitleContainer, animatedHeaderStyle]}>
                                     <Text style={styles.headerTitleText}>Feed</Text>
@@ -129,9 +129,6 @@ const Layout = () => {
 };
 
 const styles =  StyleSheet.create({
-    safeArea: {
-        paddingTop: Platform.OS === "android" ? Constants.statusBarHeight + 20 : 0,
-    },
     headerTitleContainer: {
         position: 'absolute',
         alignItems: 'center',

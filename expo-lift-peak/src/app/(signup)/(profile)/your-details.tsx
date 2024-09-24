@@ -1,4 +1,4 @@
-import BirthdateSelector from "@shared/components/BirthdateSelector";
+import DateSelect from "@shared/components/DateSelect";
 import Button from "@shared/components/Button";
 import DropDown from "@shared/components/DropDown";
 import FormField from "@shared/components/form/formfield/FormField";
@@ -48,7 +48,7 @@ const YourDetails = () => {
 
             <View style={{ flex: 1, gap: 20 }}>
             <GenderSelector label="Gender" onSelect={handleSelectGender}/>
-            <BirthdateSelector label="Birthdate" onSelect={handleSelectBirthdate}/>
+            <DateSelect label="Birthdate" onSelect={handleSelectBirthdate}/>
               <FormField
                 placeholder="Enter your phone number"
                 name="phone"

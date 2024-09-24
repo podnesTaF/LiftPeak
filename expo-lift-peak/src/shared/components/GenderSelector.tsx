@@ -9,32 +9,24 @@ import { useProfileStore } from "@features/profile/store";
 
 interface GenderSelectorProps {
   label?: string;
-  onSelect: (gender: string) => void;
+  onSelect: (gender: string | null) => void;
+  value?: string | null;
 }
 
-const GenderSelector: React.FC<GenderSelectorProps> = ({ label, onSelect }) => {
-  const { profile } = useProfileStore();
-
-
-  const [selectedGender, setSelectedGender] = useState<string | null>(
-    profile?.gender ?? null
-  );
-  const [tempSelectedValue, setTempSelectedValue] = useState<string>("female");
-
+const GenderSelector: React.FC<GenderSelectorProps> = ({ label, onSelect, value}) => {
+  const [gender, setGender] = useState<string | null>(value ?? null)
   const bottomSheetRef = useRef<BottomSheetModal>(null);
 
   const openBottomSheet = () => {
-    setTempSelectedValue(selectedGender || "female");
     bottomSheetRef.current?.present();
   };
 
   const handleConfirmSelection = () => {
-    if(tempSelectedValue) {
-      setSelectedGender(tempSelectedValue);
-      onSelect(tempSelectedValue)
-    }
+    onSelect(gender)
     bottomSheetRef.current?.dismiss();
   };
+
+
 
   return (
     <View>
@@ -42,10 +34,10 @@ const GenderSelector: React.FC<GenderSelectorProps> = ({ label, onSelect }) => {
         {label && <Text style={styles.label}>{label}</Text>}
         <TouchableOpacity onPress={openBottomSheet} style={styles.inputWrapper}>
           <Text style={{ color: Colors.dark300, fontSize: 18 }}>
-            {selectedGender
+            {gender
               ? `${
-                  selectedGender.charAt(0).toUpperCase() +
-                  selectedGender.slice(1)
+                    gender.charAt(0).toUpperCase() +
+                    gender.slice(1)
                 }`
               : "Select your gender"}
           </Text>
@@ -86,13 +78,14 @@ const GenderSelector: React.FC<GenderSelectorProps> = ({ label, onSelect }) => {
             </Text>
           </View>
           <Picker
-            selectedValue={tempSelectedValue}
-            onValueChange={(itemValue, itemIndex) =>
-              setTempSelectedValue(itemValue)
-            }
+            selectedValue={gender}
+            onValueChange={(itemValue, itemIndex) => {
+              setGender(itemValue === "null" ? null : itemValue)
+            }}
             style={{ color: Colors.dark100 }}
             itemStyle={{ color: Colors.dark100 }}
           >
+            <Picker.Item label="Select Gender" value={null} />
             <Picker.Item label="Male" value="male" />
             <Picker.Item label="Female" value="female" />
             <Picker.Item label="Other" value="other" />
