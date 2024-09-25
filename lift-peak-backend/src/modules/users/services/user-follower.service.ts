@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Brackets, Repository } from 'typeorm';
 import { UserFollower } from '../entities/user-follower.entity';
 import { User } from '../entities/user.entity';
 
@@ -43,24 +43,97 @@ export class UserFollowerService {
     }
   }
 
-  async getFollowings(
+  async getFollowers(
     userId: number,
-    query?: { idOnly?: boolean },
+    query?: { idOnly?: boolean; name?: string },
   ): Promise<User[]> {
-    const userFollowers = await this.userFollowerRepository.find({
-      where: { followerId: userId },
-      relations: ['followed.profile'],
-      select: query?.idOnly ? ['followedId'] : undefined,
-    });
+    // Start building the query
+    const qb = this.userFollowerRepository
+      .createQueryBuilder('userFollower')
+      .leftJoinAndSelect('userFollower.follower', 'follower')
+      .leftJoinAndSelect('follower.profile', 'followerProfile')
+      .where('userFollower.followedId = :userId', { userId });
+
+    // Apply name filtering directly in the query if a name is provided
+    if (query?.name) {
+      qb.andWhere(
+        new Brackets((qb) => {
+          qb.where('followerProfile.firstName LIKE :name', {
+            name: `%${query.name}%`,
+          })
+            .orWhere('followerProfile.lastName LIKE :name', {
+              name: `%${query.name}%`,
+            })
+            .orWhere('follower.username LIKE :name', {
+              name: `%${query.name}%`,
+            });
+        }),
+      );
+    }
+
+    if (query?.idOnly) {
+      qb.select(['userFollower.followerId']);
+    }
+
+    const userFollowers = await qb.getMany();
 
     if (query?.idOnly) {
       return userFollowers.map((userFollower) => {
+        const user = new User();
+        user.id = userFollower.followerId;
+        return user;
+      });
+    }
+
+    return userFollowers.map((userFollower) => userFollower.follower);
+  }
+
+  async getFollowings(
+    userId: number,
+    query?: { idOnly?: boolean; name?: string },
+  ): Promise<User[]> {
+    // Start building the query
+    const qb = this.userFollowerRepository
+      .createQueryBuilder('userFollower')
+      .leftJoinAndSelect('userFollower.followed', 'followed')
+      .leftJoinAndSelect('followed.profile', 'followedProfile')
+      .where('userFollower.followerId = :userId', { userId });
+
+    // Apply name filtering directly in the query if a name is provided
+    if (query?.name) {
+      qb.andWhere(
+        new Brackets((qb) => {
+          qb.where('followedProfile.firstName LIKE :name', {
+            name: `%${query.name}%`,
+          })
+            .orWhere('followedProfile.lastName LIKE :name', {
+              name: `%${query.name}%`,
+            })
+            .orWhere('followed.username LIKE :name', {
+              name: `%${query.name}%`,
+            });
+        }),
+      );
+    }
+
+    // If only IDs are requested, select only the followedId
+    if (query?.idOnly) {
+      qb.select(['userFollower.followedId']);
+    }
+
+    // Execute the query
+    const userFollowings = await qb.getMany();
+
+    // If idOnly is true, map the result to return an array of User objects with only the ID
+    if (query?.idOnly) {
+      return userFollowings.map((userFollower) => {
         const user = new User();
         user.id = userFollower.followedId;
         return user;
       });
     }
 
-    return userFollowers.map((userFollower) => userFollower.followed);
+    // Return the full followed users otherwise
+    return userFollowings.map((userFollower) => userFollower.followed);
   }
 }

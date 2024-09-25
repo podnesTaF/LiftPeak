@@ -35,4 +35,16 @@ export class FollowController {
   ) {
     return this.userFollowerService.getFollowings(user.id, query);
   }
+
+  @Get('/:id/people')
+  async getUserCommunityInfo(
+    @Param('id') userId: number,
+    @Query() { type, name }: { name: string; type: 'following' | 'followers' },
+  ) {
+    if (type === 'following') {
+      return this.userFollowerService.getFollowings(userId, { name });
+    } else {
+      return this.userFollowerService.getFollowers(userId, { name });
+    }
+  }
 }
