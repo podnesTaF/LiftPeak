@@ -8,7 +8,7 @@ interface AvatarProps {
     name?: string;
     backgroundColor?: string;
     children?: React.ReactNode;
-    url?: string;
+    url?: string | null
     borderRadius?: number
 }
 

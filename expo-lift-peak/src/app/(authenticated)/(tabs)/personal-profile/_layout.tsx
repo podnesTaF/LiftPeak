@@ -2,19 +2,17 @@ import React, { useEffect } from "react";
 import CustomTopTabBar from "@shared/components/navigation/CustomTopTabBar";
 import MaterialTopTabs from "@shared/components/navigation/MaterialTopTabs";
 import { Stack, Tabs, useRouter } from "expo-router";
-import { getUserInfo, ProfileHeader } from "@features/profile";
+import { getUserInfo } from "@features/profile";
 import { useAuthStore } from "@features/auth";
-import { Ionicons } from "@expo/vector-icons";
 import { useQuery } from "@tanstack/react-query";
 import { AnimatedScrollProvider } from "@shared/components/AnimatedScrollContext";
-import Animated, {
-  interpolate,
-  useAnimatedStyle,
+import {
   useSharedValue,
 } from "react-native-reanimated";
 
-import Constants from "expo-constants";
 import ProfileTopHeader from "@features/profile/ui/ProfileTopHeader";
+import {TouchableOpacity} from "react-native";
+import {Ionicons} from "@expo/vector-icons";
 
 const Layout = () => {
   const { user } = useAuthStore();
@@ -51,8 +49,12 @@ const Layout = () => {
         <Stack.Screen
           name={"index"}
           options={{
-            headerTransparent: false,
-            header: () => <ProfileTopHeader user={data} />,
+            headerTransparent: true,
+            header: () => <ProfileTopHeader type={"profile"} name={data?.profile?.firstName + " " + data?.profile?.lastName} right={
+              <TouchableOpacity>
+                <Ionicons name={"ellipsis-horizontal"} size={30} color={"white"} />
+              </TouchableOpacity>
+            } />,
           }}
         />
         <Stack.Screen name="settings" options={{ headerShown: false }} />
