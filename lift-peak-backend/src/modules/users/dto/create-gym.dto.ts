@@ -4,7 +4,7 @@ export class AddGymDto {
   @IsString()
   name: string;
   @IsString()
-  gymAddress: string;
+  address: string;
   @IsNumber()
   latitude: number;
   @IsNumber()

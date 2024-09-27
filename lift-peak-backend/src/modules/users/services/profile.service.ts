@@ -12,6 +12,7 @@ import { ProfileWithImages } from '../dto/create-profile.dto';
 import { UpdateProfileDto } from '../dto/update-profile.dto';
 import { Profile } from '../entities/profile.entity';
 import { User } from '../entities/user.entity';
+import { SocialMediaService } from './social-media.service';
 
 @Injectable()
 export class ProfileService {
@@ -21,6 +22,7 @@ export class ProfileService {
     private fileService: FileService,
     @InjectRepository(User)
     private userRepository: Repository<User>,
+    private readonly socialMediaService: SocialMediaService,
   ) {}
 
   async create(
@@ -74,10 +76,11 @@ export class ProfileService {
 
   async updateProfile(
     authUser: AuthenticatedUser,
-    dto: UpdateProfileDto,
+    dto: Profile & UpdateProfileDto,
   ): Promise<Profile> {
     const { username, profile } = await this.userRepository.findOne({
       where: { id: authUser.id },
+      relations: ['profile.socialMediaLinks'],
     });
 
     if (!profile) {
@@ -87,6 +90,11 @@ export class ProfileService {
     if (!profile) {
       throw new NotFoundException('Profile not found');
     }
+
+    profile.wallpaperUrl =
+      dto.wallpaperUrl === undefined ? profile.wallpaperUrl : dto.wallpaperUrl;
+    profile.avatarUrl =
+      dto.avatarUrl === undefined ? profile.avatarUrl : dto.avatarUrl;
 
     if (dto.avatar) {
       profile.avatarUrl = await this.setProfileImages(
@@ -106,6 +114,23 @@ export class ProfileService {
       );
     } else if (dto.wallpaperUrl === null) {
       profile.wallpaperUrl = null;
+    }
+
+    if (dto.socialMediaLinks) {
+      profile.socialMediaLinks = [];
+      await this.profileRepository.save(profile);
+      for (let i = 0; i < dto.socialMediaLinks.length; i++) {
+        if (!dto.socialMediaLinks[i].profile) {
+          const link = await this.socialMediaService.addSocialMediaLink(
+            authUser.id,
+            dto.socialMediaLinks[i].platform,
+            dto.socialMediaLinks[i].url,
+          );
+          profile.socialMediaLinks.push(link);
+        } else {
+          profile.socialMediaLinks.push(dto.socialMediaLinks[i]);
+        }
+      }
     }
 
     profile.firstName = dto.firstName ?? profile.firstName;

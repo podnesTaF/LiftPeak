@@ -16,6 +16,7 @@ const ALLOWED_SOCIAL_MEDIA_PLATFORMS = {
   Twitter: /^https:\/\/(www\.)?twitter\.com\/[A-Za-z0-9_]+$/,
   Facebook: /^https:\/\/(www\.)?facebook\.com\/[A-Za-z0-9.]+$/,
   Instagram: /^https:\/\/(www\.)?instagram\.com\/[A-Za-z0-9_.]+$/,
+  Snapchat: /^https:\/\/(www\.)?snapchat\.com\/add\/[A-Za-z0-9._]+$/,
 };
 
 @Injectable()

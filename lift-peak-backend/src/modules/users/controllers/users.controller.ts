@@ -3,6 +3,7 @@ import {
   Controller,
   Get,
   Param,
+  Patch,
   Post,
   Query,
   UseGuards,
@@ -10,6 +11,7 @@ import {
 import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
 import { AuthenticatedUser, GetUser } from '../decorators/user.decorator';
 import { AddGymDto } from '../dto/create-gym.dto';
+import { Gym } from '../entities/gym.entity';
 import { User } from '../entities/user.entity';
 import { UserGymService } from '../services/gym.service';
 import { UsersService } from '../services/users.service';
@@ -48,5 +50,14 @@ export class UsersController {
     @Body() dto: AddGymDto[],
   ) {
     return this.gymService.addGymToUser(user.id, dto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('/gyms/update')
+  async updateUserGyms(
+    @GetUser() user: AuthenticatedUser,
+    @Body() gyms: (Gym & AddGymDto)[],
+  ) {
+    return this.gymService.updateUserGyms(user.id, gyms);
   }
 }

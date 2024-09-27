@@ -14,7 +14,7 @@ export class UserGymService {
     private gymRepository: Repository<Gym>,
   ) {}
 
-  async addGymToUser(userId: number, gyms: AddGymDto[]): Promise<User> {
+  async addGymToUser(userId: number, gyms: (AddGymDto | Gym)[]): Promise<User> {
     const user = await this.userRepository.findOne({
       where: { id: userId },
       relations: ['gyms'],
@@ -22,7 +22,7 @@ export class UserGymService {
 
     for (const gymData of gyms) {
       const gym = await this.gymRepository.findOne({
-        where: { name: gymData.name, address: gymData.gymAddress },
+        where: { name: gymData.name, address: gymData.address },
       });
 
       if (!gym) {
@@ -35,5 +35,18 @@ export class UserGymService {
     }
 
     return this.userRepository.save(user);
+  }
+
+  async updateUserGyms(userId: number, gyms: (AddGymDto | Gym)[]) {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['gyms'],
+    });
+
+    user.gyms = [];
+
+    await this.userRepository.save(user);
+
+    return await this.addGymToUser(user.id, gyms);
   }
 }
