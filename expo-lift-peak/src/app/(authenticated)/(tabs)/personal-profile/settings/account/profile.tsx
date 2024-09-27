@@ -8,19 +8,22 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { useAuthStore } from "@features/auth";
-import { useQuery } from "@tanstack/react-query";
-import { getUserInfo } from "@features/profile";
+import {useMutation, useQuery} from "@tanstack/react-query";
+import {getUserInfo, updateUserProfile} from "@features/profile";
 import { Colors } from "@shared/styles";
 import AvatarPicker from "@features/profile/ui/AvatarPicker";
 import WallpaperPicker from "@features/profile/ui/WallpaperPicker";
 import ProfileForm from "@features/profile/ui/ProfileForm";
-import { useProfileStore } from "@features/profile/store";
 import { useNavigation } from "expo-router";
+import {IProfile} from "@entities/user";
+import {useToastStore} from "@shared/store";
+import {IGym} from "@entities/gym";
+import {queryClient} from "@shared/api";
 
 const Profile = () => {
-  const { user } = useAuthStore();
-  const {setProfileField, setGyms,profile, gyms} = useProfileStore();
+  const { user, updateUser , updateProfile} = useAuthStore();
   const navigation = useNavigation();
+  const {showToast} = useToastStore()
 
   const { data } = useQuery({
     queryKey: ["user", user?.id],
@@ -28,46 +31,47 @@ const Profile = () => {
     enabled: !!user?.id,
   });
 
-  const handleSetProfile = useCallback(() => {
-    if (data?.profile) {
-      const { avatarUrl, wallpaperUrl, socialMediaLinks, goal } = data?.profile;
-  
-      if (avatarUrl) setProfileField("avatarUrl", avatarUrl);
-      if (wallpaperUrl) setProfileField("wallpaperUrl", wallpaperUrl);
-      if (socialMediaLinks) setProfileField("socialMediaLinks", socialMediaLinks);
-      if (goal) setProfileField("goal", goal);
+  const {mutate} = useMutation({
+    mutationFn: () => updateUserProfile(user!.profile!, user!.gyms),
+    onError: (error) => (
+        showToast("Error while updating profile", error.message, "error")
+    ),
+    onSuccess: () => (
+        navigation.goBack()
+    )
+  })
+
+  useEffect(() => {
+    if (data) {
+      updateUser(data)
     }
-  
-    if (data?.gyms) setGyms(data.gyms);
-  }, [data, setProfileField, setGyms]);
-
-  useEffect(() => {
-    handleSetProfile();
-  }, [data, handleSetProfile]);
+  }, [data]);
 
 
   useEffect(() => {
-    navigation.setOptions({
-      headerRight: () => (
-        <TouchableOpacity>
-          <Text style={{fontSize: 17, color: Colors.successLight, paddingEnd: 5}}>Save</Text>
-        </TouchableOpacity>
-      )
-    })
-  }, [navigation, profile?.avatarUrl, profile?.wallpaperUrl, profile?.socialMediaLinks, gyms, profile?.goal])
+    if(user?.profile) {
+      navigation.setOptions({
+        headerRight: () => (
+            <TouchableOpacity onPress={() => mutate()}>
+              <Text style={{fontSize: 17, color: Colors.successLight, paddingEnd: 5}}>Save</Text>
+            </TouchableOpacity>
+        )
+      })
+    }
+  }, [navigation, user?.profile])
 
-  
 
   if (!data) {
     return null;
-  } 
+  }
 
-  const handleAvatarPick = (mediaUri: string) => {
-    console.log("Avatar picked:", mediaUri);
+  const handleAvatarPick = (mediaUri: string | null) => {
+
+    updateProfile({avatarUrl:mediaUri})
   };
 
-  const handleWallpaperPick = (mediaUri: string) => {
-    console.log("Wallpaper picked:", mediaUri);
+  const handleWallpaperPick = (mediaUri: string | null) => {
+    updateProfile({wallpaperUrl: mediaUri})
   };
 
 

@@ -12,6 +12,8 @@ export interface AuthState {
     extendUser: (user: IUser) => void;
     setUser: (user: IUser & {expiresAt: number} | null) => void;
     setToken: (token: string | null, expiresAt: number | null) => void;
+    updateUser: (updateFields: Partial<IUser>) => void;
+    updateProfile: (updateFields: Partial<IProfile>) => void;
     clearAuth: () => void;
     isTokenValid: () => boolean | null
 }
@@ -32,6 +34,32 @@ export const useAuthStore = create<AuthState>()(
                 resetProfile();
                 set({user, isExtended: true});
             },
+            updateUser: (updateFields) => {
+                const currentUser = get().user;
+                if (currentUser) {
+                    set({
+                        user: {
+                            ...currentUser,
+                            ...updateFields,
+                        },
+                    });
+                }
+            },
+            updateProfile: (updateFields) => {
+                const user =  get().user
+                const profile = user?.profile;
+                if (profile) {
+                    set({
+                        user: {
+                            ...user,
+                            profile: {
+                                ...profile,
+                                ...updateFields
+                            }
+                        }
+                    });
+                }
+            },
             setToken: (token: string | null) => {
                 set({token});
             },
@@ -45,7 +73,7 @@ export const useAuthStore = create<AuthState>()(
                 const {expiresAt} = get();
                 if(!expiresAt) return null;
                 return expiresAt > Date.now();
-            }
+            },
         }),
         {
             name: "auth-storage",

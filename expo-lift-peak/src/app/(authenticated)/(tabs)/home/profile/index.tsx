@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {Text, View} from "react-native";
 import {useLocalSearchParams} from "expo-router";
 import {useQuery} from "@tanstack/react-query";
@@ -7,6 +7,7 @@ import {defaultStyles} from "@shared/styles";
 import CustomTabBar from "@shared/components/tabs/CustomTabBar";
 import Animated, {useAnimatedScrollHandler} from "react-native-reanimated";
 import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
+import {useAuthStore} from "@features/auth";
 
 const tabs = [
     {
@@ -31,6 +32,8 @@ const AboutProfile = () => {
     const onScroll = useAnimatedScrollHandler((event) => {
         scrollY.value = event.contentOffset.y;
     });
+
+    if(!data?.profile) return null;
 
     return (
         <Animated.ScrollView onScroll={onScroll} stickyHeaderIndices={[1]} contentContainerStyle={{paddingBottom: 120}}

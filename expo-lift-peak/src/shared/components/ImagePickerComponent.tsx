@@ -9,7 +9,7 @@ import {MediaOptions} from "@shared/model/IMediaOption";
 interface ImagePickerComponentProps {
   actions: MediaOptions[]
   closeModal: () => void;
-  onPick: (media: string) => void;
+  onPick: (media: string | null) => void;
 }
 
 const ImagePickerComponent = forwardRef(

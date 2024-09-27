@@ -1,42 +1,40 @@
-import React, { useRef } from 'react';
-import { View, Pressable, StyleSheet } from 'react-native';
+import React, {useEffect} from 'react';
+import {View, StyleSheet} from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-import { BottomSheetModal } from '@gorhom/bottom-sheet';
-import ImagePickerComponent from '@shared/components/ImagePickerComponent';
-import Avatar from '@shared/components/Avatar';
 import { Colors } from '@shared/styles';
 import {MediaOptions} from "@shared/model/IMediaOption";
-import { useProfileStore } from '../store';
+import {MediaPicker} from "@features/media-upload";
+import {useAuthStore} from "@features/auth";
 
 interface AvatarPickerProps {
     usernameInitial: string;
-    onAvatarPick: (mediaUri: string) => void;
+    onAvatarPick: (mediaUri: string | null) => void;
   }
   
 
 const AvatarPicker: React.FC<AvatarPickerProps> = ({usernameInitial, onAvatarPick }) => {
-  const avatarSheetRef = useRef<BottomSheetModal>(null);
+  const {user} = useAuthStore()
+  const [avatar, setAvatar] = React.useState<{ actualUrl: string, thumbnailUrl: string }[]>(user?.profile?.avatarUrl ? [{actualUrl: user.profile.avatarUrl, thumbnailUrl: user.profile.avatarUrl}] : []);
 
-  const {profile} = useProfileStore()
-
-  const closeAvatarModal = () => avatarSheetRef.current?.dismiss();
-  const openAvatarPicker = () => avatarSheetRef.current?.present();
+  useEffect(() => {
+    onAvatarPick(avatar?.[0]?.actualUrl || null)
+  }, [avatar]);
 
   return (
     <View style={styles.avatarWrapper}>
-      <Pressable style={styles.avatarContainer} onPress={openAvatarPicker}>
-        <Avatar size={160} name={usernameInitial} url={profile.avatarUrl} />
+      <View style={{width: 170,
+        height: 170}}>
+        <MediaPicker
+            style={{
+              paddingLeft:0
+            }}
+            containerStyles={styles.avatarContainer}
+            single={true} uploadedFiles={avatar}  addMedia={(props) => setAvatar([props])}   removeMedia={() => setAvatar([])} actions={[MediaOptions.TAKE_PHOTO, MediaOptions.IMAGE,  MediaOptions.REMOVE_ALL]}
+        />
         <View style={styles.cameraIconAvatar}>
           <Ionicons name="camera-outline" size={24} color={Colors.white} />
         </View>
-      </Pressable>
-
-      <ImagePickerComponent
-        closeModal={closeAvatarModal}
-        ref={avatarSheetRef}
-        actions={[MediaOptions.IMAGE, MediaOptions.TAKE_PHOTO]}
-        onPick={onAvatarPick}
-      />
+      </View>
     </View>
   );
 };

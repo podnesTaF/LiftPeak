@@ -32,8 +32,7 @@ const SocialMediaPicker = () => {
   const [selectedPlatform, setSelectedPlatform] =
     useState<SocialMediaPlatform | null>(null);
   const [username, setUsername] = useState("");
-  const { profile, addLink, removeLink } = useProfileStore();
-  const { user } = useAuthStore();
+  const { user, updateProfile } = useAuthStore();
   const { showToast } = useToastStore();
 
   const renderBackdrop = useCallback(
@@ -50,7 +49,7 @@ const SocialMediaPicker = () => {
   );
 
   const handleSelectPlatform = (platform: SocialMediaPlatform) => {
-    const isDuplicate = profile?.socialMediaLinks?.some((l) => l.platform === platform) ?? false;
+    const isDuplicate = user?.profile?.socialMediaLinks?.some((l) => l.platform === platform) ?? false;
     if (!isDuplicate) {
       setSelectedPlatform(platform);
       handleMenuClose();
@@ -66,6 +65,8 @@ const SocialMediaPicker = () => {
   };
 
   const handleAddLink = () => {
+    const profile = user?.profile
+    if(!profile) return;
     if (selectedPlatform && username) {
       const socialMediaUrl = generateSocialMediaUrl(selectedPlatform, username);
 
@@ -80,13 +81,19 @@ const SocialMediaPicker = () => {
         profileId: user!.id,
       };
 
-      addLink(newLink);
+      updateProfile({socialMediaLinks: [...(profile.socialMediaLinks || []), newLink]});
       setUsername("");
       setSelectedPlatform(null);
     } else {
       alert("Please select a platform and enter a username.");
     }
   };
+
+  const handleRemoveLink = (link: ISocialMediaLink) => {
+    updateProfile({
+      socialMediaLinks: user!.profile!.socialMediaLinks?.filter(s => s.id !== link.id)
+    })
+  }
 
   const menuRef = useRef<BottomSheetModal>(null);
 
@@ -141,14 +148,14 @@ const SocialMediaPicker = () => {
           )}
         </View>
 
-        {profile.socialMediaLinks &&
-          profile.socialMediaLinks.map((item) => (
+        {user?.profile?.socialMediaLinks &&
+          user.profile.socialMediaLinks.map((item) => (
             <ProfileListItemCard
               key={item.url}
               item={item}
               displayKey={item.platform}
               displayText={item.url}
-              onPress={() => removeLink(item)}
+              onPress={() => handleRemoveLink(item)}
             />
           ))}
       </View>

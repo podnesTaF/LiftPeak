@@ -97,7 +97,6 @@ const SelectGym = () => {
               placeholder="Choose your gym"
               value={gymInput}
               onChangeText={(text) => setGymInput(text)}
-              autoFocus
               autoCorrect={false}
             />
           </View>

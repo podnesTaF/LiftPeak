@@ -8,97 +8,31 @@ import { useAnimatedScroll } from "@shared/components/AnimatedScrollContext";
 import React, { useCallback, useEffect } from "react";
 import CustomTabBar from "@shared/components/tabs/CustomTabBar";
 import { useProfileStore } from "@features/profile/store";
+import {useLocalSearchParams} from "expo-router";
 
 const ProfileOverview = () => {
-  const { user } = useAuthStore();
-  const {
-    setProfileField,
-    setGyms,
-    setId,
-    setUsername,
-    setIsFollowing,
-    setFollowersCount,
-    setFollowingsCount,
-    profile,
-  } = useProfileStore();
+  const { user, updateProfile, updateUser } = useAuthStore();
   const [activeTab, setActiveTab] = React.useState("about");
   const { scrollY } = useAnimatedScroll();
 
   const { data } = useQuery({
-    queryKey: ["user", user?.id],
-    queryFn: () => getUserInfo(user?.id),
+    queryKey: ["user", user!.id],
+    queryFn: () => getUserInfo(user!.id),
     enabled: !!user?.id,
   });
-
-  const handleSetProfile = useCallback(() => {
-    if (data) {
-      const {
-        id,
-        username,
-        gyms,
-        isFollowing,
-        followersCount,
-        followingsCount,
-        profile: profileData,
-      } = data;
-      
-
-      if (id !== undefined) setId(id);
-      if (gyms) setGyms(gyms);
-      if (username) setUsername(username);
-      if (typeof isFollowing === "boolean") setIsFollowing(isFollowing);
-      if (typeof followersCount === "number") setFollowersCount(followersCount);
-      if (typeof followingsCount === "number")
-        setFollowingsCount(followingsCount);
-
-      if (profileData) {
-        const {
-          avatarUrl,
-          wallpaperUrl,
-          socialMediaLinks,
-          goal,
-          firstName,
-          lastName,
-          dateOfBirth,
-          gender
-        } = profileData;
-
-        if (firstName) setProfileField("firstName", firstName);
-        if (lastName) setProfileField("lastName", lastName);
-        if (avatarUrl) setProfileField("avatarUrl", avatarUrl);
-        if (wallpaperUrl) setProfileField("wallpaperUrl", wallpaperUrl);
-        if (socialMediaLinks)
-          setProfileField("socialMediaLinks", socialMediaLinks);
-        if (goal) setProfileField("goal", goal);
-        if (dateOfBirth) setProfileField("dateOfBirth", dateOfBirth);
-        if (gender) setProfileField("gender", gender);
-      }
-    }
-  }, [
-    data,
-    setId,
-    setGyms,
-    setUsername,
-    setIsFollowing,
-    setFollowersCount,
-    setFollowingsCount,
-    setProfileField,
-  ]);
-
   useEffect(() => {
-    handleSetProfile();
-  }, [handleSetProfile]);
+    if(data) {
+      updateUser(data)
+    }
+  }, [data]);
 
-  // hook used to handle scroll events in an animated way
-  // it listens for the onScroll event
-  //the function we pass inside of this hook will be executed every time the user scrolls
   const onScroll = useAnimatedScrollHandler((event) => {
-    //event.contentOffset.y gives the current scroll position in pixels.
     scrollY.value = event.contentOffset.y;
   });
 
+  if(!user?.profile) return null
+
   return (
-    //on scroll, our defined on scroll function will be executed
     <Animated.ScrollView
       onScroll={onScroll}
       stickyHeaderIndices={[1]}
@@ -106,18 +40,15 @@ const ProfileOverview = () => {
       style={defaultStyles.container}
       scrollEventThrottle={16}
     >
-      {/* scrollEventThrottle={16} means that the onScroll event will fire every 16 milliseconds, 
-    which corresponds to about 60 frames per second (fps). 
-    This is a common frame rate for smooth animations and user interactions. */}
-      <ProfileHeader />
+      <ProfileHeader user={user} />
       <CustomTabBar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         tabs={[{ name: "about" }, { name: "statistics" }]}
       />
       {activeTab === "about" &&
-        (profile  ? (
-          <UserInfo/>
+        (user?.profile  ? (
+          <UserInfo user={user}/>
         ) : (
           <Text style={{ color: "white" }}>Loading...</Text>
         ))}

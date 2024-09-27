@@ -1,18 +1,28 @@
 import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
-import React from "react";
+import React, {useRef} from "react";
 import { router } from "expo-router";
 import { Ionicons } from "@expo/vector-icons";
 import { Colors } from "@shared/styles";
 import { useProfileStore } from "../store";
 import ProfileListItemCard from "@shared/components/ProfileListItemCard";
 import { useToastStore } from "@shared/store";
+import {IGym} from "@entities/gym";
+import SelectGymSheet from "@features/profile/ui/SelectGymSheet";
+import {useAuthStore} from "@features/auth";
+import {BottomSheetModalRef} from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetModalProvider/types";
+import {BottomSheetModal} from "@gorhom/bottom-sheet";
+
+interface GymPickerProps {
+  gyms: IGym[],
+}
 
 const GymPicker = () => {
-  const { gyms, removeGym } = useProfileStore();
+  const { user, updateUser } = useAuthStore();
   const { showToast } = useToastStore();
+  const ref = useRef<BottomSheetModal>(null)
 
   const handleAddGym = () => {
-    if (gyms && gyms?.length === 3) {
+    if (user?.gyms && user.gyms?.length === 3) {
       showToast(
         "Gym Limit Exceeded",
         "You have reached the maximum limit of 3 gyms.",
@@ -20,16 +30,24 @@ const GymPicker = () => {
         4000
       );
     } else {
-      router.push(
-        "/(authenticated)/(tabs)/personal-profile/settings/account/select-gym"
-      );
+      ref.current?.present()
     }
   };
+
+  const removeGym = (item: IGym) => {
+    updateUser({
+      gyms: user?.gyms?.filter(g => g.address !== item.address)
+    })
+  }
+
+  const onAddNewGyms = (gyms: IGym[]) => {
+    updateUser({gyms})
+    ref?.current?.dismiss()
+  }
 
   return (
     <View style={{ gap: 15 }}>
       <Text style={styles.label}>My Gym</Text>
-
       <TouchableOpacity onPress={handleAddGym} style={styles.input}>
         <Text style={styles.inputText}>Add Gym</Text>
         <Ionicons
@@ -40,9 +58,8 @@ const GymPicker = () => {
       </TouchableOpacity>
 
       <View style={{ gap: 10 }}>
-        {gyms &&
-          gyms?.length > 0 &&
-          gyms.map((gym) => {
+        {user?.gyms &&
+          user.gyms.map((gym) => {
             return (
               <ProfileListItemCard
                 key={gym.address}
@@ -54,6 +71,7 @@ const GymPicker = () => {
             );
           })}
       </View>
+      <SelectGymSheet ref={ref} onSubmit={onAddNewGyms} userGyms={user?.gyms}  />
     </View>
   );
 };

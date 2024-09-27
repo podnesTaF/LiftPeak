@@ -10,6 +10,8 @@ import Button from "@shared/components/Button";
 import { Colors } from "@shared/styles";
 import { renderBottomSheetBackdrop } from "./bottomSheetBackdrop";
 import { ViewStyle } from "react-native";
+import {BottomSheetModalRef} from "@gorhom/bottom-sheet/lib/typescript/components/bottomSheetModalProvider/types";
+import {BottomSheetModalMethods} from "@gorhom/bottom-sheet/lib/typescript/types";
 
 interface CustomBottomSheetProps {
   handleClose?: () => void;
@@ -20,7 +22,7 @@ interface CustomBottomSheetProps {
   hideFooter?: boolean
 }
 
-const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>(({handleClose, snapPoints,hideFooter, buttonName, buttonStyle,children}, ref) => {
+const CustomBottomSheet = forwardRef<BottomSheetModalMethods, CustomBottomSheetProps>(({handleClose, snapPoints,hideFooter, buttonName, buttonStyle,children}, ref) => {
 
     const memoizedBackdrop = useCallback(renderBottomSheetBackdrop, []);
 
@@ -39,7 +41,7 @@ const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>((
         return (
           <BottomSheetFooter
             {...props}
-            bottomInset={32}
+            bottomInset={40}
             style={footerStyle}
           >
             <Button
@@ -69,9 +71,7 @@ const CustomBottomSheet = forwardRef<BottomSheetModal, CustomBottomSheetProps>((
         enablePanDownToClose={true}
         snapPoints={snapPoints || ["80%"]}
       >
-        <BottomSheetView style={{ paddingVertical: 16, flex: 1 }}>
           {children}
-        </BottomSheetView>
       </BottomSheetModal>
     );
   }

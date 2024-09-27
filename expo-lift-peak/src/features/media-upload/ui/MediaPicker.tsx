@@ -5,7 +5,7 @@ import {
   View,
   StyleSheet,
   Image,
-  ActivityIndicator,
+  ActivityIndicator, StyleProp, ViewStyle,
 } from "react-native";
 import { useMutation } from "@tanstack/react-query";
 import { deleteMedia, uploadMedia } from "@features/media-upload/api/mediaApi";
@@ -23,12 +23,14 @@ interface MediaPickerProps {
   removeMedia: (url: string) => void;
   single?: boolean;
   actions?: MediaOptions[];
+  containerStyles?: StyleProp<ViewStyle>;
+  style?: StyleProp<ViewStyle>;
 }
 
 export const MediaPicker = ({
   uploadedFiles,
   addMedia,
-  removeMedia, single, actions
+  removeMedia, single, actions, containerStyles, style
 }: MediaPickerProps) => {
   const [localLoadingFileUrl, setLocalLoadingFileUrl] = React.useState<
     string | null
@@ -89,38 +91,45 @@ export const MediaPicker = ({
     },
   });
 
+  const onUpload = (media: string | null) => {
+    if(media === null) {
+      uploadedFiles.map(f => removeFile(f.actualUrl))
+    } else {
+      uploadFile(media)
+    }
+  }
+
   const closeModal = () => bottomSheetRef.current?.dismiss();
   const openImagePicker = () => bottomSheetRef.current?.present();
 
   return (
     <ScrollView
       horizontal={true}
-      contentContainerStyle={{ gap: 14, paddingLeft: 16 }}
+      contentContainerStyle={[{ gap: 14, paddingLeft: 16 }, style]}
       showsHorizontalScrollIndicator={false}
       snapToAlignment={"start"}
       snapToInterval={100}
     >
       {(single && uploadedFiles.length > 0) ? (
-          <TouchableOpacity onPress={openImagePicker} style={[styles.container]}>
+          <TouchableOpacity onPress={openImagePicker} style={[styles.container, containerStyles]}>
             <Image
                 source={{ uri: uploadedFiles[0].thumbnailUrl }}
-                style={{ width: "100%", height: "100%", borderRadius: 16 }}
+                style={{ width: "100%", height: "100%" }}
             />
           </TouchableOpacity>
       ):(
           !isPending ? (
-        <TouchableOpacity onPress={openImagePicker} style={[styles.container]}>
+        <TouchableOpacity onPress={openImagePicker} style={[styles.container, containerStyles]}>
           <Ionicons name={"camera"} size={32} color={Colors.white} />
         </TouchableOpacity>
       ) : (
-        <View style={[styles.container]}>
+        <View style={[styles.container, containerStyles]}>
           {localLoadingFileUrl && (
             <Image
               source={{ uri: localLoadingFileUrl }}
               style={{
                 width: "100%",
                 height: "100%",
-                borderRadius: 16,
                 opacity: 0.5,
               }}
             />
@@ -181,7 +190,7 @@ export const MediaPicker = ({
       <ImagePickerComponent
         closeModal={closeModal}
         ref={bottomSheetRef}
-        onPick={uploadFile}
+        onPick={onUpload}
         actions={actions || [MediaOptions.IMAGE_AND_VIDEO, MediaOptions.TAKE_PHOTO, MediaOptions.FILM]}
       />
     </ScrollView>
@@ -191,6 +200,7 @@ export const MediaPicker = ({
 const styles = StyleSheet.create({
   container: {
     width: 100,
+    overflow: "hidden",
     height: 100,
     borderRadius: 16,
     backgroundColor: Colors.dark500,

@@ -2,9 +2,10 @@ import { View, Text, TextInput, StyleSheet } from "react-native";
 import React from "react";
 import { useProfileStore } from "../store";
 import { Colors } from "@shared/styles";
+import {useAuthStore} from "@features/auth";
 
 const GoalInput = () => {
-  const { profile,  setProfileField} = useProfileStore();
+    const {user,updateProfile} = useAuthStore()
 
   return (
     <View style={{ gap: 8 }}>
@@ -12,12 +13,12 @@ const GoalInput = () => {
       <TextInput
         multiline={true}
         maxLength={200}
-        value={profile.goal}
+        value={user?.profile?.goal}
         placeholderTextColor={Colors.dark300}
         placeholder="Tell us about your goal"
         textContentType="oneTimeCode"
         autoCapitalize="none"
-        onChangeText={(text) => setProfileField("goal", text)}
+        onChangeText={(text) => updateProfile({goal: text})}
         style={[
           styles.inputArea,
           {

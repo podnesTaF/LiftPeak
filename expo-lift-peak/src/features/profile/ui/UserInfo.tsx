@@ -11,11 +11,11 @@ const socialMediaIcon = {
     [SocialMediaPlatform.Instagram]: "logo-instagram"
 } as const
 
+interface UserInfoProps {
+    user: IUser;
+}
 
-
-export const UserInfo = () => {
-
-    const {profile, gyms} = useProfileStore();
+export const UserInfo = ({user: {profile, gyms}}: UserInfoProps) => {
 
     return (
         <View style={styles.container}>
@@ -35,12 +35,6 @@ export const UserInfo = () => {
                 <Text style={defaultStyles.smallTitle}>
                     Location
                 </Text>
-                {/* <View style={styles.sectionRow}>
-                    <Ionicons name={"location-outline"} size={24} color={"white"}/>
-                    <Text style={{color: "white", fontWeight: "500"}}>
-                        {user?.profile?.country}, {user?.profile?.city}
-                    </Text>
-                </View> */}
                 <View style={[styles.sectionRow,  {borderBottomWidth: 1, borderBottomColor: Colors.dark300, paddingBottom: 12}]}>
                     <Ionicons name={"home-outline"} size={24} color={"white"}/>
                     <Text style={{color: "white", fontWeight: "500"}}>

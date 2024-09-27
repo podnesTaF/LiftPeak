@@ -6,7 +6,7 @@ import {MediaOptions} from "@shared/model/IMediaOption";
 
 
 interface UseImagePickerParams {
-    onPick: (media: string) => void;
+    onPick: (media: string | null) => void;
     closeModal: () => void;
 }
 
@@ -115,6 +115,12 @@ const useImagePicker = ({ onPick, closeModal }: UseImagePickerParams) => {
     }, [requestPermission, onPick, closeModal, showToast]);
 
 
+    const onRemove = () => {
+        onPick(null)
+        closeModal();
+    }
+
+
     const actionButtons: {
         [key: string]: {
             title: string;
@@ -142,6 +148,11 @@ const useImagePicker = ({ onPick, closeModal }: UseImagePickerParams) => {
             actionFn: recordVideo,
             icon: "videocam-outline",
         },
+        [MediaOptions.REMOVE_ALL]: {
+            title: 'Remove',
+            actionFn: onRemove,
+            icon: "trash-outline"
+        }
     }
 
     return {

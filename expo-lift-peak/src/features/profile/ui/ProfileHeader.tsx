@@ -14,25 +14,15 @@ import Animated, {
   useAnimatedStyle,
 } from "react-native-reanimated";
 import { useAnimatedScroll } from "@shared/components/AnimatedScrollContext";
-import { router } from "expo-router";
+import {router, useLocalSearchParams} from "expo-router";
 import { useProfileStore } from "../store";
 
-export const ProfileHeader = () => {
-  const { user: authenticatedUser } = useAuthStore();
-  const {
-    isFollowing,
-    profile,
-    username,
-    followersCount,
-    followingsCount,
-    id,
-  } = useProfileStore();
-  // Get the scroll position (scrollY) from the custom scroll context to animate elements based on scrolling
+export const ProfileHeader = ({user}: {user: IUser}) => {
+    const {id} = useLocalSearchParams<{ id?: string }>()
+    const {user: authUser} = useAuthStore()
   const { scrollY } = useAnimatedScroll();
 
-  // Define the animated styles that will change as the user scrolls
   const containerStyle = useAnimatedStyle(() => {
-    // translateY handles vertical movement based on scroll position (from 0 to -80 pixels)
     const translateY = interpolate(
       scrollY.value,
       [350, 430],
@@ -40,15 +30,14 @@ export const ProfileHeader = () => {
       Extrapolation.CLAMP
     );
 
-    // Return the styles to be applied. This includes the translateY transformation and opacity changes.
     return {
-      transform: [{ translateY }], // Move the component up by -80 pixels between scrollY of 350 and 430
+      transform: [{ translateY }],
       opacity: interpolate(
         scrollY.value,
         [200, 430],
         [1, 0],
         Extrapolation.CLAMP
-      ), // Fade out between scrollY of 200 (fully visible) and 430 (fully invisible)
+      ),
     };
   });
 
@@ -67,9 +56,9 @@ export const ProfileHeader = () => {
             height: 180,
           }}
         >
-          {profile?.wallpaperUrl ? (
+          {user.profile?.wallpaperUrl ? (
             <Image
-              source={{ uri: profile.wallpaperUrl }}
+              source={{ uri: user.profile.wallpaperUrl }}
               style={{
                 height: 180,
                 objectFit: "cover",
@@ -94,8 +83,8 @@ export const ProfileHeader = () => {
           <View style={styles.avatarContainer}>
             <Avatar
               size={100}
-              name={username ? username[0] : ""}
-              url={profile?.avatarUrl}
+              name={user.username[0] || ""}
+              url={user.profile?.avatarUrl}
             />
           </View>
         </View>
@@ -109,9 +98,9 @@ export const ProfileHeader = () => {
           }}
         >
           <Text style={defaultStyles.smallTitle}>
-            {profile?.firstName} {profile?.lastName}
+            {user.profile?.firstName} {user.profile?.lastName}
           </Text>
-          <Text style={defaultStyles.secondaryText}>@{username}</Text>
+          <Text style={defaultStyles.secondaryText}>@{user.username}</Text>
           <View
             style={{
               flexDirection: "row",
@@ -121,20 +110,12 @@ export const ProfileHeader = () => {
           >
             <View style={{ alignItems: "center" }}>
               <Text style={defaultStyles.secondaryText}>Followers</Text>
-              <Text style={defaultStyles.smallTitle}>{followersCount}</Text>
+              <Text style={defaultStyles.smallTitle}>{user.followersCount}</Text>
             </View>
             <View style={{ alignItems: "center" }}>
               <Text style={defaultStyles.secondaryText}>Followings</Text>
-              <Text style={defaultStyles.smallTitle}>{followingsCount}</Text>
+              <Text style={defaultStyles.smallTitle}>{user.followingsCount}</Text>
             </View>
-            {/* {profile?.dateOfBirth && (
-              <View style={{ alignItems: "center" }}>
-                <Text style={defaultStyles.secondaryText}>
-                  {format(new Date(profile?.dateOfBirth), "MM yy dd")}
-                </Text>
-                <Text style={defaultStyles.smallTitle}>0</Text>
-              </View>
-            )} */}
           </View>
         </View>
         <View
@@ -143,7 +124,7 @@ export const ProfileHeader = () => {
             paddingHorizontal: 16,
           }}
         >
-          {id === authenticatedUser?.id ? (
+          {!id || +id === authUser?.id ? (
             <View style={[defaultStyles.row, { gap: 12 }]}>
               <Button
                 onPress={() =>
@@ -178,7 +159,7 @@ export const ProfileHeader = () => {
                 />
               </Button>
             </View>
-          ) : isFollowing ? (
+          ) : user.isFollowing ? (
             <Button fullWidth color={"dark500"} title={"Follow"}>
               <Ionicons
                 name={"person-remove-outline"}

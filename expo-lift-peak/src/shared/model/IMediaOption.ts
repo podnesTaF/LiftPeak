@@ -4,4 +4,5 @@ export enum MediaOptions {
     TAKE_PHOTO = 'takePhoto',
     VIDEO = 'video',
     FILM = 'film',
+    REMOVE_ALL = 'removeAll'
 }

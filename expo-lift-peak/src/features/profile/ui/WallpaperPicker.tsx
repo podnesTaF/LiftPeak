@@ -1,49 +1,37 @@
-import React, { useRef } from "react";
-import { Image, Pressable, StyleSheet, View } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
-import { BottomSheetModal } from "@gorhom/bottom-sheet";
-import ImagePickerComponent from "@shared/components/ImagePickerComponent";
-import { Colors } from "@shared/styles";
-import { MediaOptions } from "@shared/model/IMediaOption";
-import { useProfileStore } from "../store";
+import React, {useEffect} from "react";
+import {Dimensions, StyleSheet, View} from "react-native";
+import {Ionicons} from "@expo/vector-icons";
+import {Colors} from "@shared/styles";
+import {MediaOptions} from "@shared/model/IMediaOption";
+import {MediaPicker} from "@features/media-upload";
+import {useAuthStore} from "@features/auth";
 
 interface WallpaperPickerProps {
-  onWallpaperPick: (mediaUri: string) => void;
+  onWallpaperPick: (mediaUri: string | null) => void;
 }
 
 const WallpaperPicker: React.FC<WallpaperPickerProps> = ({
   onWallpaperPick,
 }) => {
-  const wallpaperSheetRef = useRef<BottomSheetModal>(null);
+  const { user } = useAuthStore();
+  const [wallpaper, setWallpaper] = React.useState<{ actualUrl: string, thumbnailUrl: string }[]>(user?.profile?.wallpaperUrl ? [{actualUrl: user.profile.wallpaperUrl, thumbnailUrl: user.profile.wallpaperUrl}] : []);
 
-  const { profile } = useProfileStore();
-
-  const closeWallpaperModal = () => wallpaperSheetRef.current?.dismiss();
-  const openWallpaperPicker = () => wallpaperSheetRef.current?.present();
+  useEffect(() => {
+    onWallpaperPick(wallpaper[0]?.actualUrl || null)
+  }, [wallpaper]);
 
   return (
-    <View>
-      <Pressable
-        style={styles.wallpaperContainer}
-        onPress={openWallpaperPicker}
-      >
-        {profile.wallpaperUrl ? (
-          <Image style={styles.wallpaper} source={{ uri: profile.wallpaperUrl }} />
-        ) : (
-          <View style={styles.wallpaperPlaceholder} />
-        )}
-
-        <View style={styles.cameraIconWallpaper}>
-          <Ionicons name="camera-outline" size={24} color={Colors.white} />
-        </View>
-      </Pressable>
-
-      <ImagePickerComponent
-        closeModal={closeWallpaperModal}
-        ref={wallpaperSheetRef}
-        actions={[MediaOptions.IMAGE, MediaOptions.TAKE_PHOTO]}
-        onPick={onWallpaperPick}
+    <View style={styles.wallpaperContainer}>
+      <MediaPicker
+          style={{
+            paddingLeft:0
+          }}
+          containerStyles={[{height: 180, width: Dimensions.get("screen").width, borderRadius: 0}]}
+          single={true} uploadedFiles={wallpaper}  addMedia={(props) => setWallpaper([props])}   removeMedia={() => setWallpaper([])} actions={[MediaOptions.TAKE_PHOTO, MediaOptions.IMAGE, MediaOptions.REMOVE_ALL]}
       />
+      <View style={{position: 'absolute', top: 20, left: 20}}>
+        <Ionicons name="camera-outline" size={24} color={Colors.white} />
+      </View>
     </View>
   );
 };
