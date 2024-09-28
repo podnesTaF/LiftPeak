@@ -130,18 +130,22 @@ export const ProfileHeader = ({user}: { user: IUser }) => {
                             marginBottom: 8
                         }}
                     >
-                        <View style={{flexDirection: "row",gap:4, alignItems: "center"}}>
+                        <TouchableOpacity
+                            onPress={() => router.push({pathname: "/(authenticated)/people", params: {type: "followers", id: user.id}})}
+                            style={{flexDirection: "row",gap:4, alignItems: "center"}}>
                             <Text style={{color: "white"}}>{user.followersCount}</Text>
                             <Text style={{color: Colors.dark300}}>Followers</Text>
-                        </View>
-                        <View style={{flexDirection: "row",gap:4,alignItems: "center"}}>
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => router.push({pathname: "/(authenticated)/people", params: {type: "following", id: user.id}})}
+                            style={{flexDirection: "row",gap:4,alignItems: "center"}}>
                             <Text style={{color: "white"}}>{user.followingsCount}</Text>
                             <Text style={{color: Colors.dark300}}>Followings</Text>
-                        </View>
-                        <View style={{flexDirection: "row", gap:4,alignItems: "center"}}>
+                        </TouchableOpacity>
+                        <TouchableOpacity style={{flexDirection: "row", gap:4,alignItems: "center"}}>
                             <Text style={{color: "white"}}>0</Text>
                             <Text style={{color: Colors.dark300}}>Groups</Text>
-                        </View>
+                        </TouchableOpacity>
                     </View>
                     {!id ? (
                         <View style={[defaultStyles.row, {gap: 12}]}>

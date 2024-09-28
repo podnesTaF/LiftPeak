@@ -182,6 +182,12 @@ const InitialLayout = () => {
                     animationDuration: 100,
                 }}
             />
+            <Stack.Screen
+                name={"(authenticated)/people"}
+                options={{
+                    headerShown: false
+                }}
+            />
         </Stack>
     );
 };
