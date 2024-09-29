@@ -7,7 +7,7 @@ import {useLocalSearchParams} from "expo-router";
 import ExerciseHistoryCardUi from "@features/exercise/history/ExerciseHistoryCard.ui";
 
 const Exercises = () => {
-    const {exerciseId: id} = useLocalSearchParams<{ exerciseId: string }>()
+    const {workoutId: id} = useLocalSearchParams<{ workoutId: string }>()
 
     const {data: workout} = useQuery({
         queryKey: ["workout", id],

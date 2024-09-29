@@ -53,12 +53,12 @@ const Layout = () => {
             />
                 <CustomTopTabBar>
                     <MaterialTopTabs.Screen name={'index'} initialParams={{
-                        exerciseId: id
+                        workoutId: id
                     }} options={{
                         title: "post & Stats"
                     }} />
                     <MaterialTopTabs.Screen  name={'exercises'} initialParams={{
-                        exerciseId: id
+                        workoutId: id
                     }}  options={{
                         title: "Exercises"
                     }} />
