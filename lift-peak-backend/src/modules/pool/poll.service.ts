@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { EntityManager, Repository } from 'typeorm';
 import { User } from '../users/entities/user.entity';
@@ -22,61 +22,99 @@ export class PollService {
     poll.question = dto.question;
     poll.isAnonymous = dto.isAnonymous;
     poll.multipleAnswer = dto.multipleAnswer;
-    poll.answers = await Promise.all(
+
+    let savedPoll: Poll;
+    if (queryManager) {
+      savedPoll = await queryManager.save(Poll, poll);
+    } else {
+      savedPoll = await this.pollRepository.save(poll);
+    }
+
+    savedPoll.answers = await Promise.all(
       dto.answers.map(async (answerDto) => {
         const answer = new Answer();
         answer.name = answerDto.name;
+        answer.pollId = savedPoll.id;
         return queryManager.save(Answer, answer);
       }),
     );
 
     if (queryManager) {
-      return queryManager.save(Poll, poll);
+      return queryManager.save(Poll, savedPoll);
     }
 
-    const savedPoll = await this.pollRepository.save(poll);
-
-    return savedPoll;
+    return await this.pollRepository.save(savedPoll);
   }
 
   async voteForAnswer(userId: number, answerId: number) {
+    // Fetch the answer along with its voters
+    console.log(userId);
     const answer = await this.answerRepository.findOne({
       where: { id: answerId },
       relations: ['voters'],
     });
 
+    if (!answer) {
+      throw new BadRequestException('Specified wrong answer id');
+    }
+
+    // Fetch the poll associated with the answer
     const poll = await this.pollRepository.findOne({
       where: { id: answer.pollId },
       relations: ['answers.voters'],
       select: {
         id: true,
+        multipleAnswer: true,
         answers: {
           id: true,
-          voters: {
-            id: true,
-          },
         },
       },
     });
 
-    console.log(poll);
+    if (!poll) {
+      throw new BadRequestException('Poll not found');
+    }
 
-    // if (!answer) {
-    //   throw new BadRequestException('Specified wrong answer id');
-    // }
+    console.log(userId, poll);
 
-    // const user = await this.userRepository.findOne({ where: { id: userId } });
+    // Check if the user has already voted in this poll
+    this.checkIfUserHasVoted(userId, poll);
 
-    // // if (answer.voters.some((voter) => voter.id === user.id)) {
+    // Check if the user has already voted for this specific answer
+    const hasVoted = answer.voters.some((voter) => voter.id === userId);
 
-    // // } else if(poll.answers.)
+    if (hasVoted) {
+      throw new BadRequestException('User has already voted for this answer');
+    }
 
-    // answer.voters.push(user);
+    // Fetch the user
+    const user = await this.userRepository.findOne({ where: { id: userId } });
 
-    // await this.answerRepository.save(answer);
+    if (!user) {
+      throw new BadRequestException('User not found');
+    }
+
+    // Add the user to the voters list
+    answer.voters.push(user);
+
+    // Save the updated answer with the new voter
+    await this.answerRepository.save(answer);
+
     return {
       votedId: answerId,
       totalNumberOfVotes: answer.voters.length,
     };
+  }
+
+  private checkIfUserHasVoted(userId: number, poll: Poll) {
+    const userHasVotedInPoll = poll.answers.some((ans) =>
+      ans.voters.some((voter) => voter.id === userId),
+    );
+
+    if (userHasVotedInPoll && !poll.multipleAnswer) {
+      throw new BadRequestException(
+        'User has already voted for another answer in this poll',
+      );
+    }
   }
 }
