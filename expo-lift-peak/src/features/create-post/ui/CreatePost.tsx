@@ -1,4 +1,4 @@
-import React, {useRef, useState} from 'react';
+import React, {useEffect, useRef, useState} from 'react';
 import {
     Alert,
     KeyboardAvoidingView,
@@ -15,10 +15,10 @@ import {BlockRenderer} from "@features/create-post/ui/BlockRenderer";
 import {usePostStore} from "@features/create-post/store/postStore";
 
 interface CreatePostProps {
-
+    groupId: number
 }
 
-export function CreatePost({}: CreatePostProps) {
+export function CreatePost({groupId}: CreatePostProps) {
     const [focusedInputIdx, setFocusedInputIdx] = useState<number | null>(null);
     const scrollRef = useRef<ScrollView | null>(null);
     const inputRefs = useRef<Record<string, TextInput | null>>({});
@@ -70,6 +70,7 @@ export function CreatePost({}: CreatePostProps) {
 
 
     const handleBackspacePress = (block: Block, index: number) => {
+        if(block.type === "title") return
         if (block.content === '' && blocks.length > 1) {
             const previousBlockId = blocks[index - 1]?.id;
             inputRefs.current[previousBlockId]?.focus();

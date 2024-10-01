@@ -6,6 +6,7 @@ import {TextType} from "@entities/post";
 interface PostState {
     groupId: number | null;
     blocks: Block[];
+    setGroupId: (id: number) => void;
     addBlock: (block: Block, insertAt?: number) => void;
     removeBlock: (blockId: string) => void;
     updateBlock: (id: string,  newBlock: Block) => void;
@@ -29,6 +30,9 @@ export const usePostStore = create<PostState>((set, get) => ({
         } else {
             set({ blocks: [...get().blocks, block] });
         }
+    },
+    setGroupId: (id) => {
+       set({groupId: id})
     },
     removeBlock: (blockId) => {
         set({ blocks: get().blocks.filter((b) => b.id !== blockId) });

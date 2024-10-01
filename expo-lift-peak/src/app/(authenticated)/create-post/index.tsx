@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {CreatePost} from "@features/create-post/ui/CreatePost";
 import {Block, CreatePostDto, IPollBlock} from "@features/create-post/model";
 import {IPostContent, PostContentType, TextType} from "@entities/post";
@@ -9,10 +9,10 @@ import {Stack, useLocalSearchParams, useRouter} from "expo-router";
 import Button from "@shared/components/Button";
 import {uploadMedia} from "@features/media-upload";
 import {usePostStore} from "@features/create-post/store/postStore";
-import {IPoll} from "@entities/post/model/IPoll";
+import groupPost from "@features/group/ui/GroupPost";
 
 const CreateGroupPost = () => {
-  const {blocks, clearStore} = usePostStore()
+  const {blocks, clearStore, groupId:id, setGroupId} = usePostStore()
   const { showToast } = useToastStore();
   const { groupId } = useLocalSearchParams<{ groupId: string }>();
   const router = useRouter();
@@ -29,10 +29,21 @@ const CreateGroupPost = () => {
     },
   });
 
+
+  useEffect(() => {
+    if(id !== undefined && groupId) {
+      if(id !== +groupId) {
+        clearStore()
+        setGroupId(+groupId)
+      } else {
+        setGroupId(+groupId)
+      }
+    }
+  }, [id, groupId]);
+
   const {mutateAsync: uploadImage} = useMutation({
     mutationFn: async (systemUrl: string) => uploadMedia([systemUrl]),
   })
-
 
   const handlePostCreation = async (blocks: Block[]) => {
     const dto: CreatePostDto = {
@@ -68,7 +79,9 @@ const CreateGroupPost = () => {
               <Button color={"transparent"} title={"Post"} onPress={() => handlePostCreation(blocks)} />
           )
         }} />
-        <CreatePost />
+        {groupId && (
+            <CreatePost groupId={+groupId} />
+        )}
       </>
   )
 };

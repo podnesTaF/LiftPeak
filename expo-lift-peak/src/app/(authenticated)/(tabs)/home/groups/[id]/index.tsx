@@ -46,7 +46,7 @@ const GroupPage = () => {
                              style={defaultStyles.container} scrollEventThrottle={16}>
             <GroupHeader group={data} />
             <CustomTabBar labelHidden={true} itemFullWidth={true} style={{backgroundColor: Colors.dark900}} activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs}/>
-            <TouchableOpacity onPress={() => router.push("/(authenticated)/create-post")} style={{paddingVertical: 20, paddingHorizontal: 12, marginTop: 12, backgroundColor: Colors.dark700}}>
+            <TouchableOpacity onPress={() => router.push({pathname: "/(authenticated)/create-post", params: {groupId: id && +id}})} style={{paddingVertical: 20, paddingHorizontal: 12, marginTop: 12, backgroundColor: Colors.dark700}}>
                 <Text style={[defaultStyles.secondaryText, {fontWeight: "600", fontSize: 16}]}>
                     How was your lift?
                 </Text>
