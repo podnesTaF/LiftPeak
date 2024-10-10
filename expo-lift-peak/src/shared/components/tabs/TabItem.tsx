@@ -6,30 +6,36 @@ export interface TabItemProps {
     name: string;
     label: string;
     icon?: React.ReactNode;
-    activeTab?
-        : string;
+    activeTab?: string;
     onTabPress?: (tabName: string) => void;
     children?: React.ReactNode;
     fullWidth?: boolean;
+    variant?: 'default' | 'profile';
 }
 
-const TabItem = ({ name, label, activeTab, onTabPress, icon, fullWidth}: TabItemProps) => {
+const TabItem = ({ name, label, activeTab, onTabPress, icon, fullWidth, variant = 'default' }: TabItemProps) => {
     const isActive = activeTab === name;
 
     const handlePress = () => {
-        if(!onTabPress) return
+        if (!onTabPress) return;
         onTabPress(name);
     };
 
     return (
         <TouchableOpacity
-            style={[styles.tabItem, isActive && styles.activeTabItem, fullWidth && {flex: 1}]}
+            style={[
+                variant === 'profile' ? styles.profileTabItem : styles.tabItem,
+                isActive && styles.activeTabItem,
+                fullWidth && { flex: 1 },
+            ]}
             onPress={handlePress}
         >
             {icon}
-            {label && <Text style={[styles.tabLabel, isActive && styles.activeTabLabel]}>
-                {label}
-            </Text>}
+            {label && (
+                <Text style={[styles.tabLabel, isActive && styles.activeTabLabel]}>
+                    {label}
+                </Text>
+            )}
         </TouchableOpacity>
     );
 };
@@ -41,6 +47,11 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderBottomWidth: 3,
         borderBottomColor: 'transparent',
+    },
+    profileTabItem: {
+        borderBottomWidth: 2,
+        padding: 4,
+        margin: 12
     },
     activeTabItem: {
         borderBottomColor: Colors.white,

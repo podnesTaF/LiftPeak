@@ -9,6 +9,7 @@ import React, { useCallback, useEffect } from "react";
 import CustomTabBar from "@shared/components/tabs/CustomTabBar";
 import { useProfileStore } from "@features/profile/store";
 import {useLocalSearchParams} from "expo-router";
+import ProfileTabBar from "@shared/components/tabs/ProfileTabBar";
 
 const ProfileOverview = () => {
   const { user, updateProfile, updateUser } = useAuthStore();
@@ -45,6 +46,8 @@ const ProfileOverview = () => {
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         tabs={[{ name: "about" }, { name: "statistics" }]}
+        style={{justifyContent: 'center'}}
+        variant="profile"
       />
       {activeTab === "about" &&
         (user?.profile  ? (
