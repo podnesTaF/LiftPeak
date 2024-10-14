@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Post,
+  Query,
   UploadedFiles,
   UseGuards,
   UseInterceptors,
@@ -45,8 +46,11 @@ export class WorkoutController {
 
   @Get()
   @UseGuards(JwtAuthGuard)
-  async getWorkouts(@GetUser() user: AuthenticatedUser) {
-    return this.workoutService.getWorkouts(user.id);
+  async getWorkouts(
+    @GetUser() user: AuthenticatedUser,
+    @Query() queries: { following?: boolean; userId?: number },
+  ) {
+    return this.workoutService.getWorkouts(user.id, queries);
   }
 
   @Get(':id')
