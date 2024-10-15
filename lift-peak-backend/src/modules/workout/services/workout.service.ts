@@ -8,7 +8,7 @@ import { FileService } from 'src/modules/file/file.service';
 import { MediaType } from 'src/modules/media/entity/media.entity';
 import { AuthenticatedUser } from 'src/modules/users/decorators/user.decorator';
 import { WorkoutLog } from 'src/modules/workout-log/entities/workout-log.entity';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, FindOptionsWhere, Repository } from 'typeorm';
 import { CreateWorkoutDto } from '../dto/create-workout.dto';
 import { IWorkoutPreview } from '../dto/workout-preview.dto';
 import { WorkoutMedia } from '../entities/workout-media.entity';
@@ -83,10 +83,26 @@ export class WorkoutService {
     }
   }
 
-  async getWorkouts(userId?: number) {
+  async getWorkouts(
+    userId: number,
+    {
+      following,
+      userId: paramUserId,
+    }: { following?: boolean; userId?: number },
+  ) {
+    const whereClause: FindOptionsWhere<Workout> = { isRoutine: false };
+
+    if (following) {
+      whereClause.user = [{ followers: { id: userId } }, { id: userId }];
+    }
+
+    if (paramUserId) {
+      whereClause.userId = paramUserId;
+    }
+
     const workouts = await this.workoutRepository.find({
       relations: ['workoutLog', 'comments', 'likes', 'user', 'mediaContents'],
-      where: { isRoutine: false },
+      where: whereClause,
       order: { createdAt: 'DESC' },
     });
 
