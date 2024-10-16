@@ -1,59 +1,14 @@
-import React, {useEffect} from 'react';
-import {Text, View} from "react-native";
-import {useLocalSearchParams} from "expo-router";
-import {useQuery} from "@tanstack/react-query";
-import {getUserInfo, ProfileHeader, UserInfo} from "@features/profile";
-import {defaultStyles} from "@shared/styles";
-import CustomTabBar from "@shared/components/tabs/CustomTabBar";
-import Animated, {useAnimatedScrollHandler} from "react-native-reanimated";
-import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
-import {useAuthStore} from "@features/auth";
+import React, { useEffect } from "react";
+import { View } from "react-native";
+import { useLocalSearchParams } from "expo-router";
+import Profile from "@features/profile/ui/Profile";
 
-const tabs = [
-    {
-        name: "about",
-    },
-    {
-        name: "statistics",
-    }
-]
+const GeneralProfile = () => {
+  const { id } = useLocalSearchParams<{ id?: string }>();
+  const userId = id ? parseInt(id, 10) : null;
 
-const AboutProfile = () => {
-    const {id} = useLocalSearchParams<{ id?: string }>()
-    const [activeTab, setActiveTab] = React.useState('about')
-    const {scrollY} = useAnimatedScroll();
-
-    const {data} = useQuery({
-        queryKey: ['user', id],
-        queryFn: () => getUserInfo(id),
-        enabled: !!id
-    })
-
-    const onScroll = useAnimatedScrollHandler((event) => {
-        scrollY.value = event.contentOffset.y;
-    });
-
-    if(!data?.profile) return null;
-
-    return (
-        <Animated.ScrollView onScroll={onScroll} stickyHeaderIndices={[1]} contentContainerStyle={{paddingBottom: 120}}
-                             style={defaultStyles.container} scrollEventThrottle={16}>
-            <ProfileHeader user={data}/>
-            <CustomTabBar activeTab={activeTab} setActiveTab={setActiveTab} tabs={tabs}/>
-            {activeTab === 'about' && (
-                data ? (
-                    <UserInfo user={data}/>
-                ) : (
-                    <Text style={{color: 'white'}}>Loading...</Text>
-                )
-            )}
-            {activeTab === 'statistics' && (
-                <View>
-                    <Text style={{color: 'white'}}>Stats</Text>
-                </View>
-            )}
-        </Animated.ScrollView>
-    );
+  return <>{userId ? <Profile userId={userId} /> : null}</>;
 };
 
-export default AboutProfile;
+
+export default GeneralProfile;

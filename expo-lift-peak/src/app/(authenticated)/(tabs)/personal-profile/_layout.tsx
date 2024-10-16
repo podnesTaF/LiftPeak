@@ -50,7 +50,7 @@ const Layout = () => {
           name={"index"}
           options={{
             headerTransparent: true,
-            header: () => <ProfileTopHeader type={"profile"} name={data?.profile?.firstName + " " + data?.profile?.lastName} right={
+            header: () => <ProfileTopHeader type={"personal-profile"} name={data?.profile?.firstName + " " + data?.profile?.lastName} right={
               <TouchableOpacity>
                 <Ionicons name={"ellipsis-horizontal"} size={30} color={"white"} />
               </TouchableOpacity>

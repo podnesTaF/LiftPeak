@@ -12,12 +12,12 @@ import {useAnimatedScroll} from "@shared/components/AnimatedScrollContext";
 
 interface ProfileTopHeaderProps {
     left?: React.ReactNode;
-    type: "profile" | "group"
+    type: "profile" | "group" | "personal-profile"
     name: string;
     right?: React.ReactNode;
 }
 
-const ProfileTopHeader = ({left, name, right}: ProfileTopHeaderProps) => {
+const ProfileTopHeader = ({left, name, right, type}: ProfileTopHeaderProps) => {
     const {scrollY} = useAnimatedScroll();
     const router = useRouter();
 
@@ -63,7 +63,8 @@ const ProfileTopHeader = ({left, name, right}: ProfileTopHeaderProps) => {
     })
 
     return (
-        <BlurView tint={"dark"} intensity={0} style={[{flexDirection: "row", width: "100%", alignItems: "center", overflow: "hidden", justifyContent: "space-between", paddingBottom: 12, paddingTop: Constants.statusBarHeight}]}>
+        <BlurView tint={"dark"} intensity={0} style={[{flexDirection: "row", width: "100%", alignItems: "center", overflow: "hidden", justifyContent: type === 'personal-profile' ? "flex-end" : "space-between", paddingBottom: 12, paddingTop: Constants.statusBarHeight}]}>
+            {(type === 'profile' || type === 'group') &&
             <TouchableOpacity onPress={()=> router.back()} style={{flexDirection: 'row', alignItems: 'center'}}>
                 <View style={{paddingHorizontal: 12}}>
                     <TouchableOpacity onPress={()=> router.back()} >
@@ -81,6 +82,7 @@ const ProfileTopHeader = ({left, name, right}: ProfileTopHeaderProps) => {
                     </Text>
                 </Animated.View>
             </TouchableOpacity>
+}
             <View style={{paddingHorizontal: 12}}>
                 {right}
             </View>

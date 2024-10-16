@@ -49,11 +49,12 @@ const styles = StyleSheet.create({
         borderBottomColor: 'transparent',
     },
     profileTabItem: {
-        borderBottomWidth: 2,
         padding: 4,
         margin: 12
     },
     activeTabItem: {
+        borderBottomWidth: 2,
+
         borderBottomColor: Colors.white,
     },
     tabLabel: {

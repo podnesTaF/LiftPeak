@@ -22,7 +22,12 @@ import Animated, {
 import { useAnimatedScroll } from "@shared/components/AnimatedScrollContext";
 import { router } from "expo-router";
 
-export const ProfileHeader = ({ user }: { user: IUser }) => {
+interface ProfileHeaderProps {
+  user: IUser,
+}
+
+
+export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
   const { user: authUser } = useAuthStore();
   const { scrollY } = useAnimatedScroll();
 

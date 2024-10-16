@@ -9,6 +9,16 @@ export const getAllWorkouts  = async () => {
     return data
 }
 
+export const getFollowingWorkouts = async ()  => {
+    const { data } = await api.get<IWorkout[]>("/workouts?following=true");
+    return data;
+};
+
+export const getUserWorkouts = async (userId: number | string) => {
+    const {data} = await api.get<IWorkout[]>(`/workouts?userId=${userId}`);
+    return data;
+}
+
 export const getWorkoutComments = async (workoutId: number) => {
     const {data} = await api.get<IComment[]>(`/comments/workout/${workoutId}`)
 

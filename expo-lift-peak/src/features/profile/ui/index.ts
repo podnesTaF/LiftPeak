@@ -1,2 +1,2 @@
 export {ProfileHeader} from './ProfileHeader'
-export {UserInfo} from './UserInfo'
+export {UserPosts} from './UserPosts'
