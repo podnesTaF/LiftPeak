@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
   Image,
   Linking,
@@ -21,15 +21,23 @@ import Animated, {
 } from "react-native-reanimated";
 import { useAnimatedScroll } from "@shared/components/AnimatedScrollContext";
 import { router } from "expo-router";
+import { useMutation } from "@tanstack/react-query";
+import { followUser, unfollowUser } from "@features/follow/api";
+import { useToastStore } from "@shared/store";
+import { queryClient } from "@shared/api";
 
 interface ProfileHeaderProps {
-  user: IUser,
+  user: IUser;
+  workoutsCount: number | undefined;
 }
 
-
-export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
+export const ProfileHeader: React.FC<ProfileHeaderProps> = ({
+  user,
+  workoutsCount,
+}) => {
   const { user: authUser } = useAuthStore();
   const { scrollY } = useAnimatedScroll();
+  const { showToast } = useToastStore();
 
   const isOwnProfile = authUser && user.id === authUser.id;
 
@@ -58,13 +66,42 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
     );
   };
 
-  const handleFollow = () => {
-    // Implement follow functionality here
-  };
+  const { mutate: follow } = useMutation({
+    mutationFn: () => followUser(user.id),
+    onError: () => {
+      showToast(
+        "Unable to Follow User",
+        "We encountered an issue while trying to follow this user. Please try again.",
+        "error"
+      );
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["user", user.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["followings"]
+      });
+    },
+  });
 
-  const handleUnfollow = () => {
-    // Implement unfollow functionality here
-  };
+  const { mutate: unfollow } = useMutation({
+    mutationFn: () => unfollowUser(user.id),
+    onError: () =>
+      showToast(
+        "Unable to Unfollow User",
+        "We encountered an issue while trying to unfollow this user. Please try again.",
+        "error"
+      ),
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: ["user", user.id],
+      });
+      queryClient.invalidateQueries({
+        queryKey: ["followings"]
+      })
+    },
+  });
 
   const fullName = [user.profile?.firstName, user.profile?.lastName]
     .filter(Boolean)
@@ -131,7 +168,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.statItem}>
-              <Text style={styles.statNumber}>96</Text>
+              <Text style={styles.statNumber}>{workoutsCount}</Text>
               <Text style={styles.statLabel}>Workouts</Text>
             </TouchableOpacity>
           </View>
@@ -180,11 +217,16 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
                 <Button
                   onPress={() =>
                     router.push(
-                      "/(authenticated)/(tabs)/personal-profile/settings"
+                      "/(authenticated)/(tabs)/personal-profile/settings/account/profile"
                     )
                   }
-                  style={{ flex: 1, paddingVertical: 10, borderWidth: 1, borderColor: Colors.white }}
-                  color='dark900'
+                  style={{
+                    flex: 1,
+                    paddingVertical: 10,
+                    borderWidth: 1,
+                    borderColor: Colors.white,
+                  }}
+                  color="dark900"
                   title={"Edit Profile"}
                 >
                   <Ionicons
@@ -197,7 +239,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
             </View>
           ) : user.isFollowing ? (
             <Button
-              onPress={handleUnfollow}
+              onPress={unfollow}
               fullWidth
               style={styles.actionButton}
               color={"dark500"}
@@ -211,7 +253,7 @@ export const ProfileHeader: React.FC<ProfileHeaderProps> = ({ user }) => {
             </Button>
           ) : (
             <Button
-              onPress={handleFollow}
+              onPress={follow}
               fullWidth
               style={styles.actionButton}
               color={"white"}
@@ -266,9 +308,10 @@ const styles = StyleSheet.create({
     overflow: "hidden",
   },
   profileInfo: {
-    marginTop: 70,
+    marginTop: 60,
     marginHorizontal: 20,
     padding: 20,
+    paddingVertical: 12,
     backgroundColor: Colors.dark900,
     borderRadius: 16,
     shadowColor: Colors.dark900,

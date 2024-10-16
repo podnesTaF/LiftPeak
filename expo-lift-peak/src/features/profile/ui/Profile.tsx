@@ -1,24 +1,25 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { ActivityIndicator, RefreshControl, Text, View } from "react-native";
+import { RefreshControl, Text, View, StyleSheet } from "react-native";
 import { useUserData } from "../hooks/useUserData";
 import { useUserWorkouts } from "../hooks/useUserWorkouts";
 import { useAuthStore } from "@features/auth/store";
 import { useAnimatedScroll } from "@shared/components/AnimatedScrollContext";
-import { defaultStyles } from "@shared/styles";
+import { Colors, defaultStyles } from "@shared/styles";
 import Animated, { useAnimatedScrollHandler } from "react-native-reanimated";
 import CustomTabBar from "@shared/components/tabs/CustomTabBar";
 import { WorkoutPost } from "@features/feed";
 import { ProfileHeader } from "./ProfileHeader";
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 interface ProfileProps {
   userId: string | number;
 }
 
 const Profile: React.FC<ProfileProps> = ({ userId }) => {
-  // **All hooks are called unconditionally at the top**
-
   const [activeTab, setActiveTab] = useState("posts");
   const { scrollY } = useAnimatedScroll();
+  const [refreshing, setRefreshing] = useState(false);
+
   const { user: currentUser, updateUser } = useAuthStore();
 
   const isCurrentUser = userId === currentUser?.id.toString();
@@ -27,7 +28,6 @@ const Profile: React.FC<ProfileProps> = ({ userId }) => {
     data: userData,
     refetch: refetchUserData,
     isFetching: isFetchingUserData,
-    isLoading: isUserDataLoading,
     isError: isUserDataError,
   } = useUserData(userId);
 
@@ -41,14 +41,15 @@ const Profile: React.FC<ProfileProps> = ({ userId }) => {
     scrollY.value = event.contentOffset.y;
   });
 
-  const onRefresh = useCallback(() => {
-    if (activeTab === "posts") {
-      refetchUserData();
-      refetchWorkouts();
-    } else {
-      refetchUserData();
+  const onRefresh = useCallback(async () => {
+    setRefreshing(true);
+
+    try {
+      await Promise.all([refetchUserData(), refetchWorkouts()]);
+    } finally {
+      setRefreshing(false);
     }
-  }, [activeTab, refetchUserData, refetchWorkouts]);
+  }, [refetchUserData, refetchWorkouts]);
 
   useEffect(() => {
     if (isCurrentUser && userData) {
@@ -56,22 +57,10 @@ const Profile: React.FC<ProfileProps> = ({ userId }) => {
     }
   }, [isCurrentUser, userData, updateUser]);
 
-  const isRefreshing =
-    isFetchingUserData || (activeTab === "posts" && isFetchingWorkouts);
-
-
-  if (isUserDataLoading) {
-    return (
-      <View style={defaultStyles.container}>
-        <ActivityIndicator size="large" color="#ffffff" />
-      </View>
-    );
-  }
-
   if (isUserDataError) {
     return (
       <View style={defaultStyles.container}>
-        <Text style={{ color: 'red' }}>Failed to load user data.</Text>
+        <Text style={{ color: "red" }}>Failed to load user data.</Text>
       </View>
     );
   }
@@ -79,11 +68,12 @@ const Profile: React.FC<ProfileProps> = ({ userId }) => {
   if (!userData) {
     return (
       <View style={defaultStyles.container}>
-        <Text style={{ color: 'white' }}>User data not available.</Text>
+        <Text style={{ color: "white" }}>User data not available.</Text>
       </View>
     );
   }
 
+  const hasWorkouts = workoutsData && workoutsData.length > 0;
 
   return (
     <Animated.FlatList
@@ -95,17 +85,34 @@ const Profile: React.FC<ProfileProps> = ({ userId }) => {
       )}
       ListHeaderComponent={
         <>
-          <ProfileHeader user={isCurrentUser ? currentUser : userData} />
-          <CustomTabBar
-            activeTab={activeTab}
-            setActiveTab={setActiveTab}
-            tabs={[{ name: "posts" }, { name: "stats" }]}
-            style={{ justifyContent: "center" }}
-            variant="profile"
+          <ProfileHeader
+            user={isCurrentUser ? currentUser : userData}
+            workoutsCount={workoutsData?.length}
           />
-          {activeTab === "stats" && (
-            <View>
-              <Text style={{ color: "white" }}>Stats</Text>
+          {hasWorkouts ? (
+            <>
+              <CustomTabBar
+                activeTab={activeTab}
+                setActiveTab={setActiveTab}
+                tabs={[{ name: "posts" }, { name: "stats" }]}
+                style={{ justifyContent: "center" }}
+                variant="profile"
+              />
+              {activeTab === "stats" && (
+                <View>
+                  <Text style={{ color: "white" }}>Stats</Text>
+                </View>
+              )}
+            </>
+          ) : (
+            <View style={styles.noWorkoutsContainer}>
+              <MaterialCommunityIcons
+                name="weight-lifter"
+                size={64}
+                color={Colors.dark300}
+                style={styles.noWorkoutsIcon}
+              />
+              <Text style={styles.noWorkoutsText}>No workouts logged yet</Text>
             </View>
           )}
         </>
@@ -114,10 +121,26 @@ const Profile: React.FC<ProfileProps> = ({ userId }) => {
       style={defaultStyles.container}
       scrollEventThrottle={16}
       refreshControl={
-        <RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />
+        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
       }
     />
   );
 };
+
+const styles = StyleSheet.create({
+  noWorkoutsContainer: {
+    alignItems: "center",
+    marginTop: 70,
+    paddingHorizontal: 20,
+  },
+  noWorkoutsIcon: {
+    marginBottom: 10,
+  },
+  noWorkoutsText: {
+    color: Colors.dark300,
+    fontSize: 18,
+    textAlign: "center",
+  },
+});
 
 export default Profile;
